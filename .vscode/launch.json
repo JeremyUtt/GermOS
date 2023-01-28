@@ -1,0 +1,19 @@
+{
+    "configurations": [
+        {
+            "type": "gdb",
+            "request": "attach",
+            "name": "Attach to gdbserver",
+            "executable": "./bin/full_kernel.sym",
+            "target": ":1234",
+            "remote": true,
+            "cwd": "${workspaceRoot}", 
+            "gdbpath": "gdb",
+            "autorun": [
+                "set arch i386:x86-64"
+                ]
+        }
+    ],
+    "version": "2.0.0"
+}
+

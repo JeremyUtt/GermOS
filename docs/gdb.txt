@@ -1,0 +1,26 @@
+https://stackoverflow.com/questions/39762989/how-to-watch-memory-access-with-gdb-on-guest-machine-in-qemu
+https://github.com/rohanrhu/gdb-frontend#installing
+https://wiki.osdev.org/GDB
+https://www.youtube.com/watch?v=bWH-nL7v5F4
+https://wiki.osdev.org/Kernel_Debugging
+https://sourceware.org/gdb/download/onlinedocs/gdb/Continuing-and-Stepping.html 
+https://developer.apple.com/library/archive/documentation/DeveloperTools/gdb/gdb/gdb_8.html 
+
+
+https://www.youtube.com/watch?v=kONFFecp3R8
+
+
+
+symbol-file bin/full_kernel.sym
+target remote :1234
+
+layout next
+
+==============
+
+list
+// shows source code
+
+p [var name]
+step [amount]   - souece code lines
+next [amount]   - machine code lines 
