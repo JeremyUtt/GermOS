@@ -15,7 +15,7 @@ mov [BOOT_DISK], dl
 
 loadKernelFromDisk:
 	mov ah, 2 ; Read Sectors Into Memory
-	mov al, 50; Number of Sectors to read
+	mov al, 54; Number of Sectors to read
 	mov ch, 0 ; Starting Cylinder Number
 	mov cl, 2 ; Starting Sector number
 	mov dh, 0 ; Head Number
@@ -24,14 +24,14 @@ loadKernelFromDisk:
 	int 0x13 ; add more disk interrupt
 
 
-	mov ah, 2 ; Read Sectors Into Memory
-	mov al, 50; Number of Sectors to read
-	mov ch, 0 ; Starting Cylinder Number
-	mov cl, 52 ; Starting Sector number
-	mov dh, 0 ; Head Number
-	; dl = Drive number (Already set)
-	mov bx, KERNEL_LOCATION+25600
-	int 0x13 ; add more disk interrupt
+;	mov ah, 2 ; Read Sectors Into Memory
+;	mov al, 50; Number of Sectors to read
+;	mov ch, 0 ; Starting Cylinder Number
+;	mov cl, 52 ; Starting Sector number
+;	mov dh, 0 ; Head Number
+;	; dl = Drive number (Already set)
+;	int 0x13 ; add more disk interrupt
+;	mov bx, KERNEL_LOCATION+25600
 ;end load more disk
 
 
