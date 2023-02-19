@@ -35,6 +35,18 @@ loadKernelFromDisk:
 ;end load more disk
 
 
+setTtyMode:
+	mov ah, 0x0	; set Video mode 
+	mov al, 0x3 ; 80 x 25	Color text	CGA, EGA, VGA
+	int 0x10	; Video Services
+;end setTtyMode
+
+
+
+
+jmp skip
+
+
 
 setOldGuiMode:
 	mov ah, 0x0	; set Video mode 
@@ -43,15 +55,6 @@ setOldGuiMode:
 ;end setOldGuiMode
 
 
-
-jmp skip
-
-
-setTtyMode:
-	mov ah, 0x0	; set Video mode 
-	mov al, 0x3 ; 80 x 25	Color text	CGA, EGA, VGA
-	int 0x10	; Video Services
-;end setTtyMode
 
 
 setGuiMode:
@@ -94,9 +97,11 @@ start_protected_mode:
 ; first byte: character
 ; second byte: color
 
-; mov al, 'A'
-; mov ah, 0x0f
-; mov [0xb8000], ax 
+;mov al, 'A'
+;mov ah, 0x0f
+;mov [0xb8000], ax 
+;jmp $
+
 jmp KERNEL_LOCATION
 
 jmp $

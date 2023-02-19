@@ -20,6 +20,7 @@ files = ""
 
 for file in glob.glob("./src/*.cpp"):
     trimmed = file.split("/")[2]
+    #           i386-elf-gcc -ffreestanding -m32 -g -c -mgeneral-regs-only -Wreturn-local-addr -O0 -mno-red-zone -I ./include -o build/pci.o src/pci.cpp
     os.system(f'i386-elf-gcc -ffreestanding -m32 -g -c -O0 -mgeneral-regs-only -Wreturn-local-addr -mno-red-zone -I ./include {file} -o "build/{trimmed.split(".")[0]}.o"')
     files = files + "./build/" + trimmed.split(".")[0] + ".o "
 
