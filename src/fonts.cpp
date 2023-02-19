@@ -1,10 +1,10 @@
-#include <fonts.h>
-#include <globalrenderer.h>
-#include <serial.h>
-#include <converts.h>
+#include <fonts.hpp>
+#include <globalrenderer.hpp>
+#include <serial.hpp>
+#include <converts.hpp>
 #include <fontem.h>
 #include <font-notosans-10.h>
-#include <utils.h>
+#include <utils.hpp>
 
 
 // unsigned int BasicFont1[127] = {0, 0,

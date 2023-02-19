@@ -1,5 +1,5 @@
 #pragma once
-#include <fonts.h>
+#include <fonts.hpp>
 struct Font{
 	int width;
 	int height;

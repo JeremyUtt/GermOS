@@ -1,6 +1,6 @@
-#include <serial.h>
-#include <io.h>
-#include <converts.h>
+#include <serial.hpp>
+#include <io.hpp>
+#include <converts.hpp>
 
 #define COM1 0x3f8          // COM1
 

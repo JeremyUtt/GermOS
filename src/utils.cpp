@@ -1,6 +1,6 @@
-#include <utils.h>
-#include <parameters.h>
-#include <globalrenderer.h>
+#include <utils.hpp>
+#include <parameters.hpp>
+#include <globalrenderer.hpp>
 #include <stdint.h>
 
 void amogus(){
@@ -21,43 +21,43 @@ void amogus(){
 	NewGuiRenderer::putRect(startx-width, starty+height, width, height*3, 0xaa);
 }
 
-static void printColorPallet(){
-	int color1 = 0;
-	for (int i = 0; i < screenWidth/20; i++){
-		for (int j = 0; j < screenHeight/20; j++){
-			globalrenderer::putRect(i*20, 0, 20, 20, i*j+i);	
-			color1++;
-		}	
-	}
-}
+// static void printColorPallet(){
+// 	int color1 = 0;
+// 	for (int i = 0; i < screenWidth/20; i++){
+// 		for (int j = 0; j < screenHeight/20; j++){
+// 			globalrenderer::putRect(i*20, 0, 20, 20, i*j+i);	
+// 			color1++;
+// 		}	
+// 	}
+// }
 
-static void setBackground(int color){
-	for (int i = 0; i < (80*25); i++){
-		int g = {*(int*)(screenMemory+2*i)};
-		int j = {*(int*)(screenMemory+2*i+1)};
-		// printChar(g, i, 0, (j | color));
-	}
+// static void setBackground(int color){
+// 	for (int i = 0; i < (80*25); i++){
+// 		int g = {*(int*)(screenMemory+2*i)};
+// 		int j = {*(int*)(screenMemory+2*i+1)};
+// 		// printChar(g, i, 0, (j | color));
+// 	}
 	
-}
+// }
 
-static bool checkMem(char str[], int address){
-    int strLen = 0;
-	for (int i = 0; i < 1; i++){
-		if (str[strLen] != 0){
-			i--;
-			strLen++;
-		}
-	}
+// static bool checkMem(char str[], int address){
+//     int strLen = 0;
+// 	for (int i = 0; i < 1; i++){
+// 		if (str[strLen] != 0){
+// 			i--;
+// 			strLen++;
+// 		}
+// 	}
 
-    for (int i = 0; i < strLen; i++){
-        if(*(char*)(address+i) != str[i]){
-            return false;
-        }
-    }
-    return true;
-}
+//     for (int i = 0; i < strLen; i++){
+//         if(*(char*)(address+i) != str[i]){
+//             return false;
+//         }
+//     }
+//     return true;
+// }
 
-int getMemory(int Address){
-	uint8_t i = {*(uint8_t*)(Address)};
-	return i;
-}
+// int getMemory(int Address){
+// 	uint8_t i = {*(uint8_t*)(Address)};
+// 	return i;
+// }

@@ -1,8 +1,8 @@
-#include "keyboardHandler.h"
-#include "io.h"
-#include "terminal.h"
-#include "newidt.h"
-#include "globalrenderer.h"
+#include "keyboardHandler.hpp"
+#include "io.hpp"
+#include "terminal.hpp"
+#include "newidt.hpp"
+#include "globalrenderer.hpp"
 bool isRightShiftPressed;
 bool isLeftShiftPressed;
 bool isArrowPressed;

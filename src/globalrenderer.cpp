@@ -1,10 +1,10 @@
-#include "converts.h"
-#include "globalrenderer.h"
-#include <parameters.h>
-#include <fonts.h>
-#include <utils.h>
+#include "converts.hpp"
+#include "globalrenderer.hpp"
+#include <parameters.hpp>
+#include <fonts.hpp>
+#include <utils.hpp>
 #include <stdint.h>
-#include <serial.h>
+#include <serial.hpp>
 
 
 

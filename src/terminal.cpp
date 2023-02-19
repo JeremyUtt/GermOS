@@ -1,8 +1,8 @@
 //https://wiki.osdev.org/Printing_To_Screen 
-#include "terminal.h"
-#include "io.h"
-#include "parameters.h"
-#include "converts.h"
+#include "terminal.hpp"
+#include "io.hpp"
+#include "parameters.hpp"
+#include "converts.hpp"
 
 int Ycounter = 0;
 int Xcounter = 0;

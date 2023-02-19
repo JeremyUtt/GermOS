@@ -1,8 +1,8 @@
-#include "pci.h"
-#include "io.h"
-#include "terminal.h"
-#include "converts.h"
-#include "globalrenderer.h"
+#include "pci.hpp"
+#include "io.hpp"
+#include "terminal.hpp"
+#include "converts.hpp"
+#include "globalrenderer.hpp"
 int pciConfigReadWord(uint8_t bus, uint8_t slot, uint8_t func, uint8_t offset) {
     uint32_t address;
     uint32_t lbus  = (uint32_t)bus;

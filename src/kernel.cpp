@@ -1,16 +1,16 @@
 //https://www.asciitable.com/
 //https://www.youtube.com/channel/UCuWLGQB4WRBKvW1C26zA2og
 #include <stdint.h>
-#include <parameters.h>
-#include <newidt.h>
-#include <keyboardHandler.h>
-#include <pci.h>
-#include <globalrenderer.h>
-#include <fonts.h>
-#include <kernel.h>
-#include <utils.h>
-#include <serial.h>
-#include <converts.h>
+#include <parameters.hpp>
+#include <newidt.hpp>
+#include <keyboardHandler.hpp>
+#include <pci.hpp>
+#include <globalrenderer.hpp>
+#include <fonts.hpp>
+#include <kernel.hpp>
+#include <utils.hpp>
+#include <serial.hpp>
+#include <converts.hpp>
  
 
 extern "C" void main(){	
@@ -20,7 +20,6 @@ extern "C" void main(){
 	// all bits being detected at 0, instead oa value at variable location
 
 	//https://github.com/chrisy/fontem 
-	
 	amogus();
 
 	while(1) asm("hlt");

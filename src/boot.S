@@ -35,18 +35,6 @@ loadKernelFromDisk:
 ;end load more disk
 
 
-setTtyMode:
-	mov ah, 0x0	; set Video mode 
-	mov al, 0x3 ; 80 x 25	Color text	CGA, EGA, VGA
-	int 0x10	; Video Services
-;end setTtyMode
-
-
-
-
-jmp skip
-
-
 
 setOldGuiMode:
 	mov ah, 0x0	; set Video mode 
@@ -54,6 +42,18 @@ setOldGuiMode:
 	int 0x10	; Video Services
 ;end setOldGuiMode
 
+
+
+jmp skip
+
+
+
+
+setTtyMode:
+	mov ah, 0x0	; set Video mode 
+	mov al, 0x3 ; 80 x 25	Color text	CGA, EGA, VGA
+	int 0x10	; Video Services
+;end setTtyMode
 
 
 
