@@ -1,3 +1,4 @@
+#! /usr/bin/python3
 import os
 import glob
 
@@ -21,7 +22,7 @@ files = ""
 for file in glob.glob("./src/*.cpp"):
     trimmed = file.split("/")[2]
     #           i386-elf-gcc -ffreestanding -m32 -g -c -mgeneral-regs-only -Wreturn-local-addr -O0 -mno-red-zone -I ./include -o build/pci.o src/pci.cpp
-    os.system(f'/usr/local/i386elfgcc/bin/i386-elf-gcc -ffreestanding -m32 -g -c -O0 -mgeneral-regs-only -Wreturn-local-addr -mno-red-zone -I ./include {file} -o "build/{trimmed.split(".")[0]}.o"')
+    os.system(f'/usr/local/i386elfgcc/bin/i386-elf-g++ -ffreestanding -m32 -g -c -O0 -mgeneral-regs-only -Wall -mno-red-zone -I ./include {file} -o "build/{trimmed.split(".")[0]}.o"')
     files = files + "./build/" + trimmed.split(".")[0] + ".o "
 
 for file in glob.glob("./src/*.c"):

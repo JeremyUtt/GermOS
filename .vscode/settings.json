@@ -1,5 +1,7 @@
 {
     "files.associations": {
-        "fontem.h": "c"
-    }
+        "fontem.h": "c",
+        "string": "cpp"
+    },
+    "C_Cpp.errorSquiggles": "disabled"
 }

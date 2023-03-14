@@ -48,13 +48,13 @@ static void InterpretKeyboard(int keycode){
             //TODO: BACKSPACE
             return;
         case UP:
-            GuiRenderer::UpdateCounter(0, -2);
+            NewGuiRenderer::UpdateCounter(0, -2);
         case DOWN:
-            GuiRenderer::UpdateCounter(1, 1);
+            NewGuiRenderer::UpdateCounter(1, 1);
         case LEFT:
-            GuiRenderer::UpdateCounter(-2, 0);
+            NewGuiRenderer::UpdateCounter(-2, 0);
         case RIGHT:
-            GuiRenderer::UpdateCounter(1, 0);
+            NewGuiRenderer::UpdateCounter(1, 0);
 
     }
 
@@ -62,7 +62,7 @@ static void InterpretKeyboard(int keycode){
     char ascii = QWERTYKeyboard::Translate(keycode, isLeftShiftPressed | isRightShiftPressed);
 
     if (ascii != 0){
-        GuiRenderer::printChar(ascii);
+        NewGuiRenderer::printChar(ascii);
     }
 
 }
@@ -108,7 +108,7 @@ namespace QWERTYKeyboard {
         '_', '+'
     };
 
-     static char Translate(uint8_t scancode, bool uppercase){
+    char Translate(uint8_t scancode, bool uppercase){
         if (scancode > 58) return 0; 
      
 

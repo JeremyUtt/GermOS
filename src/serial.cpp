@@ -25,9 +25,7 @@ int init_serial() {
    return 0;
 }
 
-
-
-static int is_transmit_empty() {
+int is_transmit_empty() {
    return inb(COM1 + 5) & 0x20;
 }
 
@@ -38,6 +36,12 @@ void serialWriteChar(char a) {
 }
 
 void serialWriteStr(char* string){
+    for (int i = 0; i < getStrLen(string); i++){
+        serialWriteChar(string[i]);
+    }   
+}
+
+void serialWriteStr(const char* string){
     for (int i = 0; i < getStrLen(string); i++){
         serialWriteChar(string[i]);
     }   

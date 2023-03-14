@@ -48,3 +48,14 @@ int getStrLen(char String[]){
 	return strLen;
 }
 
+int getStrLen(const char String[]){
+	int strLen = 0;
+	for (int i = 0; i < 1; i++){
+		if (String[strLen] != 0){
+			i--;
+			strLen++;
+		}
+	}
+	return strLen;
+}
+

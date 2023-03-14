@@ -23,15 +23,6 @@ loadKernelFromDisk:
 	mov bx, KERNEL_LOCATION
 	int 0x13 ; add more disk interrupt
 
-
-;	mov ah, 2 ; Read Sectors Into Memory
-;	mov al, 50; Number of Sectors to read
-;	mov ch, 0 ; Starting Cylinder Number
-;	mov cl, 52 ; Starting Sector number
-;	mov dh, 0 ; Head Number
-;	; dl = Drive number (Already set)
-;	int 0x13 ; add more disk interrupt
-;	mov bx, KERNEL_LOCATION+25600
 ;end load more disk
 
 
@@ -42,20 +33,13 @@ setOldGuiMode:
 	int 0x10	; Video Services
 ;end setOldGuiMode
 
-
-
 jmp skip
-
-
-
 
 setTtyMode:
 	mov ah, 0x0	; set Video mode 
 	mov al, 0x3 ; 80 x 25	Color text	CGA, EGA, VGA
 	int 0x10	; Video Services
 ;end setTtyMode
-
-
 
 setGuiMode:
 	mov ax, 0x4f02 ; VESA set display mode
@@ -73,6 +57,7 @@ pciCheck:
 	mov al, "A"
 	int 0x10
 ;end pcicheck
+
 
 
 ; Load the GDT table and switch to 32 bit protected mode:
@@ -103,9 +88,6 @@ start_protected_mode:
 ;jmp $
 
 jmp KERNEL_LOCATION
-
-jmp $
-
 
 ; ====================================================================================
 ; Data Section

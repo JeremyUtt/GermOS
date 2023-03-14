@@ -13,7 +13,16 @@
 #include <converts.hpp>
  
 
+
+
+
+
+
 extern "C" void main(){	
+	
+
+	// checkKernelMemory();
+	
 	initKernel();
 
 	// TODO:fix new char printing
@@ -21,22 +30,20 @@ extern "C" void main(){
 
 	//https://github.com/chrisy/fontem 
 	amogus();
-
 	while(1) asm("hlt");
 	return;
 }
 
-static void initKernel(){
-	// initOldFonts();
 
-	initFonts();
+
+static void initKernel(){
 
 	using namespace NewGuiRenderer;
 
-	println("ABCDEFGHIJKLMNO");
-	println("abcdefghijklmno");
-	println("1234567890");
-	println("!@#$%^&*(){}[]<>?\\/;:''");
+	println((char*)"AAAAAAAAHIJKLMNO\n");
+	println((char*)"abcdefghijklmno\n");
+	println((char*)"1234567890\n");
+	println((char*)"!@#$%^&*(){}[]<>?\\/;:''\n");
 
     load_idt_entry(0x21, (unsigned long) keyboard_handler_int, 0x08, 0x8e);
 	idt_init();
@@ -44,12 +51,23 @@ static void initKernel(){
 	findRSDP();
 	// println("Initalizing Serial Port");
 	int good = init_serial();
-	serialWriteStr("Hello World!");
-	serialWriteStr(intToStr((int)&font8x8_basic, 16));
+	serialWriteStr((char*)"Hello World!");
 	println(intToStr(good, 10));
 	// println("Kernel Initalization Complete!");
 	// println("Press any key to continue");
 	asm("hlt");
 	ClearScreen();
 
+}
+
+
+
+bool checkKernelMemory(){
+	for (int i = 0; i < 100000; i++)
+	{
+		uint8_t* address = (uint8_t*)(i);
+		serialWriteStr(intToStr(*address, 16));
+		serialWriteStr(" ");
+	}
+	return true;
 }

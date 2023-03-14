@@ -38,26 +38,26 @@ void findRSDP(){
     char str[] = "RSD PTR ";
     int start_addr = 0x000E0000;
     int i = 0;
-    int finds = 0;
+    // int finds = 0;
     while (true){
-        char g = {*(char*)(start_addr+i)};
-        char h = {*(char*)(start_addr+i+1)};
+        // char g = {*(char*)(start_addr+i)};
+        // char h = {*(char*)(start_addr+i+1)};
         //printInt(start_addr+i, 16, 0, 0, 0x0f);
         
         
         if(check(str, start_addr+i)){
-        //    GuiRenderer::printText("--->RSDP found at: 0x");
-        //     GuiRenderer::println(intToStr(*(int*)start_addr+i, 16));
-        //     GuiRenderer::printText("--->");
-        //     GuiRenderer::printChar(g);
-        //     GuiRenderer::printChar(h);
-        //     GuiRenderer::printChar({*(char*)(start_addr+i+2)});
-        //     GuiRenderer::printChar({*(char*)(start_addr+i+3)});
-        //     GuiRenderer::printChar({*(char*)(start_addr+i+4)});
-        //     GuiRenderer::printChar({*(char*)(start_addr+i+5)});
-        //     GuiRenderer::printChar({*(char*)(start_addr+i+6)});
-        //     GuiRenderer::printChar({*(char*)(start_addr+i+7)});
-        //     GuiRenderer::println("");
+        //    NewGuiRenderer::printText("--->RSDP found at: 0x");
+        //     NewGuiRenderer::println(intToStr(*(int*)start_addr+i, 16));
+        //     NewGuiRenderer::printText("--->");
+        //     NewGuiRenderer::printChar(g);
+        //     NewGuiRenderer::printChar(h);
+        //     NewGuiRenderer::printChar({*(char*)(start_addr+i+2)});
+        //     NewGuiRenderer::printChar({*(char*)(start_addr+i+3)});
+        //     NewGuiRenderer::printChar({*(char*)(start_addr+i+4)});
+        //     NewGuiRenderer::printChar({*(char*)(start_addr+i+5)});
+        //     NewGuiRenderer::printChar({*(char*)(start_addr+i+6)});
+        //     NewGuiRenderer::printChar({*(char*)(start_addr+i+7)});
+        //     NewGuiRenderer::println("");
             return;
         }
         

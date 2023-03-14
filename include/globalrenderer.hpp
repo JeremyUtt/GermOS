@@ -11,7 +11,7 @@ struct Font{
 	};
 	bool getPixel(int chr, int x, int y){
 		//chr-=32;
-		int bit = (bitmap[chr] >> (height*width-(y*width + x))-1) & 1;
+		int bit = (bitmap[chr] >> (height*width-(y*width + x)-1)) & 1;
 		if (bit >0){
 			return 1;
 		}
@@ -36,28 +36,6 @@ namespace globalrenderer{
 	void printChar_Backspace();
 }
 
-namespace GuiRenderer{
-	// int xResolution;
-	// int yResolution;
-	// int Xcounter;
-	// int Ycounter;
-	// int printColor;
-	// Font printFont;
-
-	void setDrawColor(int color);
-	void setDrawFont(Font font);
-	void UpdateCounter(int xInc, int yInc);
-	void ClearScreen();
-	void putPixel(int pos_x, int pos_y, unsigned char VGA_COLOR);
-	void putChar(int chr, int x, int y);
-	void putString(char* string, int x, int y);
-	void println(const char String[]);
-	void printText(const char String[]);
-	void putRect(int x, int y, int width, int height, int color);
-	void putLine(int x, int y, int lenght, bool vertical, int color);
-	void printChar(const char chr);
-}
-
 namespace NewGuiRenderer{
 	void setDrawColor(int color);
 	void setDrawFont(NewFont* font);
@@ -66,8 +44,7 @@ namespace NewGuiRenderer{
 	void putPixel(int pos_x, int pos_y, unsigned char VGA_COLOR);
 	void putChar(int chr, int x, int y);
 	void putString(char* string, int x, int y);
-	void println(const char String[]);
-	void printText(const char String[]);
+	void println(char String[]);
 	void putRect(int x, int y, int width, int height, int color);
 	void putLine(int x, int y, int lenght, bool vertical, int color);
 	void printChar(const char chr);

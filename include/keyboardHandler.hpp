@@ -19,6 +19,6 @@ namespace QWERTYKeyboard{
     #define Special 0xe0
 
     extern const char ASCIITable[];
-    static char Translate(uint8_t scancode, bool uppercase);
+    char Translate(uint8_t scancode, bool uppercase);
 }
 
