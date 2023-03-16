@@ -38,7 +38,7 @@ namespace globalrenderer{
 
 namespace NewGuiRenderer{
 	void setDrawColor(int color);
-	void setDrawFont(NewFont* font);
+	// void setDrawFont(NewFont* font);
 	void UpdateCounter(int xInc, int yInc);
 	void ClearScreen();
 	void putPixel(int pos_x, int pos_y, unsigned char VGA_COLOR);

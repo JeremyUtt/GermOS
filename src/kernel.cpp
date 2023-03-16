@@ -20,10 +20,11 @@
 
 extern "C" void main(){	
 	
-
-	// checkKernelMemory();
+	while(1) asm("hlt");
 	
-	initKernel();
+	// checkKernelMemory();
+	// initKernel();
+	psf_init();
 
 	// TODO:fix new char printing
 	// all bits being detected at 0, instead oa value at variable location

@@ -30,11 +30,16 @@ for file in glob.glob("./src/*.c"):
     os.system(f'/usr/local/i386elfgcc/bin/i386-elf-gcc -ffreestanding -m32 -g -c -O0 -mgeneral-regs-only -Wreturn-local-addr -mno-red-zone -I ./include {file} -o "build/{trimmed.split(".")[0]}.o"')
     files = files + "./build/" + trimmed.split(".")[0] + ".o "
 
+
+os.system("objcopy -O elf32-i386 -B i386 -I binary fonts/Uni2-Terminus12x6.psf build/Uni2-Terminus12x6.o")
+
+
+
 print("====> Linking Kernal Files...")
-os.system(f'/usr/local/i386elfgcc/bin/i386-elf-ld -o "build/full_kernel.bin" -Ttext 0x1000 "build/kernel_entry.o" {files}  --oformat binary')
+os.system(f'/usr/local/i386elfgcc/bin/i386-elf-ld -o "build/full_kernel.bin" -Ttext 0x1000 "build/kernel_entry.o" "build/Uni2-Terminus12x6.o" {files} --oformat binary')
 
 # For Debugger:
-os.system(f'/usr/local/i386elfgcc/bin/i386-elf-ld -o "build/full_kernel.o" -Ttext 0x1000 "build/kernel_entry.o" {files}')
+os.system(f'/usr/local/i386elfgcc/bin/i386-elf-ld -o "build/full_kernel.o" -Ttext 0x1000 "build/kernel_entry.o" "build/Uni2-Terminus12x6.o" {files} ')
 os.system('objcopy --only-keep-debug build/full_kernel.o bin/full_kernel.sym')
 
 print("====> Adding Bootloader and Finishing up...")
