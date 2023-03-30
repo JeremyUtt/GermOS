@@ -13,26 +13,28 @@ OBJS := $(patsubst $(SRC_DIR)/%.cpp,$(BUILD_DIR)/%.o,$(CPP_FILES)) \
 CFLAGS := -ffreestanding -m32 -g -c -mgeneral-regs-only \
 	      -Wall -O0 -mno-red-zone -I ./include
 
-
 CYAN := "\033[0;36m"
 NOCOLOR := "\033[0m"
 
-all: bin/OS.bin 
+all: bin/OS.bin bin/OS.sym
 
 # Finished OS Binary
 bin/OS.bin : $(BUILD_DIR)/full_kernel.bin $(SRC_DIR)/zeros.bin
 	@cat $(BUILD_DIR)/full_kernel.bin $(SRC_DIR)/zeros.bin > bin/OS.bin
 	@echo  $(CYAN) CAT $< $(NOCOLOR)
 
+# Convert OS ELF file into SYM file (for debugging w/ gdb)
+bin/OS.sym: $(BUILD_DIR)/full_kernel.o
+	@/usr/local/i386elfgcc/bin/i386-elf-objcopy --only-keep-debug $< $@
+	@echo  $(CYAN) LD $< $(NOCOLOR)
 
-# # Kernel + Bootloader linking
-# $(BUILD_DIR)/everything.bin: $(BUILD_DIR)/boot.bin $(BUILD_DIR)/full_kernel.bin
-# 	@cat $(BUILD_DIR)/boot.bin $(BUILD_DIR)/full_kernel.bin > $(BUILD_DIR)/everything.bin
-# 	@echo  $(CYAN) CAT $< $(NOCOLOR)
+# Convert os ELF file into pure Binary file
+$(BUILD_DIR)/full_kernel.bin: $(BUILD_DIR)/full_kernel.o
+	@/usr/local/i386elfgcc/bin/i386-elf-objcopy -S -O binary $< $@
+	@echo  $(CYAN) LD $< $(NOCOLOR)
 
-
-# Link all objects to make Kernel (without some of bootloader)
-$(BUILD_DIR)/full_kernel.bin: $(OBJS)
+# Link all objects to make final OS object
+$(BUILD_DIR)/full_kernel.o: $(OBJS)
 	@/usr/local/i386elfgcc/bin/i386-elf-ld -T linker.ld $^
 	@echo  $(CYAN) LD $< $(NOCOLOR)
 

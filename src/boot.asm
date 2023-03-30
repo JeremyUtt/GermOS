@@ -14,23 +14,42 @@ section .btext
 ; _main:
 
 
-%macro print 1
-	mov bh, 0x00 ; offset
-	mov bl, 10
-	; mov bh, 10
-	loop1:
-	mov al, [variableName+bx]
-	cmp al, 0x00
-	je end
-	mov ah, 0x0e ; Write Character
-	int 0x10
-	inc bh
-	jmp loop1
-	end:
+; %macro print 1
+	
+; 	mov cx, 0x00 ; offset
+; 	; mov bl, 10
+; 	; mov bh, 10
+; 	loop1:
+; 	mov al, [variableName+cx]
+; 	cmp al, 0x00
+; 	je end
+; 	mov ah, 0x0e ; Write Character
+; 	int 0x10
+; 	inc cx
+; 	jmp loop1
 
-	variableName:
-	db %1, 0
-%endmacro
+
+; ;     mov     si, HELLO_MSG
+; ;     xor     bx, bx
+; ; Next:
+; ;     mov     al, byte [si + bx]
+; ;     mov     ah, 0x0e
+; ;     int     0x10
+
+; ;     mov     al, 10
+; ;     mov     ah, 0x0e
+; ;     int     0x10
+
+; ;     inc     bx
+; ;     cmp     bx, HELLO_LEN
+; ;     jne     Next
+
+	
+; 	variableName db %1, 0
+;  	HELLO_LEN equ  $ - variableName
+	
+; 	end:
+; %endmacro
 
 ; setOldGuiMode:
 ; 	mov ah, 0x0	; set Video mode 
@@ -38,17 +57,25 @@ section .btext
 ; 	int 0x10	; Video Services
 ; ;end setOldGuiMode
 
-; setTtyMode:
-; 	mov ah, 0x0	; set Video mode 
-; 	mov al, 0x3 ; 80 x 25	Color text	CGA, EGA, VGA
-; 	int 0x10	; Video Services
-; ; end setTtyMode
+setTtyMode:
+	mov ah, 0x0	; set Video mode 
+	mov al, 0x3 ; 80 x 25	Color text	CGA, EGA, VGA
+	int 0x10	; Video Services
+; end setTtyMode
 
-setGuiMode:
-	mov ax, 0x4f02 ; VESA set display mode
-	mov bx, 0x0107 ; 1280×1024 256bit color pallet
-	int 0x10
-; end setGuiMode
+; setGuiMode:
+; 	mov ax, 0x4f02 ; VESA set display mode
+; 	mov bx, 0x0107 ; 1280×1024 256bit color pallet
+; 	int 0x10
+; ; end setGuiMode
+
+
+mov ah, 0x0e ; Write Character
+mov al, 'h'
+int 0x10
+
+; print "Hello"
+
 
 
 ; print "Loading memory from disk"
@@ -66,86 +93,6 @@ loadKernelFromDisk:
 
 ;end load more disk
 
-; pciCheck:
-; 	mov ax, 0xb101
-; 	int 0x1A
-; 	push ax
-; 	mov ah, 0x03
-; 	mov al, "A"
-; 	int 0x10
-; ;end pcicheck
-
-
-; int 0x11
-; mov bx, ax
-
-; print "Hello"
-
-
-mov ah, 0x0e ; Write Character
-mov bl, 15
-mov al, [0x1000]
-int 0x10
-mov ah, 0x0e ; Write Character
-mov bl, 15
-mov al, [0x1001]
-int 0x10
-mov ah, 0x0e ; Write Character
-mov bl, 15
-mov al, [0x1002]
-int 0x10
-mov ah, 0x0e ; Write Character
-mov bl, 15
-mov al, [0x1003]
-int 0x10
-mov ah, 0x0e ; Write Character
-mov bl, 15
-mov al, [0x1004]
-int 0x10
-mov ah, 0x0e ; Write Character
-mov bl, 15
-mov al, [0x1005]
-int 0x10
-mov ah, 0x0e ; Write Character
-mov bl, 15
-mov al, [0x1006]
-int 0x10
-mov ah, 0x0e ; Write Character
-mov bl, 15
-mov al, [0x1007]
-int 0x10
-mov ah, 0x0e ; Write Character
-mov bl, 15
-mov al, [0x1008]
-int 0x10
-mov ah, 0x0e ; Write Character
-mov bl, 15
-mov al, [0x1009]
-int 0x10
-mov ah, 0x0e ; Write Character
-mov bl, 15
-mov al, [0x100a]
-int 0x10
-mov ah, 0x0e ; Write Character
-mov bl, 15
-mov al, [0x100b]
-int 0x10
-mov ah, 0x0e ; Write Character
-mov bl, 15
-mov al, [0x100b]
-int 0x10
-mov ah, 0x0e ; Write Character
-mov bl, 15
-mov al, [0x100c]
-int 0x10
-mov ah, 0x0e ; Write Character
-mov bl, 15
-mov al, [0x100d]
-int 0x10
-mov ah, 0x0e ; Write Character
-mov bl, 15
-mov al, [0x100f]
-int 0x10
 
 jmp $
 
