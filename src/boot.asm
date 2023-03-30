@@ -8,6 +8,12 @@
 ; 16 bit Code Section
 ; ====================================================================================
 
+
+section .btext 
+    global _main:
+; _main:
+
+
 %macro print 1
 	mov bh, 0x00 ; offset
 	mov bl, 10
@@ -26,15 +32,11 @@
 	db %1, 0
 %endmacro
 
-
-
-[org 0x7c00]                      
-
-; Section _main:
-.text
-
-mov [BOOT_DISK], dl               
-
+; setOldGuiMode:
+; 	mov ah, 0x0	; set Video mode 
+; 	mov al, 0x13 ; VGA 320*200 256 color
+; 	int 0x10	; Video Services
+; ;end setOldGuiMode
 
 ; setTtyMode:
 ; 	mov ah, 0x0	; set Video mode 
@@ -52,6 +54,7 @@ setGuiMode:
 ; print "Loading memory from disk"
 
 loadKernelFromDisk:
+	mov [BOOT_DISK], dl               
 	mov ah, 2 ; Read Sectors Into Memory
 	mov al, 54; Number of Sectors to read
 	mov ch, 0 ; Starting Cylinder Number
@@ -144,23 +147,7 @@ mov bl, 15
 mov al, [0x100f]
 int 0x10
 
-jmp skip
-
-setOldGuiMode:
-	mov ah, 0x0	; set Video mode 
-	mov al, 0x13 ; VGA 320*200 256 color
-	int 0x10	; Video Services
-;end setOldGuiMode
-
-
-skip:
-
-
-
-
-
-
-
+jmp $
 
 ; Load the GDT table and switch to 32 bit protected mode:
 cli
@@ -189,7 +176,6 @@ start_protected_mode:
 ;mov [0xb8000], ax 
 ;jmp $
 
-jmp $
 jmp KERNEL_LOCATION
 
 ; ====================================================================================
@@ -229,4 +215,3 @@ GDT_Descriptor:
 
 times 510-($-$$) db 0x00
 db 0x55, 0xaa
-

@@ -17,31 +17,23 @@ CFLAGS := -ffreestanding -m32 -g -c -mgeneral-regs-only \
 CYAN := "\033[0;36m"
 NOCOLOR := "\033[0m"
 
-all: bin/OS.bin bin/full_kernel.sym
+all: bin/OS.bin 
 
 # Finished OS Binary
-bin/OS.bin : $(BUILD_DIR)/everything.bin $(SRC_DIR)/zeros.bin
-	@cat $(BUILD_DIR)/everything.bin $(SRC_DIR)/zeros.bin > bin/OS.bin
+bin/OS.bin : $(BUILD_DIR)/full_kernel.bin $(SRC_DIR)/zeros.bin
+	@cat $(BUILD_DIR)/full_kernel.bin $(SRC_DIR)/zeros.bin > bin/OS.bin
 	@echo  $(CYAN) CAT $< $(NOCOLOR)
 
-bin/full_kernel.sym: $(OBJS)
-	@/usr/local/i386elfgcc/bin/i386-elf-ld -Ttext 0x1000 -o $(BUILD_DIR)/full_kernel.o $^ 
-	@objcopy --only-keep-debug $(BUILD_DIR)/full_kernel.o $@
-	@echo  $(CYAN) OBJCOPY $< $(NOCOLOR)
 
-# Kernel + Bootloader linking
-$(BUILD_DIR)/everything.bin: $(BUILD_DIR)/boot.bin $(BUILD_DIR)/full_kernel.bin
-	@cat $(BUILD_DIR)/boot.bin $(BUILD_DIR)/full_kernel.bin > $(BUILD_DIR)/everything.bin
-	@echo  $(CYAN) CAT $< $(NOCOLOR)
+# # Kernel + Bootloader linking
+# $(BUILD_DIR)/everything.bin: $(BUILD_DIR)/boot.bin $(BUILD_DIR)/full_kernel.bin
+# 	@cat $(BUILD_DIR)/boot.bin $(BUILD_DIR)/full_kernel.bin > $(BUILD_DIR)/everything.bin
+# 	@echo  $(CYAN) CAT $< $(NOCOLOR)
 
-# binary file for part of bootloader
-$(BUILD_DIR)/boot.bin: $(SRC_DIR)/boot.S
-	@nasm $(SRC_DIR)/boot.S -f bin -o $(BUILD_DIR)/boot.bin
-	@echo  $(CYAN) ASM $< $(NOCOLOR)
 
 # Link all objects to make Kernel (without some of bootloader)
 $(BUILD_DIR)/full_kernel.bin: $(OBJS)
-	@/usr/local/i386elfgcc/bin/i386-elf-ld -Ttext 0x1000 --oformat binary -o $@ $^ 
+	@/usr/local/i386elfgcc/bin/i386-elf-ld -T linker.ld $^
 	@echo  $(CYAN) LD $< $(NOCOLOR)
 
 # Compile All CPP files
