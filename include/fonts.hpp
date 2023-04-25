@@ -4,8 +4,8 @@
 
 #define PSF_FONT_MAGIC 0x864ab572
 #define NULL 0
-extern char _binary___fonts_Uni2_Terminus12x6_psf_start;
-extern char _binary___fonts_Uni2_Terminus12x6_psf_end;
+extern char _binary_fonts_Uni2_Terminus12x6_psf_start;
+extern char _binary_fonts_Uni2_Terminus12x6_psf_end;
 
 void psf_init();
 

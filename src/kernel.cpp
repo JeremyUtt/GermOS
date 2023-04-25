@@ -20,17 +20,16 @@
 
 extern "C" void main(){	
 	
-	while(1) asm("hlt");
-	
+	amogus();
+
+	initKernel();
 	// checkKernelMemory();
 	// initKernel();
-	psf_init();
 
 	// TODO:fix new char printing
 	// all bits being detected at 0, instead oa value at variable location
 
 	//https://github.com/chrisy/fontem 
-	amogus();
 	while(1) asm("hlt");
 	return;
 }
@@ -38,26 +37,40 @@ extern "C" void main(){
 
 
 static void initKernel(){
-
-	using namespace NewGuiRenderer;
-
-	println((char*)"AAAAAAAAHIJKLMNO\n");
-	println((char*)"abcdefghijklmno\n");
-	println((char*)"1234567890\n");
-	println((char*)"!@#$%^&*(){}[]<>?\\/;:''\n");
-
-    load_idt_entry(0x21, (unsigned long) keyboard_handler_int, 0x08, 0x8e);
-	idt_init();
-    kb_init();
-	findRSDP();
 	// println("Initalizing Serial Port");
-	int good = init_serial();
-	serialWriteStr((char*)"Hello World!");
-	println(intToStr(good, 10));
-	// println("Kernel Initalization Complete!");
-	// println("Press any key to continue");
+	init_serial();
+	serialWriteStr((char*)"Serial Interface Initalized\r\n");
+
+
+	// using namespace NewGuiRenderer;
+
+	
+	serialWriteStr((char*)"Loading IDT Entry for Keyboard Handler\r\n");
+    load_idt_entry(0x21, (unsigned long) keyboard_handler_int, 0x08, 0x8e);
+
+	serialWriteStr((char*)"Initalizing IDT\r\n");
+	idt_init();
+    
+	
+	serialWriteStr((char*)"Initalizing and Loading Text Fonts (INCOMPLETE)\r\n");
+	psf_init();
+	
+
+
+
+
+	serialWriteStr((char*)"Initalizing Keyboard Interrupt\r\n");
+	kb_init();
+	
+	
+	// serialWriteStr((char*)"Finding RSDP Pointer\r\n");
+	// findRSDP();
+	
+	serialWriteStr((char*)"Kernel Initalization Complete!\r\n\n");
+	serialWriteStr((char*)"Welcome To GermOS!\r\n");
+	serialWriteStr((char*)"Press any key to continue\r\n");
 	asm("hlt");
-	ClearScreen();
+	// ClearScreen();
 
 }
 

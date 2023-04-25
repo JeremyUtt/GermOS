@@ -31,7 +31,7 @@
 [org 0x7c00]                      
 
 ; Section _main:
-.text
+; .text
 
 mov [BOOT_DISK], dl               
 
@@ -42,11 +42,11 @@ mov [BOOT_DISK], dl
 ; 	int 0x10	; Video Services
 ; ; end setTtyMode
 
-setGuiMode:
-	mov ax, 0x4f02 ; VESA set display mode
-	mov bx, 0x0107 ; 1280×1024 256bit color pallet
-	int 0x10
-; end setGuiMode
+; setGuiMode:
+; 	mov ax, 0x4f02 ; VESA set display mode
+; 	mov bx, 0x0107 ; 1280×1024 256bit color pallet
+; 	int 0x10
+; ; end setGuiMode
 
 
 ; print "Loading memory from disk"
@@ -79,72 +79,72 @@ loadKernelFromDisk:
 ; print "Hello"
 
 
-mov ah, 0x0e ; Write Character
-mov bl, 15
-mov al, [0x1000]
-int 0x10
-mov ah, 0x0e ; Write Character
-mov bl, 15
-mov al, [0x1001]
-int 0x10
-mov ah, 0x0e ; Write Character
-mov bl, 15
-mov al, [0x1002]
-int 0x10
-mov ah, 0x0e ; Write Character
-mov bl, 15
-mov al, [0x1003]
-int 0x10
-mov ah, 0x0e ; Write Character
-mov bl, 15
-mov al, [0x1004]
-int 0x10
-mov ah, 0x0e ; Write Character
-mov bl, 15
-mov al, [0x1005]
-int 0x10
-mov ah, 0x0e ; Write Character
-mov bl, 15
-mov al, [0x1006]
-int 0x10
-mov ah, 0x0e ; Write Character
-mov bl, 15
-mov al, [0x1007]
-int 0x10
-mov ah, 0x0e ; Write Character
-mov bl, 15
-mov al, [0x1008]
-int 0x10
-mov ah, 0x0e ; Write Character
-mov bl, 15
-mov al, [0x1009]
-int 0x10
-mov ah, 0x0e ; Write Character
-mov bl, 15
-mov al, [0x100a]
-int 0x10
-mov ah, 0x0e ; Write Character
-mov bl, 15
-mov al, [0x100b]
-int 0x10
-mov ah, 0x0e ; Write Character
-mov bl, 15
-mov al, [0x100b]
-int 0x10
-mov ah, 0x0e ; Write Character
-mov bl, 15
-mov al, [0x100c]
-int 0x10
-mov ah, 0x0e ; Write Character
-mov bl, 15
-mov al, [0x100d]
-int 0x10
-mov ah, 0x0e ; Write Character
-mov bl, 15
-mov al, [0x100f]
-int 0x10
+; mov ah, 0x0e ; Write Character
+; mov bl, 15
+; mov al, [0x1000]
+; int 0x10
+; mov ah, 0x0e ; Write Character
+; mov bl, 15
+; mov al, [0x1001]
+; int 0x10
+; mov ah, 0x0e ; Write Character
+; mov bl, 15
+; mov al, [0x1002]
+; int 0x10
+; mov ah, 0x0e ; Write Character
+; mov bl, 15
+; mov al, [0x1003]
+; int 0x10
+; mov ah, 0x0e ; Write Character
+; mov bl, 15
+; mov al, [0x1004]
+; int 0x10
+; mov ah, 0x0e ; Write Character
+; mov bl, 15
+; mov al, [0x1005]
+; int 0x10
+; mov ah, 0x0e ; Write Character
+; mov bl, 15
+; mov al, [0x1006]
+; int 0x10
+; mov ah, 0x0e ; Write Character
+; mov bl, 15
+; mov al, [0x1007]
+; int 0x10
+; mov ah, 0x0e ; Write Character
+; mov bl, 15
+; mov al, [0x1008]
+; int 0x10
+; mov ah, 0x0e ; Write Character
+; mov bl, 15
+; mov al, [0x1009]
+; int 0x10
+; mov ah, 0x0e ; Write Character
+; mov bl, 15
+; mov al, [0x100a]
+; int 0x10
+; mov ah, 0x0e ; Write Character
+; mov bl, 15
+; mov al, [0x100b]
+; int 0x10
+; mov ah, 0x0e ; Write Character
+; mov bl, 15
+; mov al, [0x100b]
+; int 0x10
+; mov ah, 0x0e ; Write Character
+; mov bl, 15
+; mov al, [0x100c]
+; int 0x10
+; mov ah, 0x0e ; Write Character
+; mov bl, 15
+; mov al, [0x100d]
+; int 0x10
+; mov ah, 0x0e ; Write Character
+; mov bl, 15
+; mov al, [0x100f]
+; int 0x10
 
-jmp skip
+; jmp skip
 
 setOldGuiMode:
 	mov ah, 0x0	; set Video mode 
@@ -189,8 +189,8 @@ start_protected_mode:
 ;mov [0xb8000], ax 
 ;jmp $
 
-jmp $
 jmp KERNEL_LOCATION
+jmp $
 
 ; ====================================================================================
 ; Data Section

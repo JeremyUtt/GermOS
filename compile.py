@@ -31,6 +31,21 @@ for file in glob.glob("./src/*.c"):
     files = files + "./build/" + trimmed.split(".")[0] + ".o "
 
 
+
+
+# os.system(f'objcopy -O elf32-i386 -B i386 -I binary ./fonts/Uni2-Terminus12x6.psf ./build/Uni2-Terminus12x6.o"')
+
+
+# for file in glob.glob("./fonts/*.psf"):
+#     trimmed = file.split("/")[2]
+#     os.system(f'objcopy -O elf32-i386 -B i386 -I binary {file} ./build/{trimmed.split(".")[0]}.o"')
+#     files = files + "./build/" + trimmed.split(".")[0] + ".o "
+
+
+
+
+
+
 os.system("objcopy -O elf32-i386 -B i386 -I binary fonts/Uni2-Terminus12x6.psf build/Uni2-Terminus12x6.o")
 
 
