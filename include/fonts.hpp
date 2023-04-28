@@ -3,11 +3,8 @@
 //https://codeplea.com/embedding-files-in-c-programs
 
 #define PSF_FONT_MAGIC 0x864ab572
-#define NULL 0
 extern char _binary_fonts_Uni2_Terminus12x6_psf_start;
 extern char _binary_fonts_Uni2_Terminus12x6_psf_end;
-
-void psf_init();
 
 
 typedef struct {
@@ -19,6 +16,12 @@ typedef struct {
     uint32_t bytesperglyph; /* size of each glyph */
     uint32_t height;        /* height in pixels */
     uint32_t width;         /* width in pixels */
+    uint8_t data[512][12];
 } PSF_font;
 
 
+
+void psf_init();
+bool getPX(PSF_font* mainFont, char character, int x, int y);
+void printHeader(PSF_font* mainFont);
+void translateGlyph(PSF_font *font, int character);

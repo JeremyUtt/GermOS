@@ -3,6 +3,7 @@
 #include "terminal.hpp"
 #include "newidt.hpp"
 #include "globalrenderer.hpp"
+#include "serial.hpp"
 bool isRightShiftPressed;
 bool isLeftShiftPressed;
 bool isArrowPressed;
@@ -23,11 +24,11 @@ void kb_init(void){
     //outb(PIC1_DATA, 0b111111101);
 }
 
-
 static void InterpretKeyboard(int keycode){
     //printScr(keycode, 0x0f);
     //printScr("-", 0x0f);
-
+        
+    // Switch case for non-character keys:
     switch (keycode){
         case LeftShift:
             isLeftShiftPressed = true;
@@ -62,12 +63,11 @@ static void InterpretKeyboard(int keycode){
     char ascii = QWERTYKeyboard::Translate(keycode, isLeftShiftPressed | isRightShiftPressed);
 
     if (ascii != 0){
-        NewGuiRenderer::printChar(ascii);
+        // NewGuiRenderer::printChar(ascii);
+        serialWriteChar(ascii);
     }
 
 }
-
-
 
 extern "C" void keyboard_handler(void){
     signed int keycode;
@@ -78,7 +78,6 @@ extern "C" void keyboard_handler(void){
     //End Interrupt
     outb(PIC1_COMMAND, PIC_EOI);
     outb(PIC1_COMMAND, PIC_EOI);
-    // load_idt(&idt_ptr);
 }
 
 namespace QWERTYKeyboard {
