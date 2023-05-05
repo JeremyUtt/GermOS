@@ -1,24 +1,5 @@
 #pragma once
 #include <fonts.hpp>
-struct Font{
-	int width;
-	int height;
-	unsigned int* bitmap;
-	void setData(int _width, int _height, unsigned int* _bitmap){
-		width = _width;
-		height = _height;
-		bitmap = _bitmap;
-	};
-	bool getPixel(int chr, int x, int y){
-		//chr-=32;
-		int bit = (bitmap[chr] >> (height*width-(y*width + x)-1)) & 1;
-		if (bit >0){
-			return 1;
-		}
-		return 0;
-	}
-};
-
 
 
 namespace globalrenderer{
@@ -37,7 +18,9 @@ namespace globalrenderer{
 }
 
 namespace NewGuiRenderer{
-	void setDrawColor(int color);
+    void setTextFont(PSF_font*);
+
+    void setDrawColor(int color);
 	// void setDrawFont(NewFont* font);
 	void UpdateCounter(int xInc, int yInc);
 	void ClearScreen();
