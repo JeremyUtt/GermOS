@@ -60,6 +60,7 @@ void putPixel(int pos_x, int pos_y, unsigned char VGA_COLOR) {
     unsigned char* location =
         (unsigned char*)screenMemory + screenWidth * pos_y + pos_x;
     *location = VGA_COLOR;
+
 }
 
 void putRect(int x, int y, int width, int height, int color) {
@@ -94,18 +95,19 @@ void putChar(int chr, int x, int y) {
             for (int bitNum = 8 - 1; bitNum >= 0; bitNum--) {
                 uint8_t tmpBool = (lineByte >> bitNum);
                 bool bit = (tmpBool & 0x01);
-                serialWriteChar((char *)bit ? '#' : '.');
-                int pixelX = x + (bytesNum * 8) - bitNum + currentFont->width + 1;
+                serialWriteChar((char*)bit ? '#' : '.');
+                int pixelX =
+                    x + (bytesNum * 8) - bitNum + currentFont->width + 1;
                 putPixel(pixelX, y + lineNum, bit ? printColor : 0x00);
             }
         }
-        serialWriteStr((char *)"\r\n");
+        serialWriteStr((char*)"\r\n");
     }
 }
 
 void putString(char* string, int x, int y) {
     // PSF_font* currentFont = &_binary_fonts_Uni2_Terminus12x6_psf_start;
-    
+
     for (int i = 0; i < getStrLen(string); i++) {
         putChar(string[i], x + (currentFont->width * i), y);
         serialWriteStr((char*)"---------------------------------\r\n");

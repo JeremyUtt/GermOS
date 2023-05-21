@@ -6,8 +6,8 @@
 void amogus(){
 	int width = 20;
 	int height= 20;
-	int startx = 50;
-	int starty= 50;
+	int startx = 1050;
+	int starty= 0;
 	// NewGuiRenderer::putRect(startx, starty, width*3, height*4, 0xaa);
 	// NewGuiRenderer::putRect(startx+width, starty+height, width*2, height, 0x55);
 	// NewGuiRenderer::putRect(startx, starty+height*4, width, height, 0xaa);

@@ -42,11 +42,25 @@ mov [BOOT_DISK], dl
 ; 	int 0x10	; Video Services
 ; ; end setTtyMode
 
+
 ; setGuiMode:
-; 	mov ax, 0x4f02 ; VESA set display mode
-; 	mov bx, 0x0107 ; 1280×1024 256bit color pallet
-; 	int 0x10
-; ; end setGuiMode
+	mov ax, 0x4f02 ; VESA set display mode
+	mov bx, 0x0107 ; 1280×1024 256bit color pallet
+	int 0x10
+; end setGuiMode
+
+; setOldGuiMode:
+; 	mov ah, 0x0	; set Video mode 
+; 	mov al, 0x13 ; VGA 320*200 256 color
+; 	int 0x10	; Video Services
+; ;end setOldGuiMode
+
+; setMediumGuiMode:
+; 	mov ah, 0x0	; set Video mode 
+; 	mov al, 0x10 ; VGA 640 x 350
+; 	int 0x10	; Video Services
+; ;end setMediumGuiMode
+
 
 
 ; print "Loading memory from disk"
@@ -146,14 +160,9 @@ loadKernelFromDisk:
 
 ; jmp skip
 
-setOldGuiMode:
-	mov ah, 0x0	; set Video mode 
-	mov al, 0x13 ; VGA 320*200 256 color
-	int 0x10	; Video Services
-;end setOldGuiMode
 
 
-skip:
+; skip:
 
 
 
