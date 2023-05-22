@@ -2,9 +2,7 @@
 #include <io.hpp>
 #include <converts.hpp>
 
-#define COM1 0x3f8          // COM1
-
-int init_serial() {
+int initSerial() {
    outb(COM1 + 1, 0x00);    // Disable all interrupts
    outb(COM1 + 3, 0x80);    // Enable DLAB (set baud rate divisor)
    outb(COM1 + 0, 0x03);    // Set divisor to 3 (lo byte) 38400 baud
@@ -42,7 +40,5 @@ void serialWriteStr(char* string){
 }
 
 void serialWriteStr(const char* string){
-    for (int i = 0; i < getStrLen(string); i++){
-        serialWriteChar(string[i]);
-    }   
+    serialWriteStr((char*) string);
 }

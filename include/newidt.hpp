@@ -25,6 +25,6 @@ extern idt_pointer idt_ptr;
 
 //=========
 
-void idt_init();
-void load_idt_entry(int isr_number, unsigned long base, short int selector, unsigned char flags);
+void idtInit();
+void loadIdtEntry(int isr_number, unsigned long base, short int selector, unsigned char flags);
 extern "C" void load_idt(void*);

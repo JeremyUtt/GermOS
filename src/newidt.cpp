@@ -7,7 +7,7 @@
 idt_entry idt_table[IDT_SIZE];
 idt_pointer idt_ptr;
 
-void load_idt_entry(int isr_number, unsigned long base, short int selector, unsigned char flags){
+void loadIdtEntry(int isr_number, unsigned long base, short int selector, unsigned char flags){
     idt_table[isr_number].offset_lowerbits = base & 0xFFFF;
     idt_table[isr_number].offset_higherbits = (base >> 16) & 0xFFFF;
     idt_table[isr_number].selector = selector;
@@ -47,7 +47,7 @@ static void initialize_pic(){
     outb(0xA1 , 0xff);
 }
 
-void idt_init(){
+void idtInit(){
     initialize_pic();
     initialize_idt_pointer();
     load_idt(&idt_ptr);

@@ -2,121 +2,136 @@
 
 #include <stdint.h>
 
+#include <converts.hpp>
 #include <fonts.hpp>
 #include <parameters.hpp>
 #include <serial.hpp>
 #include <utils.hpp>
 
-#include "converts.hpp"
-
 namespace NewGuiRenderer {
-static int Xcounter = 0;
-static int Ycounter = 0;
+static int XcounterPx = 0;
+static int YcounterPx = 0;
 static int printColor;
 static PSF_font* currentFont;
 
 void setTextFont(PSF_font* font) {
-    currentFont = font;
+  currentFont = font;
 }
 
 void setDrawColor(int color) {
-    printColor = color;
+  printColor = color;
 }
 
-void UpdateCounter(int xInc, int yInc) {
-    Ycounter += yInc;
-    Xcounter += xInc;
+void UpdateCounter(int xIncChars, int yIncChars) {
+  // Provide
+  YcounterPx += yIncChars * currentFont->height;
+  XcounterPx += xIncChars * currentFont->width;
 
-    if (Xcounter >= screenWidth) {
-        Xcounter = 0;
-        Ycounter += 20;
-    }
+  if (yIncChars) {
+    XcounterPx = 0;
+  }
+  if (XcounterPx >= screenWidth) {
+    XcounterPx = 0;
+    YcounterPx += currentFont->height;
+  }
 
-    if (Xcounter < 0) {
-        Xcounter = screenWidth - 1;
-        Ycounter--;
-    }
+  if (XcounterPx < 0) {
+    XcounterPx = screenWidth - 1;
+    YcounterPx -= currentFont->height;
+  }
 
-    if (Ycounter > screenHeight) {
-        Ycounter = screenHeight;
-    }
+  if (YcounterPx > screenHeight) {
+    YcounterPx = screenHeight - currentFont->height;
+  }
 
-    if (Ycounter < 0) {
-        Ycounter = 0;
-    }
+  if (YcounterPx < 0) {
+    YcounterPx = 0;
+  }
 }
 
 void ClearScreen() {
-    for (int i = 0; i < screenHeight; i++) {
-        for (int j = 0; j < screenWidth; j++) {
-            putPixel(j, i, 0);
-        }
+  for (int i = 0; i < screenHeight; i++) {
+    for (int j = 0; j < screenWidth; j++) {
+      putPixel(j, i, 0);
     }
-    Xcounter = 0;
-    Ycounter = 0;
+  }
+  XcounterPx = 0;
+  YcounterPx = 0;
 }
 //-----
 void putPixel(int pos_x, int pos_y, unsigned char VGA_COLOR) {
-    unsigned char* location =
-        (unsigned char*)screenMemory + screenWidth * pos_y + pos_x;
-    *location = VGA_COLOR;
-
+  unsigned char* location =
+      (unsigned char*)screenMemory + screenWidth * pos_y + pos_x;
+  *location = VGA_COLOR;
 }
 
 void putRect(int x, int y, int width, int height, int color) {
-    for (int i = 0; i < height; i++) {
-        for (int j = 0; j < width; j++) {
-            putPixel(x + j, y + i, color);
-        }
+  for (int i = 0; i < height; i++) {
+    for (int j = 0; j < width; j++) {
+      putPixel(x + j, y + i, color);
     }
+  }
 }
 
 void putLine(int x, int y, int length, bool vertical, int color) {
-    if (vertical) {
-        for (int i = 0; i < length; i++) {
-            putPixel(x, y + i, color);
-        }
-    } else {
-        for (int i = 0; i < length; i++) {
-            putPixel(x + i, y, color);
-        }
+  if (vertical) {
+    for (int i = 0; i < length; i++) {
+      putPixel(x, y + i, color);
     }
+  } else {
+    for (int i = 0; i < length; i++) {
+      putPixel(x + i, y, color);
+    }
+  }
 }
 //-----
 void putChar(int chr, int x, int y) {
-    // PSF_font* currentFont = &_binary_fonts_Uni2_Terminus12x6_psf_start;
-    int paddedWidth = currentFont->width + (8 - currentFont->width % 8);
-    int bytesPerLine = paddedWidth / 8;
+  // PSF_font* currentFont = &_binary_fonts_Uni2_Terminus12x6_psf_start;
+  int paddedWidth = currentFont->width + (8 - currentFont->width % 8);
+  int bytesPerLine = paddedWidth / 8;
 
-    for (uint32_t lineNum = 0; lineNum < currentFont->height; lineNum++) {
-        for (int bytesNum = 0; bytesNum < bytesPerLine; bytesNum++) {
-            uint8_t lineByte = (currentFont->data[chr][lineNum][bytesNum]);
+  for (uint32_t lineNum = 0; lineNum < currentFont->height; lineNum++) {
+    for (int bytesNum = 0; bytesNum < bytesPerLine; bytesNum++) {
+      uint8_t lineByte = (currentFont->data[chr][lineNum][bytesNum]);
 
-            for (int bitNum = 8 - 1; bitNum >= 0; bitNum--) {
-                uint8_t tmpBool = (lineByte >> bitNum);
-                bool bit = (tmpBool & 0x01);
-                serialWriteChar((char*)bit ? '#' : '.');
-                int pixelX =
-                    x + (bytesNum * 8) - bitNum + currentFont->width + 1;
-                putPixel(pixelX, y + lineNum, bit ? printColor : 0x00);
-            }
-        }
-        serialWriteStr((char*)"\r\n");
+      for (int bitNum = 8 - 1; bitNum >= 0; bitNum--) {
+        uint8_t tmpBool = (lineByte >> bitNum);
+        bool bit = (tmpBool & 0x01);
+        // serialWriteChar((char*)bit ? '#' : '.');
+        int pixelX = x + (bytesNum * 8) - bitNum + currentFont->width + 1;
+        putPixel(pixelX, y + lineNum, bit ? printColor : 0x00);
+      }
     }
+    // serialWriteStr((char*)"\r\n");
+  }
 }
 
 void putString(char* string, int x, int y) {
-    // PSF_font* currentFont = &_binary_fonts_Uni2_Terminus12x6_psf_start;
+  for (int i = 0; i < getStrLen(string); i++) {
+    int xPos = x + currentFont->width * i;
 
-    for (int i = 0; i < getStrLen(string); i++) {
-        putChar(string[i], x + (currentFont->width * i), y);
-        serialWriteStr((char*)"---------------------------------\r\n");
+    if (xPos + currentFont->width >= screenWidth) {
+      return;
     }
+    putChar(string[i], xPos, y);
+    // serialWriteStr((char*)"---------------------------------\r\n");
+  }
 }
+
+void putString(const char* string, int x, int y) {
+  putString((char*)string, x, y);
+}
+
 //-----
 void println(char String[]) {
+  putString(String, XcounterPx, YcounterPx);
+  UpdateCounter(getStrLen(String), 1);
 }
 
-void printChar(const char chr) {
+void println(const char String[]) {
+  println((char*)String);
+}
+
+void printChar(char chr) {
 }
 }  // namespace NewGuiRenderer

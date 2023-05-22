@@ -7,4 +7,4 @@
 // bool checkMem(char str[], int address);
 int getMemory(int Address);
 void amogus();
-// static void printColorPallet();
+void printColorPallet();

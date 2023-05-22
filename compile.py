@@ -6,16 +6,16 @@ os.system('export PATH=$PATH:"/usr/local/i386elfgcc/bin"')
 os.system('set -e')
 
 
-print("====> assembling bootloader")
+# print("====> assembling bootloader")
 os.system('nasm "src/boot.S" -f bin -o "build/boot.bin" ')
 
 # print("===================================================================================")
-print("====> assembling kernel entry...")
+# print("====> assembling kernel entry...")
 os.system('nasm "src/kernel_entry.asm" -f elf -o "build/kernel_entry.o"')
 
 # print("===================================================================================")
 
-print("====> Compiling C++...")
+# print("====> Compiling C++...")
 
 files = ""
 
@@ -51,14 +51,14 @@ os.system("objcopy -O elf32-i386 -B i386 -I binary fonts/zap-light20.psf build/z
 
 
 
-print("====> Linking Kernal Files...")
+# print("====> Linking Kernal Files...")
 os.system(f'/usr/local/i386elfgcc/bin/i386-elf-ld -o "build/full_kernel.bin" -Ttext 0x1000 "build/kernel_entry.o" "build/Uni2-Terminus12x6.o" "build/zap-light20.o" {files} --oformat binary')
 
 # For Debugger:
 os.system(f'/usr/local/i386elfgcc/bin/i386-elf-ld -o "build/full_kernel.o" -Ttext 0x1000 "build/kernel_entry.o" "build/Uni2-Terminus12x6.o" "build/zap-light20.o" {files} ')
 os.system('objcopy --only-keep-debug build/full_kernel.o bin/full_kernel.sym')
 
-print("====> Adding Bootloader and Finishing up...")
+# print("====> Adding Bootloader and Finishing up...")
 os.system('cat "build/boot.bin" "build/full_kernel.bin" > "build/everything.bin"')
 os.system('cat "build/everything.bin" "src/zeros.bin" > "bin/OS.bin"')
 

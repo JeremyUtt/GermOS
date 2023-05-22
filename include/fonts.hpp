@@ -20,7 +20,7 @@ typedef struct {
 extern PSF_font _binary_fonts_Uni2_Terminus12x6_psf_start;
 extern PSF_font _binary_fonts_zap_light20_psf_start;
 
-void psf_init();
+void psfInit();
 bool getPX(PSF_font* mainFont, char character, int x, int y);
 void printHeader(PSF_font* mainFont);
 void translateGlyph(PSF_font* font, int character);

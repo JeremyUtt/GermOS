@@ -1,7 +1,7 @@
 #pragma once
 #include <stdint.h>
 
-void kb_init(void);
+void kbInit(void);
 extern "C" void keyboard_handler(void);
 
 

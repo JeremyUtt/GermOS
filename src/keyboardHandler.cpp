@@ -8,7 +8,7 @@ bool isRightShiftPressed;
 bool isLeftShiftPressed;
 bool isArrowPressed;
 
-void kb_init(void){
+void kbInit(void){
     /* This is a very basic keyboard initialization. The assumption is we have a
      * PS/2 keyboard and it is already in a proper state. This may not be the case
      * on real hardware. We simply enable the keyboard interupt */
