@@ -4,7 +4,7 @@
             "type": "gdb",
             "request": "attach",
             "name": "Attach to gdbserver",
-            "executable": "./bin/full_kernel.sym",
+            "executable": "./bin/OS.sym",
             "target": ":1234",
             "remote": true,
             "cwd": "${workspaceRoot}", 

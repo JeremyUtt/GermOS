@@ -1,14 +1,14 @@
-#include "globalrenderer.hpp"
-
 #include <stdint.h>
 
 #include <converts.hpp>
 #include <fonts.hpp>
+#include <globalrenderer.hpp>
 #include <parameters.hpp>
 #include <serial.hpp>
 #include <utils.hpp>
 
 namespace NewGuiRenderer {
+
 static int XcounterPx = 0;
 static int YcounterPx = 0;
 static int printColor;
@@ -122,7 +122,6 @@ void putString(char* string, int x, int y) {
 void putString(const char* string, int x, int y) {
     putString((char*)string, x, y);
 }
-
 //-----
 void println(char String[]) {
     putString(String, XcounterPx, YcounterPx);
@@ -136,3 +135,49 @@ void println(const char String[]) {
 void printChar(char chr) {
 }
 }  // namespace NewGuiRenderer
+
+namespace TextRenderer {
+const int screenWidth = 80;
+const int screenHeight = 25;
+const int screenMemory = 0xb8000;
+
+static int Xcounter = 0;
+// TODO: fix hacky default y value
+static int Ycounter = 4;
+static int printColor;
+void setDrawColor(int color) {
+    printColor = color;
+}
+
+void putChar(int chr, int x, int y) {
+    uint16_t data = (printColor << 8) + chr;
+
+    uint16_t* location = (uint16_t*)(screenMemory) + screenWidth * y + x;
+    *location = data;
+}
+
+void putString(char* string, int x, int y) {
+    for (int i = 0; i < getStrLen(string); i++) {
+        putChar(string[i], x + i, y);
+    }
+}
+
+void putString(const char* string, int x, int y) {
+    putString((char*)string, x, y);
+}
+
+void println(char String[]) {
+    putString(String, Xcounter, Ycounter);
+    Xcounter += getStrLen(String);
+    if (Xcounter <= screenWidth) {
+        Xcounter -= screenMemory;
+        Ycounter++;
+    }
+    Xcounter = 0;
+}
+
+void println(const char String[]) {
+    println((char*)String);
+}
+
+}  // namespace TextRenderer

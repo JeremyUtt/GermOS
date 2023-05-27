@@ -25,7 +25,7 @@ OBJS := $(patsubst $(SRC_DIR)/%.asm,$(BUILD_DIR)/%.o,$(ASM_FILES)) \
 
 
 
-all: bin/OS.bin bin/Linking_Stage_1.sym
+all: bin/OS.bin bin/OS.sym
 
 
 # ============================================================
@@ -68,7 +68,7 @@ $(BUILD_DIR)/Linking_Stage_1.bin: $(OBJS)
 	@echo  $(CYAN) LD $< $(NOCOLOR)
 
 # Full Kernel (minus bootloader) Object file for Debugger 
-bin/Linking_Stage_1.sym: $(OBJS)
+bin/OS.sym: $(OBJS)
 	@$(CC_DIR)/i386-elf-ld -Ttext 0x1000 -o $(BUILD_DIR)/Linking_Stage_1.o $^ 
 	@objcopy --only-keep-debug $(BUILD_DIR)/Linking_Stage_1.o $@
 	@echo  $(CYAN) OBJCOPY $< $(NOCOLOR)

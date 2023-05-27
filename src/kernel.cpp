@@ -14,15 +14,21 @@
 #include <serial.hpp>
 #include <utils.hpp>
 
+using namespace TextRenderer;
+
+
 extern "C" void main() {
     initKernel();
+    
 
-    amogus();
+    setDrawColor(0x7);
+    println("Hello GermOSV2!!");
+    println("awevkjfgbsvtunsgzyjbkjbd");
+
+
+
+    // amogus();
     // printColorPallet();
-    NewGuiRenderer::println("Hello GermOS!!");
-    NewGuiRenderer::println("Hello GermOSV2!!");
-    NewGuiRenderer::println("awevkjfgbsvtunsgzyjbkjbd");
-
     while (1) {
         asm("hlt");
     }
