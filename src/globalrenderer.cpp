@@ -7,7 +7,7 @@
 #include <serial.hpp>
 #include <utils.hpp>
 
-namespace NewGuiRenderer {
+namespace GuiRenderer {
 
 static int XcounterPx = 0;
 static int YcounterPx = 0;
@@ -147,6 +147,20 @@ static int Ycounter = 4;
 static int printColor;
 void setDrawColor(int color) {
     printColor = color;
+}
+
+void setTextFont(PSF_font* font) {
+    return;
+}
+
+void ClearScreen() {
+    for (int i = 0; i < screenHeight; i++) {
+        for (int j = 0; j < screenWidth; j++) {
+            putChar(0, j, i);
+        }
+    }
+    Xcounter = 0;
+    Ycounter = 0;
 }
 
 void putChar(int chr, int x, int y) {

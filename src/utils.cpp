@@ -18,13 +18,13 @@ void amogus() {
     // height, 0xaa); NewGuiRenderer::putRect(startx-width, starty+height,
     // width, height*3, 0xaa);
 
-    NewGuiRenderer::putRect(startx, starty, width * 3, height * 4, 0xaa);
-    NewGuiRenderer::putRect(startx + width, starty + height, width * 2, height,
+    GuiRenderer::putRect(startx, starty, width * 3, height * 4, 0xaa);
+    GuiRenderer::putRect(startx + width, starty + height, width * 2, height,
                             0x55);
-    NewGuiRenderer::putRect(startx, starty + height * 4, width, height, 0xaa);
-    NewGuiRenderer::putRect(startx + width * 2, starty + height * 4, width,
+    GuiRenderer::putRect(startx, starty + height * 4, width, height, 0xaa);
+    GuiRenderer::putRect(startx + width * 2, starty + height * 4, width,
                             height, 0xaa);
-    NewGuiRenderer::putRect(startx - width, starty + height, width, height * 3,
+    GuiRenderer::putRect(startx - width, starty + height, width, height * 3,
                             0xaa);
 }
 
@@ -34,8 +34,8 @@ void printColorPallet() {
     int x = 0;
     int y = 0;
     for (int i = 0; i < 256; i++) {
-        NewGuiRenderer::putRect(x, y, size, size, i);
-        NewGuiRenderer::putString((char*)intToStr(i, 10), x, y);
+        GuiRenderer::putRect(x, y, size, size, i);
+        GuiRenderer::putString((char*)intToStr(i, 10), x, y);
 
         x += size;
         if (x >= screenWidth - size) {

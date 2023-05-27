@@ -16,48 +16,42 @@
 
 using namespace TextRenderer;
 
-
 extern "C" void main() {
     initKernel();
-    
-
-    setDrawColor(0x7);
-    println("Hello GermOSV2!!");
-    println("awevkjfgbsvtunsgzyjbkjbd");
-
-
 
     // amogus();
     // printColorPallet();
-    while (1) {
-        asm("hlt");
-    }
+    while (1) asm("hlt");
 }
 
 void initKernel() {
-    initSerial();
-    serialWriteStr("Serial Interface Initalized\r\n");
+    setDrawColor(0x7);
+    setTextFont(&_binary_fonts_Uni2_Terminus12x6_psf_start);
+    println("Successfully Switched to Protected Mode");
+    println("Initalizing and Loading Graphics Mode Fonts");
 
-    serialWriteStr("Loading IDT Entry for Keyboard Handler\r\n");
+    initSerial();
+    println("Serial Interface Initalized");
+
+    println("Loading IDT Entry for Keyboard Handler");
     loadIdtEntry(0x21, (unsigned long)keyboard_handler_int, 0x08, 0x8e);
 
-    serialWriteStr("Initalizing IDT\r\n");
+    println("Initalizing IDT");
     idtInit();
 
-    serialWriteStr("Initalizing and Loading Text Fonts\r\n");
-    psfInit();
 
-    serialWriteStr("Initalizing Keyboard Interrupt\r\n");
+    println("Initalizing Keyboard Interrupt");
     kbInit();
 
     // serialWriteStr((char*)"Finding RSDP Pointer\r\n");
     // findRSDP();
 
-    serialWriteStr("Kernel Initalization Complete!\r\n\n");
-    serialWriteStr("Welcome To GermOS!\r\n");
-    serialWriteStr("Press any key to continue\r\n");
-    // asm("hlt");
-    // ClearScreen();
+    println("Kernel Initalization Complete!");
+    println("Welcome To GermOS!");
+    println("Press any key to continue");
+    
+    asm("hlt");
+    ClearScreen();
 }
 
 bool checkKernelMemory() {

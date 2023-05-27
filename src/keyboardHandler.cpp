@@ -50,13 +50,13 @@ static void InterpretKeyboard(int keycode) {
             // TODO: BACKSPACE
             return;
         case UP:
-            NewGuiRenderer::UpdateCounter(0, -2);
+            GuiRenderer::UpdateCounter(0, -2);
         case DOWN:
-            NewGuiRenderer::UpdateCounter(1, 1);
+            GuiRenderer::UpdateCounter(1, 1);
         case LEFT:
-            NewGuiRenderer::UpdateCounter(-2, 0);
+            GuiRenderer::UpdateCounter(-2, 0);
         case RIGHT:
-            NewGuiRenderer::UpdateCounter(1, 0);
+            GuiRenderer::UpdateCounter(1, 0);
     }
 
     char ascii = QWERTYKeyboard::Translate(

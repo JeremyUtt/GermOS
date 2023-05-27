@@ -8,8 +8,7 @@
 
 void psfInit() {
     // NewGuiRenderer::setDrawColor(0x55);
-    NewGuiRenderer::setDrawColor(0xf);
-    NewGuiRenderer::setTextFont(&_binary_fonts_Uni2_Terminus12x6_psf_start);
+
     // NewGuiRenderer::setTextFont(&_binary_fonts_zap_light20_psf_start);
 }
 
