@@ -56,3 +56,19 @@ int getStrLen(const char String[]) {
     }
     return strLen;
 }
+
+bool strcmp(char str1[], char str2[]) {
+    int len1 = getStrLen(str1);
+    int len2 = getStrLen(str2);
+
+    if (len1 != len2) {
+        return false;
+    }
+
+    for (int i = 0; i < len1; i++) {
+        if (str1[i] != str2[i]) {
+            return false;
+        }
+    }
+    return true;
+}

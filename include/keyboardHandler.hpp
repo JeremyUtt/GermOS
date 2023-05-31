@@ -16,6 +16,7 @@ namespace QWERTYKeyboard {
 #define RightShift 0x36
 #define Enter 0x1C
 #define BackSpace 0x0E
+#define Escape 0x1b
 #define Spacebar 0x39
 #define LEFT 0x4b
 #define RIGHT 0x4d

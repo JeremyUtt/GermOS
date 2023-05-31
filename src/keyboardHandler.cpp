@@ -32,7 +32,7 @@ static void InterpretKeyboard(int keycode) {
     // printScr(keycode, 0x0f);
     // printScr("-", 0x0f);
 
-    // Switch case for non-character keys:
+    // Switch case for shift keys:
     switch (keycode) {
         case LeftShift:
             isLeftShiftPressed = true;
@@ -46,20 +46,6 @@ static void InterpretKeyboard(int keycode) {
         case RightShift + 0x80:
             isRightShiftPressed = false;
             return;
-        case Enter:
-            // printLn("");
-            return;
-        case BackSpace:
-            // TODO: BACKSPACE
-            return;
-        case UP:
-            GuiRenderer::UpdateCounter(0, -2);
-        case DOWN:
-            GuiRenderer::UpdateCounter(1, 1);
-        case LEFT:
-            GuiRenderer::UpdateCounter(-2, 0);
-        case RIGHT:
-            GuiRenderer::UpdateCounter(1, 0);
     }
 
     char ascii = QWERTYKeyboard::Translate(
@@ -115,12 +101,12 @@ extern "C" void keyboard_handler(void) {
 namespace QWERTYKeyboard {
 
 const char ASCIITable[] = {
-    0,   0,   '1', '2', '3', '4', '5', '6', '7', '8', '9',  '0', '-', '=',  0,
-    0,   'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p',  '[', ']', 0,    0,
+    0,   Escape,   '1', '2', '3', '4', '5', '6', '7', '8', '9',  '0', '-', '=',  BackSpace,
+    0,   'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p',  '[', ']', Enter,    0,
     'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', '`', 0,   '\\', 'z',
     'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', 0,   '*',  0,   ' '};
 
-const char SymbolTable[] = {0,   0,   '!', '@', '#', '$', '%',
+const char SymbolTable[] = {0,   Escape,   '!', '@', '#', '$', '%',
                             '^', '&', '*', '(', ')', '_', '+'};
 
 char Translate(uint8_t scancode, bool uppercase) {
