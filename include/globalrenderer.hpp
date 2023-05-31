@@ -23,6 +23,7 @@ namespace TextRenderer {
 void setTextFont(PSF_font*);
 void setDrawColor(int color);
 void ClearScreen();
+void moveCursor(int x, int y);
 void putChar(int chr, int x, int y);
 void putString(char* string, int x, int y);
 void putString(const char* string, int x, int y);

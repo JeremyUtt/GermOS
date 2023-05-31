@@ -49,7 +49,6 @@ void initKernel() {
     println("Kernel Initalization Complete!");
     println("Welcome To GermOS!");
     println("Press any key to continue");
-    
     asm("hlt");
     ClearScreen();
 }

@@ -8,6 +8,8 @@
 #define PIC2_DATA 0xA1
 #define PIC_EOI 0x20
 #define COM1 0x3f8
+#define TEXT_CURSOR1 0x3d4
+#define TEXT_CURSOR2 0x3d5
 
 
 

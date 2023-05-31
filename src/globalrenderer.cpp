@@ -3,6 +3,7 @@
 #include <converts.hpp>
 #include <fonts.hpp>
 #include <globalrenderer.hpp>
+#include <io.hpp>
 #include <parameters.hpp>
 #include <serial.hpp>
 #include <utils.hpp>
@@ -134,7 +135,7 @@ void println(const char String[]) {
 
 void printChar(char chr) {
 }
-}  // namespace NewGuiRenderer
+}  // namespace GuiRenderer
 
 namespace TextRenderer {
 const int screenWidth = 80;
@@ -161,6 +162,16 @@ void ClearScreen() {
     }
     Xcounter = 0;
     Ycounter = 0;
+    moveCursor(0, 0);
+}
+
+void moveCursor(int x, int y) {
+    uint16_t pos = y * screenWidth + x;
+
+    outb(TEXT_CURSOR1, 0x0F);
+    outb(TEXT_CURSOR2, (uint8_t)(pos & 0xFF));
+    outb(TEXT_CURSOR1, 0x0E);
+    outb(TEXT_CURSOR2, (uint8_t)((pos >> 8) & 0xFF));
 }
 
 void putChar(int chr, int x, int y) {
@@ -188,6 +199,7 @@ void println(char String[]) {
         Ycounter++;
     }
     Xcounter = 0;
+    moveCursor(Xcounter, Ycounter);
 }
 
 void println(const char String[]) {
