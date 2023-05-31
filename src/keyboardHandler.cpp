@@ -1,5 +1,7 @@
 #include "keyboardHandler.hpp"
 
+#include <converts.hpp>
+
 #include "globalrenderer.hpp"
 #include "io.hpp"
 #include "newidt.hpp"
@@ -23,6 +25,7 @@ void kbInit(void) {
     outb(PIC1_DATA, curmask_master & 0xFD);
 
     // outb(PIC1_DATA, 0b111111101);
+
 }
 
 static void InterpretKeyboard(int keycode) {
@@ -64,9 +67,39 @@ static void InterpretKeyboard(int keycode) {
 
     if (ascii != 0) {
         // NewGuiRenderer::printChar(ascii);
-        serialWriteChar(ascii);
+        // serialWriteChar(ascii);
+        keyboardBuffer::pushKeyBuffer(ascii);
     }
 }
+
+namespace keyboardBuffer {
+char kbBuffer[256] = {};
+static uint8_t keyboardBufferIndex = 0;
+
+uint8_t getKeyBufferIndex() {
+    
+    // for (int i = 0; i < 256; i++)
+    // {
+    //     serialWriteChar(kbBuffer[i]);
+    //     serialWriteChar('-');
+    // }
+    
+    
+    return keyboardBufferIndex;
+}
+
+void pushKeyBuffer(char chr) {
+    kbBuffer[keyboardBufferIndex] = chr;
+    keyboardBufferIndex+= 1;
+}
+char popKeyBuffer() {
+    char chr = kbBuffer[keyboardBufferIndex - 1];
+    
+    keyboardBufferIndex-= 1;
+    return chr;
+}
+}  // namespace keyboardBuffer
+
 
 extern "C" void keyboard_handler(void) {
     signed int keycode;
