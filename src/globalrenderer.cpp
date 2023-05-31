@@ -138,9 +138,7 @@ void printChar(char chr) {
 }  // namespace GuiRenderer
 
 namespace TextRenderer {
-const int screenWidth = 80;
-const int screenHeight = 25;
-const int screenMemory = 0xb8000;
+
 
 static int Xcounter = 0;
 // TODO: fix hacky default y value

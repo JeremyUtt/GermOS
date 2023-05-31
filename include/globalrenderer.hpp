@@ -20,6 +20,9 @@ void printChar(const char chr);
 }  // namespace GuiRenderer
 
 namespace TextRenderer {
+const int screenWidth = 80;
+const int screenHeight = 25;
+const int screenMemory = 0xb8000;
 void setTextFont(PSF_font*);
 void setDrawColor(int color);
 void ClearScreen();

@@ -13,11 +13,14 @@
 #include <pci.hpp>
 #include <serial.hpp>
 #include <utils.hpp>
+#include <firstTUI.hpp>
 
 using namespace TextRenderer;
 
 extern "C" void main() {
     initKernel();
+
+    tui();
 
     // amogus();
     // printColorPallet();
