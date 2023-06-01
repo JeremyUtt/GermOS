@@ -1,14 +1,16 @@
 #include <PROGRAM_TUI.hpp>
 #include <converts.hpp>
-#include <globalrenderer.hpp>
-#include <keyboardHandler.hpp>
-#include <serial.hpp>
+#include <libKeyboard.hpp>
+#include <libGUI.hpp>
+#include <libIO.hpp>
+#include <libSerial.hpp>
 #include <utils.hpp>
 using namespace TextRenderer;
 void processCommand(char cmd[]);
 void programloop();
 void cmdClear();
 void cmdHelp();
+void cmdShutdown();
 int x = 2;
 int y = 1;
 char command[100] = {};
@@ -65,7 +67,7 @@ void programloop() {
                 x--;
                 putChar(' ', x, y);
                 moveCursor(x, y);
-                cmdIndex--; 
+                cmdIndex--;
                 command[cmdIndex] = 0;
                 return;
             case Escape:
@@ -100,6 +102,8 @@ void processCommand(char cmd[]) {
         cmdHelp();
     else if (strcmp(cmd, (char*)"clear"))
         cmdClear();
+    else if (strcmp(cmd, (char*)"exit"))
+        cmdShutdown();
     else
         putString("Unknown Command. Try: help", x, y);
 
@@ -116,15 +120,19 @@ void cmdHelp() {
     putString("   -help: Prints This Page", x, y);
     y++;
     putString("   -clear: Clears the Terminal", x, y);
+    y++;
+    putString("   -exit: Shuts Down the Machine", x, y);
 }
 void cmdClear() {
-    for (int i = 1; i < screenWidth-1; i++)
-    {
-        for (int j = 1; j < screenHeight-1; j++)
-        {
+    for (int i = 1; i < screenWidth - 1; i++) {
+        for (int j = 1; j < screenHeight - 1; j++) {
             putChar(' ', i, j);
         }
     }
     x = 1;
     y = 0;
+}
+void cmdShutdown() {
+    // QEMU only
+    outw(0x604, 0x2000);
 }

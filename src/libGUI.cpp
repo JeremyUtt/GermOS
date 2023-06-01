@@ -2,10 +2,10 @@
 
 #include <converts.hpp>
 #include <fonts.hpp>
-#include <globalrenderer.hpp>
-#include <io.hpp>
+#include <libGUI.hpp>
+#include <libIO.hpp>
 #include <parameters.hpp>
-#include <serial.hpp>
+#include <libSerial.hpp>
 #include <utils.hpp>
 
 namespace GuiRenderer {
@@ -15,22 +15,16 @@ static int YcounterPx = 0;
 static int printColor;
 static PSF_font* currentFont;
 
-void setTextFont(PSF_font* font) {
-    currentFont = font;
-}
+void setTextFont(PSF_font* font) { currentFont = font; }
 
-void setDrawColor(int color) {
-    printColor = color;
-}
+void setDrawColor(int color) { printColor = color; }
 
 void UpdateCounter(int xIncChars, int yIncChars) {
     // Provide
     YcounterPx += yIncChars * currentFont->height;
     XcounterPx += xIncChars * currentFont->width;
 
-    if (yIncChars) {
-        XcounterPx = 0;
-    }
+    if (yIncChars) { XcounterPx = 0; }
     if (XcounterPx >= screenWidth) {
         XcounterPx = 0;
         YcounterPx += currentFont->height;
@@ -45,9 +39,7 @@ void UpdateCounter(int xIncChars, int yIncChars) {
         YcounterPx = screenHeight - currentFont->height;
     }
 
-    if (YcounterPx < 0) {
-        YcounterPx = 0;
-    }
+    if (YcounterPx < 0) { YcounterPx = 0; }
 }
 
 void ClearScreen() {
@@ -112,9 +104,7 @@ void putString(char* string, int x, int y) {
     for (int i = 0; i < getStrLen(string); i++) {
         int xPos = x + currentFont->width * i;
 
-        if (xPos + currentFont->width >= screenWidth) {
-            return;
-        }
+        if (xPos + currentFont->width >= screenWidth) { return; }
         putChar(string[i], xPos, y);
         // serialWriteStr((char*)"---------------------------------\r\n");
     }
@@ -129,28 +119,20 @@ void println(char String[]) {
     UpdateCounter(getStrLen(String), 1);
 }
 
-void println(const char String[]) {
-    println((char*)String);
-}
+void println(const char String[]) { println((char*)String); }
 
-void printChar(char chr) {
-}
+void printChar(char chr) {}
 }  // namespace GuiRenderer
 
 namespace TextRenderer {
-
 
 static int Xcounter = 0;
 // TODO: fix hacky default y value
 static int Ycounter = 4;
 static int printColor;
-void setDrawColor(int color) {
-    printColor = color;
-}
+void setDrawColor(int color) { printColor = color; }
 
-void setTextFont(PSF_font* font) {
-    return;
-}
+void setTextFont(PSF_font* font) { return; }
 
 void ClearScreen() {
     for (int i = 0; i < screenHeight; i++) {
@@ -200,8 +182,6 @@ void println(char String[]) {
     moveCursor(Xcounter, Ycounter);
 }
 
-void println(const char String[]) {
-    println((char*)String);
-}
+void println(const char String[]) { println((char*)String); }
 
 }  // namespace TextRenderer

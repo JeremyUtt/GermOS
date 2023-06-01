@@ -2,8 +2,8 @@
 
 #include <converts.hpp>
 #include <fonts.hpp>
-#include <globalrenderer.hpp>
-#include <serial.hpp>
+#include <libGUI.hpp>
+#include <libSerial.hpp>
 #include <utils.hpp>
 
 void psfInit() {

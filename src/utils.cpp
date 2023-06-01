@@ -1,9 +1,9 @@
 #include <stdint.h>
 
 #include <converts.hpp>
-#include <globalrenderer.hpp>
+#include <libGUI.hpp>
 #include <parameters.hpp>
-#include <serial.hpp>
+#include <libSerial.hpp>
 #include <utils.hpp>
 
 void amogus() {

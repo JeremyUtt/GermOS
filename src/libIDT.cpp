@@ -1,7 +1,6 @@
 // https://stackoverflow.com/questions/37618111/keyboard-irq-within-an-x86-kernel
-#include "newidt.hpp"
-
-#include "io.hpp"
+#include <libIO.hpp>
+#include <libIDT.hpp>
 
 #define IDT_SIZE 256
 

@@ -5,13 +5,13 @@
 
 #include <converts.hpp>
 #include <fonts.hpp>
-#include <globalrenderer.hpp>
+#include <libGUI.hpp>
 #include <kernel.hpp>
-#include <keyboardHandler.hpp>
-#include <newidt.hpp>
+#include <libKeyboard.hpp>
+#include <libIDT.hpp>
 #include <parameters.hpp>
 #include <pci.hpp>
-#include <serial.hpp>
+#include <libSerial.hpp>
 #include <utils.hpp>
 #include <PROGRAM_TUI.hpp>
 

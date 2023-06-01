@@ -1,9 +1,7 @@
-#include "pci.hpp"
-
-#include "converts.hpp"
-#include "globalrenderer.hpp"
-#include "io.hpp"
-#include "terminal.hpp"
+#include <converts.hpp>
+#include <libGUI.hpp>
+#include <libIO.hpp>
+#include <pci.hpp>
 int pciConfigReadWord(uint8_t bus, uint8_t slot, uint8_t func, uint8_t offset) {
     uint32_t address;
     uint32_t lbus = (uint32_t)bus;
@@ -25,9 +23,7 @@ int pciConfigReadWord(uint8_t bus, uint8_t slot, uint8_t func, uint8_t offset) {
 
 bool check(char str[], int address) {
     for (int i = 0; i < getStrLen(str); i++) {
-        if (*(char*)(address + i) != str[i]) {
-            return false;
-        }
+        if (*(char*)(address + i) != str[i]) { return false; }
     }
     return true;
 }

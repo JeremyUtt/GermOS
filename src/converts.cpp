@@ -1,4 +1,4 @@
-#include "converts.hpp"
+#include <converts.hpp>
 char str[330];
 char* intToStr(int value, int base) {
     char* rc;
@@ -11,9 +11,7 @@ char* intToStr(int value, int base) {
     }
     rc = ptr = str;
     // Set '-' for negative decimals.
-    if (value < 0 && base == 10) {
-        *ptr++ = '-';
-    }
+    if (value < 0 && base == 10) { *ptr++ = '-'; }
     // Remember where the numbers start.
     low = ptr;
     // The actual conversion.
@@ -61,14 +59,10 @@ bool strcmp(char str1[], char str2[]) {
     int len1 = getStrLen(str1);
     int len2 = getStrLen(str2);
 
-    if (len1 != len2) {
-        return false;
-    }
+    if (len1 != len2) { return false; }
 
     for (int i = 0; i < len1; i++) {
-        if (str1[i] != str2[i]) {
-            return false;
-        }
+        if (str1[i] != str2[i]) { return false; }
     }
     return true;
 }
