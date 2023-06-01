@@ -4,64 +4,15 @@
 #include <keyboardHandler.hpp>
 #include <serial.hpp>
 #include <utils.hpp>
-
 using namespace TextRenderer;
-using namespace keyboardBuffer;
-int Xcounter = 2;
-int Ycounter = 1;
-
+void processCommand(char cmd[]);
+void programloop();
+void cmdClear();
+void cmdHelp();
+int x = 2;
+int y = 1;
 char command[100] = {};
 int cmdIndex = 0;
-
-void processCommand(char cmd[]) {
-    serialWriteStr("Processing: ");
-    serialWriteStr(cmd);
-    if (strcmp(cmd, "help")) {
-    }
-
-    Xcounter = 2;
-    Ycounter++;
-    putChar('>', 1, Ycounter);
-    moveCursor(Xcounter, Ycounter);
-}
-
-void programloop() {
-    while (getKeyBufferIndex() > 0) {
-        char character = popKeyBuffer();
-
-        switch (character) {
-            case Enter:
-                // serialWriteStr("Enter");
-                processCommand(command);
-                for (int i = 0; i < 100; i++) {
-                    command[i] = 0;
-                }
-                cmdIndex = 0;
-                return;
-            case BackSpace:
-                serialWriteStr("Back");
-                return;
-            case Escape:
-                serialWriteStr("Escape");
-                return;
-            default:
-                break;
-        }
-
-        putChar(character, Xcounter, Ycounter);
-
-        command[cmdIndex] = character;
-        cmdIndex++;
-
-        Xcounter++;
-        if (Xcounter >= screenWidth - 1) {
-            Ycounter++;
-            Xcounter = 1;
-        }
-
-        moveCursor(Xcounter, Ycounter);
-    }
-}
 
 void tui() {
     setDrawColor(0x70);
@@ -94,4 +45,86 @@ void tui() {
         asm("hlt");
         programloop();
     }
+}
+
+void programloop() {
+    while (keyboardBuffer::getKeyBufferIndex() > 0) {
+        char character = keyboardBuffer::popKeyBuffer();
+
+        switch (character) {
+            case Enter:
+                // serialWriteStr("Enter");
+                processCommand(command);
+                for (int i = 0; i < 100; i++) {
+                    command[i] = 0;
+                }
+                cmdIndex = 0;
+                return;
+            case BackSpace:
+                if (cmdIndex <= 0) return;
+                x--;
+                putChar(' ', x, y);
+                moveCursor(x, y);
+                cmdIndex--; 
+                command[cmdIndex] = 0;
+                return;
+            case Escape:
+                serialWriteStr("Escape");
+                return;
+            default:
+                break;
+        }
+
+        putChar(character, x, y);
+
+        command[cmdIndex] = character;
+        cmdIndex++;
+
+        x++;
+        if (x >= screenWidth - 1) {
+            y++;
+            x = 1;
+        }
+
+        moveCursor(x, y);
+    }
+}
+
+void processCommand(char cmd[]) {
+    // serialWriteStr("Processing: ");
+    // serialWriteStr(cmd);
+    y++;
+    x = 1;
+
+    if (strcmp(cmd, (char*)"help"))
+        cmdHelp();
+    else if (strcmp(cmd, (char*)"clear"))
+        cmdClear();
+    else
+        putString("Unknown Command. Try: help", x, y);
+
+    x = 2;
+    y++;
+    putChar('>', 1, y);
+    moveCursor(x, y);
+}
+
+void cmdHelp() {
+    x = 1;
+    putString("List of the Currently Avalable Commands:", x, y);
+    y++;
+    putString("   -help: Prints This Page", x, y);
+    y++;
+    putString("   -clear: Clears the Terminal", x, y);
+}
+void cmdClear() {
+    for (int i = 1; i < screenWidth-1; i++)
+    {
+        for (int j = 1; j < screenHeight-1; j++)
+        {
+            putChar(' ', i, j);
+        }
+    }
+    x = 1;
+    y = 0;
 }
