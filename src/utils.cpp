@@ -2,7 +2,6 @@
 
 #include <converts.hpp>
 #include <libGUI.hpp>
-#include <parameters.hpp>
 #include <libSerial.hpp>
 #include <utils.hpp>
 
@@ -38,7 +37,7 @@ void printColorPallet() {
         GuiRenderer::putString((char*)intToStr(i, 10), x, y);
 
         x += size;
-        if (x >= screenWidth - size) {
+        if (x >= GuiRenderer::screenWidth - size) {
             y += size;
             x = 0;
         }

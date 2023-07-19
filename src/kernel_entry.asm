@@ -7,7 +7,7 @@ global _start
 _start:
 
 call main
-
+; main should never return
 
 [extern keyboard_handler]
 global keyboard_handler_int

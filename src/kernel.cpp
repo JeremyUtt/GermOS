@@ -3,28 +3,31 @@
 
 #include <stdint.h>
 
+#include <PROGRAM_TUI.hpp>
 #include <converts.hpp>
 #include <fonts.hpp>
-#include <libGUI.hpp>
 #include <kernel.hpp>
-#include <libKeyboard.hpp>
+#include <libACPI.hpp>
+#include <libGUI.hpp>
 #include <libIDT.hpp>
-#include <parameters.hpp>
-#include <pci.hpp>
+#include <libKeyboard.hpp>
+#include <libPCI.hpp>
 #include <libSerial.hpp>
 #include <utils.hpp>
-#include <PROGRAM_TUI.hpp>
 
 using namespace TextRenderer;
 
 extern "C" void main() {
+    // checkKernelMemory(findRSDP());
+    // serialWriteStr("Hello WOrld");
     initKernel();
 
     tui();
 
     // amogus();
     // printColorPallet();
-    while (1) asm("hlt");
+    while (1)
+        asm("hlt");
 }
 
 void initKernel() {
@@ -33,8 +36,8 @@ void initKernel() {
     println("Successfully Switched to Protected Mode");
     println("Initalizing and Loading Graphics Mode Fonts");
 
+    println("Initalizing Serial Interface");
     initSerial();
-    println("Serial Interface Initalized");
 
     println("Loading IDT Entry for Keyboard Handler");
     loadIdtEntry(0x21, (unsigned long)keyboard_handler_int, 0x08, 0x8e);
@@ -42,12 +45,15 @@ void initKernel() {
     println("Initalizing IDT");
     idtInit();
 
-
     println("Initalizing Keyboard Interrupt");
     kbInit();
 
-    // serialWriteStr((char*)"Finding RSDP Pointer\r\n");
-    // findRSDP();
+    println("Finding RSDP Pointer");
+    findRSDP();
+    decodeRSDP(rsdpPtr);
+
+    println("Decoding RSDT");
+    decodeRSDT(rsdtPtr);
 
     println("Kernel Initalization Complete!");
     println("Welcome To GermOS!");
@@ -56,11 +62,10 @@ void initKernel() {
     ClearScreen();
 }
 
-bool checkKernelMemory() {
-    for (int i = 0; i < 100000; i++) {
+bool checkKernelMemory(int start) {
+    for (int i = start; i < start + 10000; i++) {
         uint8_t* address = (uint8_t*)(i);
-        serialWriteStr(intToStr(*address, 16));
-        serialWriteStr(" ");
+        serialWriteChar(*address);
     }
     return true;
 }

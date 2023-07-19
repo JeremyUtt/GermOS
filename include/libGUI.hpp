@@ -2,6 +2,9 @@
 #include <fonts.hpp>
 
 namespace GuiRenderer {
+const int screenMemory = 0xa0000;
+const int screenWidth = 320;
+const int screenHeight = 200;
 void setTextFont(PSF_font*);
 void setDrawColor(int color);
 void UpdateCounter(int xInc, int yInc);

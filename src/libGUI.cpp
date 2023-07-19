@@ -4,12 +4,10 @@
 #include <fonts.hpp>
 #include <libGUI.hpp>
 #include <libIO.hpp>
-#include <parameters.hpp>
 #include <libSerial.hpp>
 #include <utils.hpp>
 
 namespace GuiRenderer {
-
 static int XcounterPx = 0;
 static int YcounterPx = 0;
 static int printColor;
