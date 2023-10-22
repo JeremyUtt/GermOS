@@ -14,26 +14,27 @@ sudo apt install libmpc-dev
 sudo apt install libmpfr-dev
 sudo apt install texinfo
 
-export PREFIX="/usr/local/i386elfgcc"
+export PREFIX="/opt/i386elfgcc"
 export TARGET=i386-elf
 export PATH="$PREFIX/bin:$PATH"
-
+export GCCVERSION="13.2.0"
+export UTILVERSION="2.41"
 mkdir /tmp/src
 cd /tmp/src
-curl -O http://ftp.gnu.org/gnu/binutils/binutils-2.35.1.tar.gz
-tar xf binutils-2.35.1.tar.gz
+curl -O http://ftp.gnu.org/gnu/binutils/binutils-$UTILVERSION.tar.gz
+tar xf binutils-$UTILVERSION.tar.gz
 mkdir binutils-build
 cd binutils-build
-../binutils-2.35.1/configure --target=$TARGET --enable-interwork --enable-multilib --disable-nls --disable-werror --prefix=$PREFIX 2>&1 | tee configure.log
+../binutils-$UTILVERSION/configure --target=$TARGET --enable-interwork --enable-multilib --disable-nls --disable-werror --prefix=$PREFIX 2>&1 | tee configure.log
 sudo make all install 2>&1 | tee make.log
 
 cd /tmp/src
-curl -O https://ftp.gnu.org/gnu/gcc/gcc-10.2.0/gcc-10.2.0.tar.gz
-tar xf gcc-10.2.0.tar.gz
+curl -O https://ftp.gnu.org/gnu/gcc/gcc-$GCCVERSION/gcc-$GCCVERSION.tar.gz
+tar xf gcc-$GCCVERSION.tar.gz
 mkdir gcc-build
 cd gcc-build
 echo Configure: . . . . . . .
-../gcc-10.2.0/configure --target=$TARGET --prefix="$PREFIX" --disable-nls --disable-libssp --enable-language=c++ --without-headers
+../gcc-$GCCVERSION/configure --target=$TARGET --prefix="$PREFIX" --disable-nls --disable-libssp --enable-language=c++ --without-headers
 echo MAKE ALL-GCC:
 sudo make all-gcc -j16
 echo MAKE ALL-TARGET-LIBGCC:
@@ -43,5 +44,5 @@ sudo make install-gcc -j16
 echo MAKE INSTALL-TARGET-LIBGCC:
 sudo make install-target-libgcc -j16
 echo HERE U GO MAYBE:
-ls /usr/local/i386elfgcc/bin
+ls /opt/i386elfgcc/bin
 export PATH="$PATH:/usr/local/i386elfgcc/bin"
