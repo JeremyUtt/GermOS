@@ -40,7 +40,7 @@ void initKernel() {
     initSerial();
 
     println("Loading IDT Entry for Keyboard Handler");
-    loadIdtEntry(0x21, (unsigned long)keyboard_handler_int, 0x08, 0x8e);
+    loadIdtEntry(0x21, (unsigned long)keyboardHandlerInt, 0x08, 0x8e);
 
     println("Initalizing IDT");
     idtInit();

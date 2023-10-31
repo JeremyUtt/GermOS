@@ -22,10 +22,10 @@ int initSerial() {
     return 0;
 }
 
-int is_transmit_empty() { return inb(COM1 + 5) & 0x20; }
+int isTransmitEmpty() { return inb(COM1 + 5) & 0x20; }
 
 void serialWriteChar(char a) {
-    while (is_transmit_empty() == 0)
+    while (isTransmitEmpty() == 0)
         ;
 
     outb(COM1, a);

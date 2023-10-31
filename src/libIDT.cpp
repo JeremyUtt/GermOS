@@ -16,12 +16,12 @@ void loadIdtEntry(int isr_number, unsigned long base, short int selector,
     idt_table[isr_number].zero = 0;
 }
 
-static void initialize_idt_pointer() {
+static void initIdtPtr() {
     idt_ptr.limit = (sizeof(struct idt_entry) * IDT_SIZE) - 1;
     idt_ptr.base = (unsigned int)&idt_table;
 }
 
-static void initialize_pic() {
+static void initPic() {
     /* ICW1 - begin initialization */
     outb(PIC1_COMMAND, 0x11);
     outb(PIC2_COMMAND, 0x11);
@@ -50,7 +50,7 @@ static void initialize_pic() {
 }
 
 void idtInit() {
-    initialize_pic();
-    initialize_idt_pointer();
-    load_idt(&idt_ptr);
+    initPic();
+    initIdtPtr();
+    loadIdt(&idt_ptr);
 }

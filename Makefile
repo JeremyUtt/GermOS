@@ -1,12 +1,10 @@
 SRC_DIR := src
-# Misc variables
 BUILD_DIR := build
 FONTS_DIR := fonts
-# CC_DIR := /usr/local/i386elfgcc/bin
 CC_DIR := /opt/i386elfgcc/bin
 NASM := /usr/bin/nasm
 CFLAGS := -ffreestanding -m32 -g -c -mgeneral-regs-only \
-	      -Wall -O0 -mno-red-zone -I ./include
+	      -Wall -Werror -O0 -mno-red-zone -I ./include 
 
 # Color codes for terminal/STDOUT text coloring
 # CYAN := "\033[0;36m"

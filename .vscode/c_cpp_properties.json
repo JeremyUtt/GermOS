@@ -7,10 +7,10 @@
                 "${workspaceFolder}/include"
             ],
             "defines": [],
-            "compilerPath": "/usr/local/i386elfgcc/bin/i386-elf-g++",
+            "compilerPath": "/opt/i386elfgcc/bin/i386-elf-g++",
             "cStandard": "gnu17",
             "cppStandard": "gnu++17",
-            "intelliSenseMode": "linux-gcc-x64",
+            "intelliSenseMode": "linux-gcc-x86",
             "configurationProvider": "ms-vscode.makefile-tools"
         }
     ],

@@ -9,18 +9,18 @@ _start:
 call main
 ; main should never return
 
-[extern keyboard_handler]
-global keyboard_handler_int
-keyboard_handler_int:
+[extern keyboardHandler]
+global keyboardHandlerInt
+keyboardHandlerInt:
     pushad
     cld
-    call keyboard_handler
+    call keyboardHandler
     popad
     iretd
 
 
-global load_idt
-load_idt:
+global loadIdt
+loadIdt:
     mov edx, [esp + 4]
     lidt [edx]
     sti

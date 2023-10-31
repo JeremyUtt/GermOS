@@ -8,8 +8,8 @@ char popKeyBuffer();
 }  // namespace keyboardBuffer
 
 void kbInit(void);
-extern "C" void keyboard_handler(void);
-
+extern "C" void keyboardHandler(void);
+extern "C" void keyboardHandlerInt();
 namespace QWERTYKeyboard {
 
 #define LeftShift 0x2A

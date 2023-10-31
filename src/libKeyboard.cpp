@@ -80,7 +80,7 @@ char popKeyBuffer() {
 }
 }  // namespace keyboardBuffer
 
-extern "C" void keyboard_handler(void) {
+extern "C" void keyboardHandler(void) {
     signed int keycode;
     keycode = inb(0x60);
 

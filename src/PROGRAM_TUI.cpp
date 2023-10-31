@@ -7,7 +7,7 @@
 #include <utils.hpp>
 using namespace TextRenderer;
 void processCommand(char cmd[]);
-void programloop();
+void programLoop();
 void cmdClear();
 void cmdHelp();
 void cmdShutdown();
@@ -45,11 +45,11 @@ void tui() {
 
     while (true) {
         asm("hlt");
-        programloop();
+        programLoop();
     }
 }
 
-void programloop() {
+void programLoop() {
     while (keyboardBuffer::getKeyBufferIndex() > 0) {
         char character = keyboardBuffer::popKeyBuffer();
 
