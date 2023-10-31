@@ -8,77 +8,40 @@
 ; 16 bit Code Section
 ; ====================================================================================
 
-
 section .btext 
-    global _main:
-; _main:
+global _main:
+
+%include "./src/macros.asm"
 
 
-; %macro print 1
-	
-; 	mov cx, 0x00 ; offset
-; 	; mov bl, 10
-; 	; mov bh, 10
-; 	loop1:
-; 	mov al, [variableName+cx]
-; 	cmp al, 0x00
-; 	je end
-; 	mov ah, 0x0e ; Write Character
-; 	int 0x10
-; 	inc cx
-; 	jmp loop1
-
-
-; ;     mov     si, HELLO_MSG
-; ;     xor     bx, bx
-; ; Next:
-; ;     mov     al, byte [si + bx]
-; ;     mov     ah, 0x0e
-; ;     int     0x10
-
-; ;     mov     al, 10
-; ;     mov     ah, 0x0e
-; ;     int     0x10
-
-; ;     inc     bx
-; ;     cmp     bx, HELLO_LEN
-; ;     jne     Next
-
-	
-; 	variableName db %1, 0
-;  	HELLO_LEN equ  $ - variableName
-	
-; 	end:
-; %endmacro
-
-; setOldGuiMode:
-; 	mov ah, 0x0	; set Video mode 
-; 	mov al, 0x13 ; VGA 320*200 256 color
-; 	int 0x10	; Video Services
-; ;end setOldGuiMode
-
-setTtyMode:
+setVideoMode:
 	mov ah, 0x0	; set Video mode 
+
 	mov al, 0x3 ; 80 x 25	Color text	CGA, EGA, VGA
+
+	; 	mov al, 0x13 ; VGA 320*200 256 color
+
+	; 	mov ax, 0x4f02 ; VESA set display mode
+	; 	mov bx, 0x0107 ; 1280×1024 256bit color pallet
+
 	int 0x10	; Video Services
 ; end setTtyMode
 
-; setGuiMode:
-; 	mov ax, 0x4f02 ; VESA set display mode
-; 	mov bx, 0x0107 ; 1280×1024 256bit color pallet
-; 	int 0x10
-; ; end setGuiMode
+
+; mov ah, 0x0e
+; mov al, 'a'
+; int 0x10
 
 
-mov ah, 0x0e ; Write Character
-mov al, 'h'
-int 0x10
+; printHelloWorld:
+; 	print "hello"
+; 	print "hello"
+; 	print "hello"
+; 	print "hello"
+; 	print "hello"
 
-; print "Hello"
-
-
-
-; print "Loading memory from disk"
+	
+; endPrintHelloWorld
 
 loadKernelFromDisk:
 	mov [BOOT_DISK], dl               
@@ -90,27 +53,26 @@ loadKernelFromDisk:
 	; dl = Drive number (Already set)
 	mov bx, KERNEL_LOCATION
 	int 0x13 ; add more disk interrupt
-
 ;end load more disk
 
-
-jmp $
-
-; Load the GDT table and switch to 32 bit protected mode:
-cli
-lgdt [GDT_Descriptor] 
-; change last bit of cr0 to 1
-mov eax, cr0
-or eax, 1
-mov cr0, eax
-;far jump
-jmp CODE_SEG:start_protected_mode
-
+loadGdtTable:
+	; Load the GDT table and switch to 32 bit protected mode:
+	cli
+	lgdt [GDT_Descriptor] 
+	
+	; change last bit of cr0 to 1
+	; enables protected mode
+	mov eax, cr0
+	or eax, 1
+	mov cr0, eax
+	
+	; jmp $
+	jmp CODE_SEG:start_protected_mode
+; endLoadGdtTable
 
 ; ====================================================================================
 ; 32 bit Code Section
 ; ====================================================================================
-
 
 [bits 32]
 start_protected_mode:
@@ -118,19 +80,21 @@ start_protected_mode:
 ; first byte: character
 ; second byte: color
 
-;mov al, 'A'
-;mov ah, 0x0f
-;mov [0xb8000], ax 
-;jmp $
+mov al, 'A'
+mov ah, 0x0f
+mov [0xb8000], ax
+jmp $
 
+; call main
 jmp KERNEL_LOCATION
 
 ; ====================================================================================
 ; Data Section
 ; ====================================================================================
+; section .bdata
 BOOT_DISK: db 0
 
-KERNEL_LOCATION equ 0x1000      
+KERNEL_LOCATION equ 0x7E00     
 CODE_SEG equ code_descriptor - GDT_Start
 DATA_SEG equ data_descriptor - GDT_Start ; equ = constants
 
@@ -159,6 +123,6 @@ GDT_Descriptor:
 	dw GDT_End - GDT_Start - 1 ; size
 	dd GDT_Start
 
-
+string DB "Welcome TO GermOS", 0
 times 510-($-$$) db 0x00
 db 0x55, 0xaa

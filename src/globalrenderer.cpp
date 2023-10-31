@@ -8,8 +8,8 @@
 
 
 
-#include "font-notosans-10.h"
-#include "font-ubuntumono-10.h"
+// #include "font-notosans-10.h"
+// #include "font-ubuntumono-10.h"
 #include "fontem.h"
 
 
@@ -88,59 +88,60 @@ namespace NewGuiRenderer{
 	}
 //-----
 	void putChar(int chr, int x, int y) {	
-		const glyph** fontGlyphsArr = font_notosans_10.glyphs;
-		const glyph* CharGlyphPtr = fontGlyphsArr[chr-32]; 
 		
-		const uint8_t* CharBitMap = CharGlyphPtr->bitmap;
-
-		const uint16_t totalCols = CharGlyphPtr->cols + CharGlyphPtr->left + CharGlyphPtr->advance;
-		const uint16_t totalRows = CharGlyphPtr->rows + CharGlyphPtr->top;
-
-		for (int col = 0; col < totalCols; col++){
-			
-			// Left Buffer
-			if (col <= CharGlyphPtr->left){
-				putLine(x + col, y, totalRows, true, 15);
-				continue;
-			}
-			
-			// Right Buffer
-			if (col >= CharGlyphPtr->left + CharGlyphPtr->cols){
-				putLine(x + col, y, totalRows, true, 15);
-				continue;
-			}
-			
+		// const glyph** fontGlyphsArr = font_notosans_10.glyphs;
+		// const glyph* CharGlyphPtr = fontGlyphsArr[chr-32]; 
 		
-			for (int row = 0; row <= totalRows; row++){
-				
-				// Top Buffer
-				if (row <= CharGlyphPtr->top){
-					putPixel(x + col, y + row, 15);
-					continue;
-				}
+		// const uint8_t* CharBitMap = CharGlyphPtr->bitmap;
 
-				// row var includes buffer space, needs to be removed to get correct bitmap index
-				uint8_t pixelIndex = ((row - CharGlyphPtr->top) * CharGlyphPtr->rows) + (col - CharGlyphPtr->left);
-				
+		// const uint16_t totalCols = CharGlyphPtr->cols + CharGlyphPtr->left + CharGlyphPtr->advance;
+		// const uint16_t totalRows = CharGlyphPtr->rows + CharGlyphPtr->top;
 
-
-				// TODO: have print actually print correct pixels
-				uint8_t pixelColor = CharBitMap[pixelIndex];
-				// if (pixelColor == 0)
-				// {
-				// 	putPixel(x + col, y + row, 0);
-				// } else {
-
-				// }
-				
-				putPixel(x + col, y + row, pixelColor);
-				
-
-
-			}
+		// for (int col = 0; col < totalCols; col++){
+			
+		// 	// Left Buffer
+		// 	if (col <= CharGlyphPtr->left){
+		// 		putLine(x + col, y, totalRows, true, 15);
+		// 		continue;
+		// 	}
+			
+		// 	// Right Buffer
+		// 	if (col >= CharGlyphPtr->left + CharGlyphPtr->cols){
+		// 		putLine(x + col, y, totalRows, true, 15);
+		// 		continue;
+		// 	}
 			
 		
-		}
+		// 	for (int row = 0; row <= totalRows; row++){
+				
+		// 		// Top Buffer
+		// 		if (row <= CharGlyphPtr->top){
+		// 			putPixel(x + col, y + row, 15);
+		// 			continue;
+		// 		}
+
+		// 		// row var includes buffer space, needs to be removed to get correct bitmap index
+		// 		uint8_t pixelIndex = ((row - CharGlyphPtr->top) * CharGlyphPtr->rows) + (col - CharGlyphPtr->left);
+				
+
+
+		// 		// TODO: have print actually print correct pixels
+		// 		uint8_t pixelColor = CharBitMap[pixelIndex];
+		// 		// if (pixelColor == 0)
+		// 		// {
+		// 		// 	putPixel(x + col, y + row, 0);
+		// 		// } else {
+
+		// 		// }
+				
+		// 		putPixel(x + col, y + row, pixelColor);
+				
+
+
+		// 	}
+			
+		
+		// }
 	}
 
 	void putString(char* string, int x, int y){
@@ -157,18 +158,18 @@ namespace NewGuiRenderer{
 	}
 
 	void printChar(const char chr){
-		const glyph* CharGlyphPtr = font_notosans_10.glyphs[chr-32];
+		// const glyph* CharGlyphPtr = font_notosans_10.glyphs[chr-32];
 		
-		if(chr == '\n'){
-			// TODO: make dinamic
-			Xcounter = 0;
-			Ycounter += 20;
-			return;
-		}
+		// if(chr == '\n'){
+		// 	// TODO: make dinamic
+		// 	Xcounter = 0;
+		// 	Ycounter += 20;
+		// 	return;
+		// }
 		
-		putChar(chr, Xcounter, Ycounter);
-		int xAdvance = CharGlyphPtr->cols + CharGlyphPtr->left + CharGlyphPtr->advance;
-		UpdateCounter(xAdvance, 0);
+		// putChar(chr, Xcounter, Ycounter);
+		// int xAdvance = CharGlyphPtr->cols + CharGlyphPtr->left + CharGlyphPtr->advance;
+		// UpdateCounter(xAdvance, 0);
 	}
 }
 
