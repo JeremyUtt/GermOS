@@ -1,8 +1,8 @@
 #include <converts.hpp>
-#include <libKeyboard.hpp>
 #include <libGUI.hpp>
-#include <libIO.hpp>
 #include <libIDT.hpp>
+#include <libIO.hpp>
+#include <libKeyboard.hpp>
 #include <libSerial.hpp>
 bool isRightShiftPressed;
 bool isLeftShiftPressed;
@@ -104,7 +104,9 @@ const char SymbolTable[] = {0,   Escape, '!', '@', '#', '$', '%',
                             '^', '&',    '*', '(', ')', '_', '+'};
 
 char Translate(uint8_t scancode, bool uppercase) {
-    if (scancode > 58) return 0;
+    if (scancode > 58) {
+        return 0;
+    }
 
     if (uppercase) {
         switch (scancode) {
@@ -128,7 +130,9 @@ char Translate(uint8_t scancode, bool uppercase) {
                 return '?';
         }
 
-        if (scancode < 14) { return SymbolTable[scancode]; }
+        if (scancode < 14) {
+            return SymbolTable[scancode];
+        }
 
         return ASCIITable[scancode] - 32;
     }

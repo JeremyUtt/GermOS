@@ -3,6 +3,7 @@ BUILD_DIR := build
 FONTS_DIR := fonts
 CC_DIR := /opt/i386elfgcc/bin
 NASM := /usr/bin/nasm
+INCLUDE_DIR := include
 CFLAGS := -ffreestanding -m32 -g -c -mgeneral-regs-only \
 	      -Wall -Werror -O0 -mno-red-zone -I ./include 
 
@@ -32,7 +33,7 @@ all: bin/OS.bin bin/OS.sym
 # ============================================================
 
 # Compile all CPP files
-$(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp $(INCLUDE_DIR)/%.hpp
 	@$(CC_DIR)/i386-elf-g++ $(CFLAGS) -o $@ ./$<
 # @echo  $(CYAN) CC $< $(NOCOLOR)
 	@printf "%b" "\033[0;36m\e0CC $< \033[0m\n"

@@ -1,18 +1,16 @@
-# nasm and qemu
-sudo apt install nasm
-sudo apt install qemu
-sudo apt-get install qemu-kvm
 
-# GCC cross compiler for i386 systems (might take quite some time, prepare food)
+if command -v apt &> /dev/null
+then
+    # nasm and qemu
+    sudo apt update
+    sudo apt install nasm qemu qemu-kvm
 
-sudo apt update
-sudo apt install build-essential
-sudo apt install bison
-sudo apt install flex
-sudo apt install libgmp3-dev
-sudo apt install libmpc-dev
-sudo apt install libmpfr-dev
-sudo apt install texinfo
+    # GCC cross compiler for i386 systems (might take quite some time, prepare food)
+    sudo apt install build-essential bison flex libgmp3-dev libmpc-dev libmpfr-dev texinfo
+elif command -v pacman &> /dev/null
+then 
+    sudo pacman -S qemu-base qemu-desktop --needed
+fi
 
 export PREFIX="/opt/i386elfgcc"
 export TARGET=i386-elf
@@ -44,5 +42,4 @@ sudo make install-gcc -j16
 echo MAKE INSTALL-TARGET-LIBGCC:
 sudo make install-target-libgcc -j16
 echo HERE U GO MAYBE:
-ls /opt/i386elfgcc/bin
-export PATH="$PATH:/usr/local/i386elfgcc/bin"
+ls $PREFIX/bin

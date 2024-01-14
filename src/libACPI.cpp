@@ -2,8 +2,8 @@
 #include <libACPI.hpp>
 #include <libSerial.hpp>
 
-RSDPDescriptor* rsdpPtr;
-ACPISDTHeader* rsdtPtr;
+rsdpDescriptor* rsdpPtr;
+rsdtDescriptor* rsdtPtr;
 
 bool check(char str[], int address) {
     for (int i = 0; i < getStrLen(str); i++) {
@@ -12,57 +12,57 @@ bool check(char str[], int address) {
     return true;
 }
 
-RSDPDescriptor* findRSDP() {
+rsdpDescriptor* findRSDP() {
     char str[] = "RSD PTR ";
-    int start_addr = 0x000E0000;
+    int startAddr = 0x000E0000;
     int i = 0;
     // int finds = 0;
     while (true) {
-        if (check(str, start_addr + i)) {
-            rsdpPtr = (RSDPDescriptor*)(start_addr + i);
-            return (RSDPDescriptor*)(start_addr + i);
+        if (check(str, startAddr + i)) {
+            rsdpPtr = (rsdpDescriptor*)(startAddr + i);
+            return (rsdpDescriptor*)(startAddr + i);
         }
 
         i++;
     }
 }
 
-void decodeRSDP(RSDPDescriptor* rsdpPointer) {
-    rsdtPtr = (ACPISDTHeader*)rsdpPointer->RsdtAddress;
+void decodeRSDP(rsdpDescriptor* rsdpPointer) {
+    rsdtPtr = rsdpPointer->rsdtAddress;
 
     serialWriteStr("\r\nRSDP Header: ");
 
     serialWriteStr("\r\n\tsignature: ");
-    serialWriteStr(rsdpPointer->Signature);
+    serialWriteStr(rsdpPointer->signature);
     serialWriteStr("\r\n\tchecksum: ");
-    serialWriteStr(intToStr(rsdpPointer->Checksum, 10));
+    serialWriteStr(intToStr(rsdpPointer->checksum, 10));
     serialWriteStr("\r\n\tOEMID: ");
-    serialWriteStr(rsdpPointer->OEMID);
+    serialWriteStr(rsdpPointer->oemId);
     serialWriteStr("\r\n\trevision: ");
-    serialWriteStr(intToStr(rsdpPointer->Revision, 10));
+    serialWriteStr(intToStr(rsdpPointer->revision, 10));
     serialWriteStr("\r\n\tRsdtAddress: ");
-    serialWriteStr(intToStr(rsdpPointer->RsdtAddress, 16));
+    serialWriteStr(intToStr((int)rsdpPointer->rsdtAddress, 16));
 }
 
-void decodeRSDT(ACPISDTHeader* rsdtPointer) {
+void decodeRSDT(rsdtDescriptor* rsdtPointer) {
     serialWriteStr("\r\nRSDT Header: ");
 
     serialWriteStr("\r\n\tSignature: ");
-    serialWriteStr(rsdtPointer->Signature);
+    serialWriteStr(rsdtPointer->signature);
     serialWriteStr("\r\n\tLength: ");
-    serialWriteStr(intToStr(rsdtPointer->Length, 10));
+    serialWriteStr(intToStr(rsdtPointer->length, 10));
     serialWriteStr("\r\n\tRevision: ");
-    serialWriteStr(intToStr(rsdtPointer->Revision, 10));
+    serialWriteStr(intToStr(rsdtPointer->revision, 10));
     serialWriteStr("\r\n\tChecksum: ");
-    serialWriteStr(intToStr(rsdtPointer->Checksum, 10));
+    serialWriteStr(intToStr(rsdtPointer->checksum, 10));
     serialWriteStr("\r\n\tOEMID: ");
-    serialWriteStr(rsdtPointer->OEMID);
+    serialWriteStr(rsdtPointer->oemId);
     serialWriteStr("\r\n\tOEMTableID: ");
-    serialWriteStr(rsdtPointer->OEMTableID);
+    serialWriteStr(rsdtPointer->oemTableID);
     serialWriteStr("\r\n\tOEMRevision: ");
-    serialWriteStr(intToStr(rsdtPointer->OEMRevision, 10));
+    serialWriteStr(intToStr(rsdtPointer->oemRevision, 10));
     serialWriteStr("\r\n\tCreatorID: ");
-    serialWriteStr(intToStr(rsdtPointer->CreatorID, 10));
+    serialWriteStr(intToStr(rsdtPointer->creatorID, 10));
     serialWriteStr("\r\n\tCreatorRevision: ");
-    serialWriteStr(intToStr(rsdtPointer->CreatorRevision, 10));
+    serialWriteStr(intToStr(rsdtPointer->creatorRevision, 10));
 }

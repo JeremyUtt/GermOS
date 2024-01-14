@@ -14,20 +14,28 @@
 #include <libPCI.hpp>
 #include <libSerial.hpp>
 #include <utils.hpp>
+#include <string.hpp>
 
 using namespace TextRenderer;
 
 extern "C" void main() {
     // checkKernelMemory(findRSDP());
     // serialWriteStr("Hello WOrld");
+    string name(5);
+    name = "poggesdrfsdzfgszdf";
+    
+
+
     initKernel();
 
+    serialWriteStr(name.str());
     tui();
 
     // amogus();
     // printColorPallet();
-    while (1)
+    while (1) {
         asm("hlt");
+    }
 }
 
 void initKernel() {
@@ -69,3 +77,5 @@ bool checkKernelMemory(int start) {
     }
     return true;
 }
+
+
