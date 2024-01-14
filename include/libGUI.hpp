@@ -4,7 +4,9 @@
 namespace GuiRenderer {
 const int screenMemory = 0xa0000;
 const int screenWidth = 320;
+// const int screenWidth = 640;
 const int screenHeight = 200;
+// const int screenHeight = 350;
 void setTextFont(PSF_font*);
 void setDrawColor(int color);
 void UpdateCounter(int xInc, int yInc);

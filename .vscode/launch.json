@@ -5,7 +5,7 @@
             "request": "attach",
             "name": "Attach to gdbserver",
             "executable": "./bin/OS.sym",
-            "target": ":1234",
+            "target": "localhost:1269",
             "remote": true,
             "cwd": "${workspaceRoot}", 
             "gdbpath": "gdb",

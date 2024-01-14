@@ -1,9 +1,9 @@
 SRC_DIR := src
 BUILD_DIR := build
 FONTS_DIR := fonts
+INCLUDE_DIR := include
 CC_DIR := /opt/i386elfgcc/bin
 NASM := /usr/bin/nasm
-INCLUDE_DIR := include
 CFLAGS := -ffreestanding -m32 -g -c -mgeneral-regs-only \
 	      -Wall -Werror -O0 -mno-red-zone -I ./include 
 
@@ -98,7 +98,7 @@ bin/OS.bin : $(BUILD_DIR)/Linking_Stage_2.bin $(SRC_DIR)/zeros.bin
 	@printf "%b" "\033[0;36m\e0CAT $< \033[0m\n"
 
 
-run:
+run: all
 	@./run.sh
 debug:
 	@echo $(OBJS)

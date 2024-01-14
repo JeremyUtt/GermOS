@@ -80,7 +80,7 @@ void printColorPallet() {
 //     return true;
 // }
 
-int getMemory(int Address) {
+uint8_t getMemory(int Address) {
     uint8_t i = {*(uint8_t*)(Address)};
     return i;
 }

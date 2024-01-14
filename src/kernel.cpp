@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 
+#include <PROGRAM_PONG.hpp>
 #include <PROGRAM_TUI.hpp>
 #include <converts.hpp>
 #include <fonts.hpp>
@@ -13,23 +14,40 @@
 #include <libKeyboard.hpp>
 #include <libPCI.hpp>
 #include <libSerial.hpp>
-#include <utils.hpp>
 #include <string.hpp>
+#include <utils.hpp>
 
-using namespace TextRenderer;
+using namespace GuiRenderer;
 
 extern "C" void main() {
     // checkKernelMemory(findRSDP());
     // serialWriteStr("Hello WOrld");
     string name(5);
     name = "poggesdrfsdzfgszdf";
-    
-
 
     initKernel();
+    
+    
+    // printColorPallet();
+    // printColorPallet();
+    // printColorPallet();
+    // printColorPallet();
+    // printColorPallet();
+    amogus();
 
-    serialWriteStr(name.str());
-    tui();
+
+    for (int i = 0; i < 320*200; i++)
+    {
+        putPixel(i % 320, i / 320, 4);
+        int a = getMemory(screenMemory + i);
+        serialWriteStr(intToStr(a, 10));
+        serialWriteChar(' '); 
+    }
+    
+    // serialWriteStr(name.str());
+    
+    // pong();
+    // tui();
 
     // amogus();
     // printColorPallet();
@@ -77,5 +95,3 @@ bool checkKernelMemory(int start) {
     }
     return true;
 }
-
-
