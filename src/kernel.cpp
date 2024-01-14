@@ -27,31 +27,13 @@ extern "C" void main() {
 
     initKernel();
     
-    
-    // printColorPallet();
-    // printColorPallet();
-    // printColorPallet();
-    // printColorPallet();
-    // printColorPallet();
-    amogus();
-
-
-    for (int i = 0; i < 320*200; i++)
-    {
-        putPixel(i % 320, i / 320, 4);
-        int a = getMemory(screenMemory + i);
-        serialWriteStr(intToStr(a, 10));
-        serialWriteChar(' '); 
-    }
-    
-    // serialWriteStr(name.str());
-    
-    // pong();
+    pong();
     // tui();
 
-    // amogus();
-    // printColorPallet();
+
     while (1) {
+        ClearScreen();
+        println("All Programs Finished");
         asm("hlt");
     }
 }

@@ -1,8 +1,9 @@
+#include <PROGRAM_PONG.hpp>
 #include <PROGRAM_TUI.hpp>
 #include <converts.hpp>
-#include <libKeyboard.hpp>
 #include <libGUI.hpp>
 #include <libIO.hpp>
+#include <libKeyboard.hpp>
 #include <libSerial.hpp>
 #include <utils.hpp>
 using namespace TextRenderer;
@@ -11,6 +12,7 @@ void programLoop();
 void cmdClear();
 void cmdHelp();
 void cmdShutdown();
+void cmdPong();
 int x = 2;
 int y = 1;
 char command[100] = {};
@@ -63,7 +65,8 @@ void programLoop() {
                 cmdIndex = 0;
                 return;
             case BackSpace:
-                if (cmdIndex <= 0) return;
+                if (cmdIndex <= 0)
+                    return;
                 x--;
                 putChar(' ', x, y);
                 moveCursor(x, y);
@@ -104,6 +107,8 @@ void processCommand(char cmd[]) {
         cmdClear();
     else if (strcmp(cmd, (char*)"exit"))
         cmdShutdown();
+    else if (strcmp(cmd, (char*)"pong"))
+        cmdPong();
     else
         putString("Unknown Command. Try: help", x, y);
 
@@ -135,4 +140,15 @@ void cmdClear() {
 void cmdShutdown() {
     // QEMU only
     outw(0x604, 0x2000);
+}
+void cmdPong() {
+    x = 1;
+    putString("Not Yet Implemented", x, y);
+    y++;
+    
+    // TODO: switch to graphics Mode
+    
+    // pong();
+
+    // TODO: switch to text mode
 }

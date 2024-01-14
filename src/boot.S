@@ -14,39 +14,33 @@
 
 mov [BOOT_DISK], dl               
 
-;setTtyMode:
-;	mov ah, 0x0	; set Video mode 
-;	mov al, 0x3 ; 80 x 25	Color text	CGA, EGA, VGA
-;	int 0x10	; Video Services
-; end setTtyMode
+; setTtyMode:
+; 	mov ah, 0x0	; set Video mode 
+; 	mov al, 0x3 ; 80 x 25	Color text	CGA, EGA, VGA
+; 	int 0x10	; Video Services
+; ;end setTtyMode
 
-; printR "Set Video Mode to text"
-; printR 0ah
-; printR 0dh
 ; ; setGuiMode:
 ; 	mov ax, 0x4f02 ; VESA set display mode
 ; 	mov bx, 0x0107 ; 1280×1024 256bit color pallet
 ; 	int 0x10
 ; ; end setGuiMode
 
-; setMediumGuiMode:
-; 	mov ah, 0x0	; set Video mode 
-; 	mov al, 0x10 ; VGA 640 x 350
-; 	int 0x10	; Video Services
-; ;end setMediumGuiMode
-
-
 setMediumGuiMode:
 	mov ah, 0x0	; set Video mode 
-	mov al, 0x0D ; VGA 320x200
+	mov al, 0x13 ; VGA 320x200
 	int 0x10	; Video Services
 ;end setMediumGuiMode
 
+printR "Set Video Mode to GUI"
+; printR "Set Video Mode to text"
+printR 0ah
+printR 0dh
 
 
-; printR "Loading memory from disk"
-; printR 0ah
-; printR 0dh
+printR "Loading memory from disk"
+printR 0ah
+printR 0dh
 
 loadKernelFromDisk:
 	mov ah, 2 ; Read Sectors Into Memory
@@ -70,19 +64,14 @@ loadKernelFromDisk:
 ; ;end pcicheck
 
 
-; printR "Loading GDT"
-; printR 0ah
-; printR 0dh
-; printR "Switching to Protected Mode"
-; printR 0ah
-; printR 0dh
+printR "Loading GDT"
+printR 0ah
+printR 0dh
+printR "Switching to Protected Mode"
+printR 0ah
+printR 0dh
 
 ; Load the GDT table and switch to 32 bit protected mode:
-
-; setOldGuiMode:
-; 	mov ah, 0x0	; set Video mode 
-; 	mov al, 0x13 ; VGA 320*200 256 color
-; 	int 0x10	; Video Services
 
 loadGDT:
 	cli
