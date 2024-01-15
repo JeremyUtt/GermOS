@@ -1,17 +1,25 @@
 {
     "configurations": [
         {
-            "type": "gdb",
-            "request": "attach",
-            "name": "Attach to gdbserver",
-            "executable": "./bin/OS.sym",
-            "target": "localhost:1269",
-            "remote": true,
-            "cwd": "${workspaceRoot}", 
-            "gdbpath": "gdb",
-            "autorun": [
-                "set arch i386:x86-64"
-                ]
+            "name": "attach to gdbserver",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/bin/OS.sym",
+            "args": [],
+            "stopAtEntry": true,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "miDebuggerPath": "/usr/bin/gdb",
+            "miDebuggerArgs": "-ex 'target extended-remote localhost:1269'"
         }
     ],
     "version": "2.0.0"

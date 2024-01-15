@@ -5,8 +5,9 @@ INCLUDE_DIR := include
 CC_DIR := /opt/i386elfgcc/bin
 NASM := /usr/bin/nasm
 CFLAGS := -ffreestanding -m32 -g -c -mgeneral-regs-only \
-	      -Wall -Werror -O0 -mno-red-zone -I ./include 
+	      -Wall -Werror -O0 -mno-red-zone -I ./include
 
+MODEFLAGS :=
 # Color codes for terminal/STDOUT text coloring
 # CYAN := "\033[0;36m"
 # NOCOLOR := "\033[0m"
@@ -34,13 +35,13 @@ all: bin/OS.bin bin/OS.sym
 
 # Compile all CPP files
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp $(INCLUDE_DIR)/%.hpp
-	@$(CC_DIR)/i386-elf-g++ $(CFLAGS) -o $@ ./$<
+	@$(CC_DIR)/i386-elf-g++ $(CFLAGS) $(MODEFLAGS) -o $@ ./$<
 # @echo  $(CYAN) CC $< $(NOCOLOR)
 	@printf "%b" "\033[0;36m\e0CC $< \033[0m\n"
 
 # Compile all C files
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
-	@$(CC_DIR)/i386-elf-gcc $(CFLAGS) -o $@ ./$<
+	@$(CC_DIR)/i386-elf-gcc $(CFLAGS) $(MODEFLAGS) -o $@ ./$<
 # @echo  $(CYAN) CC $< $(NOCOLOR)
 	@printf "%b" "\033[0;36m\e0CC $< \033[0m\n"
  
@@ -48,7 +49,7 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 # Assemble all ASM files
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.asm
 	@ # nasm -f elf -o $@ ./$<
-	@$(NASM) src/kernel_entry.asm -f elf -o build/kernel_entry.o
+	@$(NASM) src/kernel_entry.asm -f elf -o build/kernel_entry.o $(MODEFLAGS)
 # @echo $(CYAN) ASM $< $(NOCOLOR)
 	@printf "%b" "\033[0;36m\e0ASM $< \033[0m\n"
 
@@ -65,7 +66,7 @@ $(BUILD_DIR)/%.o: $(FONTS_DIR)/%.psf
 
 # binary file for part of bootloader
 $(BUILD_DIR)/boot.bin: $(SRC_DIR)/boot.S
-	@nasm $(SRC_DIR)/boot.S -f bin -o $(BUILD_DIR)/boot.bin
+	@nasm $(SRC_DIR)/boot.S -f bin -o $(BUILD_DIR)/boot.bin $(MODEFLAGS)
 # @echo  $(CYAN) ASM $< $(NOCOLOR)
 	@printf "%b" "\033[0;36m\e0ASM $< \033[0m\n"
 

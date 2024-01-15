@@ -14,29 +14,26 @@
 
 mov [BOOT_DISK], dl               
 
-; setTtyMode:
-; 	mov ah, 0x0	; set Video mode 
-; 	mov al, 0x3 ; 80 x 25	Color text	CGA, EGA, VGA
-; 	int 0x10	; Video Services
-; ;end setTtyMode
+%ifdef TEXT_MODE
+setTtyMode:
+	mov ah, 0x0	; set Video mode 
+	mov al, 0x3 ; 80 x 25	Color text	CGA, EGA, VGA
+	int 0x10	; Video Services
+ 	printR "Set Video Mode to text"
+;end setTtyMode
+%endif
 
-; ; setGuiMode:
-; 	mov ax, 0x4f02 ; VESA set display mode
-; 	mov bx, 0x0107 ; 1280×1024 256bit color pallet
-; 	int 0x10
-; ; end setGuiMode
-
+%ifndef TEXT_MODE
 setMediumGuiMode:
 	mov ah, 0x0	; set Video mode 
 	mov al, 0x13 ; VGA 320x200
 	int 0x10	; Video Services
+	printR "Set Video Mode to GUI"
 ;end setMediumGuiMode
+%endif
 
-printR "Set Video Mode to GUI"
-; printR "Set Video Mode to text"
 printR 0ah
 printR 0dh
-
 
 printR "Loading memory from disk"
 printR 0ah
@@ -62,7 +59,6 @@ loadKernelFromDisk:
 ; 	mov al, "A"
 ; 	int 0x10
 ; ;end pcicheck
-
 
 printR "Loading GDT"
 printR 0ah

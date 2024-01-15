@@ -17,7 +17,12 @@
 #include <string.hpp>
 #include <utils.hpp>
 
+#ifdef TEXT_MODE
+using namespace TextRenderer;
+#endif
+#ifndef TEXT_MODE
 using namespace GuiRenderer;
+#endif
 
 extern "C" void main() {
     // checkKernelMemory(findRSDP());
@@ -26,10 +31,13 @@ extern "C" void main() {
     name = "poggesdrfsdzfgszdf";
 
     initKernel();
-    
-    pong();
-    // tui();
 
+#ifndef TEXT_MODE
+    pong();
+#endif
+#ifdef TEXT_MODE
+    tui();
+#endif
 
     while (1) {
         ClearScreen();
