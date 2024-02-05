@@ -6,6 +6,7 @@
 #include <libKeyboard.hpp>
 #include <libSerial.hpp>
 #include <utils.hpp>
+#include <libVGA.hpp>
 using namespace TextRenderer;
 void processCommand(char cmd[]);
 void programLoop();
@@ -147,7 +148,9 @@ void cmdPong() {
     y++;
     
     // TODO: switch to graphics Mode
+    // set_mode_13h();
     
+    // returnToReal();
     // pong();
 
     // TODO: switch to text mode

@@ -16,6 +16,7 @@
 #include <libSerial.hpp>
 #include <string.hpp>
 #include <utils.hpp>
+#include <image.hpp>
 
 #ifdef TEXT_MODE
 using namespace TextRenderer;
@@ -33,7 +34,8 @@ extern "C" void main() {
     initKernel();
 
 #ifndef TEXT_MODE
-    pong();
+    image();
+    // pong();
 #endif
 #ifdef TEXT_MODE
     tui();
