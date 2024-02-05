@@ -16,7 +16,6 @@
 #include <libSerial.hpp>
 #include <string.hpp>
 #include <utils.hpp>
-#include <image.hpp>
 
 #ifdef TEXT_MODE
 using namespace TextRenderer;
@@ -58,7 +57,7 @@ void initKernel() {
     initSerial();
 
     println("Loading IDT Entry for Keyboard Handler");
-    loadIdtEntry(0x21, (unsigned long)keyboardHandlerInt, 0x08, 0x8e);
+    loadIdtEntry(0x21, (uint32_t)keyboardHandlerInt, 0x08, 0x8e);
 
     println("Initalizing IDT");
     idtInit();

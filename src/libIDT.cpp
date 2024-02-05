@@ -1,24 +1,25 @@
 // https://stackoverflow.com/questions/37618111/keyboard-irq-within-an-x86-kernel
 #include <libIO.hpp>
 #include <libIDT.hpp>
+#include <stdint.h>
 
-#define IDT_SIZE 256
+IdtEntry idtTable[IDT_SIZE];
+IdtPointer idtPtr;
 
-idt_entry idt_table[IDT_SIZE];
-idt_pointer idt_ptr;
 
-void loadIdtEntry(int isr_number, unsigned long base, short int selector,
-                  unsigned char flags) {
-    idt_table[isr_number].offset_lowerbits = base & 0xFFFF;
-    idt_table[isr_number].offset_higherbits = (base >> 16) & 0xFFFF;
-    idt_table[isr_number].selector = selector;
-    idt_table[isr_number].flags = flags;
-    idt_table[isr_number].zero = 0;
+
+void loadIdtEntry(int32_t isr_number, uint32_t base, uint16_t selector,
+                  uint8_t flags) {
+    idtTable[isr_number].offsetLower = base & 0xFFFF;
+    idtTable[isr_number].offsetHigher = (base >> 16) & 0xFFFF;
+    idtTable[isr_number].selector = selector;
+    idtTable[isr_number].flags = flags;
+    idtTable[isr_number].zero = 0;
 }
 
 static void initIdtPtr() {
-    idt_ptr.limit = (sizeof(struct idt_entry) * IDT_SIZE) - 1;
-    idt_ptr.base = (unsigned int)&idt_table;
+    idtPtr.limit = (sizeof(IdtEntry) * IDT_SIZE) - 1;
+    idtPtr.base = &idtTable[0];
 }
 
 static void initPic() {
@@ -52,5 +53,5 @@ static void initPic() {
 void idtInit() {
     initPic();
     initIdtPtr();
-    loadIdt(&idt_ptr);
+    loadIdt(&idtPtr);
 }

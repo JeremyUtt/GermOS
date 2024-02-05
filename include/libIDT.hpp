@@ -1,20 +1,22 @@
 #pragma once
 
-struct idt_entry{
-    unsigned short int offset_lowerbits;
-    unsigned short int selector;
-    unsigned char zero;
-    unsigned char flags;
-    unsigned short int offset_higherbits;
+#define IDT_SIZE 256
+
+struct IdtEntry{
+    uint16_t offsetLower;
+    uint16_t selector;
+    uint8_t zero;
+    uint8_t flags;
+    uint16_t offsetHigher;
 } __attribute__((packed));
 
-struct idt_pointer{
-    unsigned short limit;
-    unsigned int base;
+struct IdtPointer{
+    uint16_t limit;
+    IdtEntry* base;
 } __attribute__((packed));
 
-extern idt_pointer idt_ptr;
+extern IdtPointer idtPtr;
 
 void idtInit();
-void loadIdtEntry(int isr_number, unsigned long base, short int selector, unsigned char flags);
+void loadIdtEntry(int32_t isr_number, uint32_t base, uint16_t selector, uint8_t flags);
 extern "C" void loadIdt(void*);
