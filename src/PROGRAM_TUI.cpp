@@ -150,7 +150,7 @@ void cmdPong() {
     // TODO: switch to graphics Mode
     // set_mode_13h();
     
-    returnToReal();
+    // returnToReal();
     // pong();
 
     // TODO: switch to text mode
