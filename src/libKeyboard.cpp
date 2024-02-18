@@ -80,7 +80,7 @@ char popKeyBuffer() {
 }
 }  // namespace keyboardBuffer
 
-extern "C" void keyboardHandler(void) {
+INTERRUPT void keyboardHandler(struct interrupt_frame* frame) {
     signed int keycode;
     keycode = inb(0x60);
 

@@ -1,5 +1,6 @@
 #pragma once
 #include <stdint.h>
+#include <libIDT.hpp>
 
 namespace keyboardBuffer {
 uint8_t getKeyBufferIndex();
@@ -8,8 +9,7 @@ char popKeyBuffer();
 }  // namespace keyboardBuffer
 
 void kbInit(void);
-extern "C" void keyboardHandler(void);
-extern "C" void keyboardHandlerInt();
+INTERRUPT void keyboardHandler(interrupt_frame* frame);
 namespace QWERTYKeyboard {
 
 #define LeftShift 0x2A

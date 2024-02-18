@@ -67,7 +67,7 @@ $(BUILD_DIR)/%.o: $(FONTS_DIR)/%.psf
 # sopdjfepdogs
 
 $(BUILD_DIR)/OS.o : $(OBJS)
-	@$(CC_DIR)/i386-elf-ld -o $@ $^ -T linker.ld --print-map
+	@$(CC_DIR)/i386-elf-ld -o $@ $^ -T linker.ld
 	@printf "%b" "\033[0;36m\e0LD$< \033[0m\n"
 
 # Finished OS Binary

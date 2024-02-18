@@ -1,6 +1,8 @@
 #pragma once
 
 #define IDT_SIZE 256
+struct interrupt_frame;
+#define INTERRUPT __attribute__((interrupt))
 
 struct IdtEntry{
     uint16_t offsetLower;
