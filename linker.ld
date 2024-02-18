@@ -10,7 +10,7 @@ OUTPUT(build/full_kernel.o)
 MEMORY
 {
   NA2 (r) : ORIGIN = 0, LENGTH = 0x4ff
-  RAM (wx) : org = 0x500, len = 0x76ff   /* 0x7bff */
+  RAM (wx) : org = 0x1000, len = 0x76ff   /* 0x7bff */
   BOOT (wx) : org = 0x7c00, len = 0x0200   /* 0x7dff */
   RAM2 (wx) : org = 0x7E00, len = 0x781FF   /* 7FFFF */  
   NA3 (r) : org = 0x00080000, len = 0x1FFFF  /* 0x0009FFFF */  
@@ -23,6 +23,10 @@ SECTIONS
   .btext : {
     *(.btext*) 
   } > BOOT
+
+  /* .bdata : {
+    *(.bdata*) 
+  } > BOOT */
 
   .text : 
   {*(.btext)} > RAM2
