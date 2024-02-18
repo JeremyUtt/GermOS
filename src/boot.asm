@@ -2,15 +2,15 @@
 ; https://www.asciitable.com/
 ; https://www.youtube.com/channel/UCuWLGQB4WRBKvW1C26zA2og
 ; https://stackoverflow.com/questions/48608423/what-do-square-brackets-mean-in-x86-assembly
-
+[bits 16]
+SECTION .btext
 %include "src/macros.S"
+; [org 0x7c00]                      
 
-; ====================================================================================
-; 16 bit Code Section
-; ====================================================================================
-
-
-[org 0x7c00]                      
+; fake _start symbol to get warnings to shut up
+; program actually starts in the bootloader and jumps to here (0x1000) in memory
+global _start
+_start:
 
 mov [BOOT_DISK], dl               
 
@@ -41,15 +41,29 @@ printR 0dh
 
 loadKernelFromDisk:
 	mov ah, 2 ; Read Sectors Into Memory
-	mov al, 54; Number of Sectors to read
+	mov al, 65; Number of Sectors to read
 	mov ch, 0 ; Starting Cylinder Number
 	mov cl, 2 ; Starting Sector number
 	mov dh, 0 ; Head Number
 	; dl = Drive number (Already set)
 	mov bx, KERNEL_LOCATION
 	int 0x13 ; add more disk interrupt
+	jc disk_error
+
+	jmp noerror
+	disk_error:
+		printR "Error"
+		jmp $
+	noerror:
+
+
 ;end load more disk
 
+
+; mov si, DAPACK		; address of "disk address packet"
+	; mov ah, 0x42		; AL is unused
+	; mov dl, 0x80		; drive number 0 (OR the drive # with 0x80)
+	; int 0x13
 
 ; pciCheck:
 ; 	mov ax, 0xb101
@@ -89,25 +103,18 @@ switchToProtected:
 
 [bits 32]
 start_protected_mode:
-	; text mode controls:
-	; video memory start: 0xb8000
-	; first byte: character
-	; second byte: color
-
-	; mov al, 'A'
-	; mov ah, 0x0f
-	; mov [0xb8000], ax 
-
-	jmp KERNEL_LOCATION
+	[extern main]
+	jmp main
 
 ; ====================================================================================
 ; Data Section
 ; ====================================================================================
-BOOT_DISK: db 0
 
-KERNEL_LOCATION equ 0x1000      
+KERNEL_LOCATION equ 0x7E00      
 CODE_SEG equ code_descriptor - GDT_Start
 DATA_SEG equ data_descriptor - GDT_Start ; equ = constants
+
+BOOT_DISK: db 0
 
 GDT_Start:
 	null_descriptor:
@@ -133,7 +140,6 @@ GDT_End:
 GDT_Descriptor:
 	dw GDT_End - GDT_Start - 1 ; size
 	dd GDT_Start
-
 
 times 510-($-$$) db 0x00
 db 0x55, 0xaa

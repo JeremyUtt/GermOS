@@ -50,8 +50,7 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 
 # Assemble all ASM files
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.asm
-	@ # nasm -f elf -o $@ ./$<
-	@$(NASM) src/kernel_entry.asm -f elf -o build/kernel_entry.o $(MODEFLAGS)
+	@$(NASM) -g $(MODEFLAGS) -f elf -o $@ ./$<
 # @echo $(CYAN) ASM $< $(NOCOLOR)
 	@printf "%b" "\033[0;36m\e0ASM $< \033[0m\n"
 
@@ -61,52 +60,59 @@ $(BUILD_DIR)/%.o: $(FONTS_DIR)/%.psf
 # @echo  $(CYAN) OBJCOPY $< $(NOCOLOR)
 	@printf "%b" "\033[0;36m\e0OBJCOPY $< \033[0m\n"
 
-# "Compile" all Fonts files (convert to binart blob object)
-$(BUILD_DIR)/%.o: $(FONTS_DIR)/%.raw
-	@objcopy -O elf32-i386 -B i386 -I binary $< $@
-# @echo  $(CYAN) OBJCOPY $< $(NOCOLOR)
-	@printf "%b" "\033[0;36m\e0OBJCOPY $< \033[0m\n"
-
-
-
-
 # ============================================================
 # ===== Secondary Linking process, start combining files together
 # ============================================================
 
-# binary file for part of bootloader
-$(BUILD_DIR)/boot.bin: $(SRC_DIR)/boot.S
-	@nasm $(SRC_DIR)/boot.S -f bin -o $(BUILD_DIR)/boot.bin $(MODEFLAGS)
-# @echo  $(CYAN) ASM $< $(NOCOLOR)
-	@printf "%b" "\033[0;36m\e0ASM $< \033[0m\n"
+# sopdjfepdogs
 
-
-# Link all objects (exept above entry)to make Kernel 
-$(BUILD_DIR)/Linking_Stage_1.bin: $(OBJS)
-	@$(CC_DIR)/i386-elf-ld -o $@ -Ttext 0x1000  $^ --oformat binary
-# @echo  $(CYAN) LD $< $(NOCOLOR)
+$(BUILD_DIR)/OS.o : $(OBJS)
+	@$(CC_DIR)/i386-elf-ld -o $@ $^ -T linker.ld --print-map
 	@printf "%b" "\033[0;36m\e0LD$< \033[0m\n"
 
+# Finished OS Binary
+bin/OS.bin : $(BUILD_DIR)/OS.o $(SRC_DIR)/zeros.bin
+	@objcopy -O binary $(BUILD_DIR)/OS.o $(BUILD_DIR)/OS1.bin
+	@printf "%b" "\033[0;36m\e0OBJCOPY $< \033[0m\n"
+	@cat $(BUILD_DIR)/OS1.bin $(SRC_DIR)/zeros.bin > $@
+	@printf "%b" "\033[0;36m\e0CAT $< \033[0m\n"
 
-# Full Kernel (minus bootloader) Object file for Debugger 
-bin/OS.sym: $(OBJS)
-	@$(CC_DIR)/i386-elf-ld -Ttext 0x1000 -o $(BUILD_DIR)/Linking_Stage_1.o $^ 
-	@objcopy --only-keep-debug $(BUILD_DIR)/Linking_Stage_1.o $@
-# @echo  $(CYAN) OBJCOPY $< $(NOCOLOR)
+# Full OS Symbol file for Debugger 
+bin/OS.sym: $(BUILD_DIR)/OS.o
+	@objcopy --only-keep-debug $(BUILD_DIR)/OS.o $@
 	@printf "%b" "\033[0;36m\e0OBJCOPY $< \033[0m\n"
 
 
-# Kernel + Bootloader linking
-$(BUILD_DIR)/Linking_Stage_2.bin: $(BUILD_DIR)/boot.bin $(BUILD_DIR)/Linking_Stage_1.bin
-	@cat $(BUILD_DIR)/boot.bin $(BUILD_DIR)/Linking_Stage_1.bin > $(BUILD_DIR)/Linking_Stage_2.bin
-# @echo  $(CYAN) CAT $< $(NOCOLOR)#
-	@printf "%b" "\033[0;36m\e0CAT $< \033[0m\n"
+# sdohgafduihga
 
-# Finished OS Binary
-bin/OS.bin : $(BUILD_DIR)/Linking_Stage_2.bin $(SRC_DIR)/zeros.bin
-	@cat $(BUILD_DIR)/Linking_Stage_2.bin $(SRC_DIR)/zeros.bin > bin/OS.bin
-# @echo  $(CYAN) CAT $< $(NOCOLOR)
-	@printf "%b" "\033[0;36m\e0CAT $< \033[0m\n"
+
+
+
+
+
+
+
+
+# # Link all objects to make Kernel 
+# $(BUILD_DIR)/Linking_Stage_1.bin: $(OBJS)
+# 	@$(CC_DIR)/i386-elf-ld -o $@ $^ --oformat binary -T linker.ld --print-map
+# # @echo  $(CYAN) LD $< $(NOCOLOR)
+# 	@printf "%b" "\033[0;36m\e0LD$< \033[0m\n"
+
+
+# # Full Kernel (minus bootloader) Object file for Debugger 
+# bin/OS.sym: $(OBJS)
+# 	@$(CC_DIR)/i386-elf-ld -o $(BUILD_DIR)/Linking_Stage_1.o $^ 
+# 	@objcopy --only-keep-debug $(BUILD_DIR)/Linking_Stage_1.o $@
+# # @echo  $(CYAN) OBJCOPY $< $(NOCOLOR)
+# 	@printf "%b" "\033[0;36m\e0OBJCOPY $< \033[0m\n"
+
+
+# # Finished OS Binary
+# bin/OS.bin : $(BUILD_DIR)/Linking_Stage_1.bin $(SRC_DIR)/zeros.bin
+# 	@cat $(BUILD_DIR)/Linking_Stage_1.bin $(SRC_DIR)/zeros.bin > bin/OS.bin
+# # @echo  $(CYAN) CAT $< $(NOCOLOR)
+# 	@printf "%b" "\033[0;36m\e0CAT $< \033[0m\n"
 
 
 run: all

@@ -33,8 +33,7 @@ extern "C" void main() {
     initKernel();
 
 #ifndef TEXT_MODE
-    image();
-    // pong();
+    pong();
 #endif
 #ifdef TEXT_MODE
     tui();
