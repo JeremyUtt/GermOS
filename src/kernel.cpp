@@ -1,74 +1,88 @@
-//https://www.asciitable.com/
-//https://www.youtube.com/channel/UCuWLGQB4WRBKvW1C26zA2og
+// https://www.asciitable.com/
+// https://www.youtube.com/channel/UCuWLGQB4WRBKvW1C26zA2og
+
 #include <stdint.h>
-#include <parameters.hpp>
-#include <newidt.hpp>
-#include <keyboardHandler.hpp>
-#include <pci.hpp>
-#include <globalrenderer.hpp>
+
+#include <PROGRAM_PONG.hpp>
+#include <PROGRAM_TUI.hpp>
+#include <converts.hpp>
 #include <fonts.hpp>
 #include <kernel.hpp>
+#include <libACPI.hpp>
+#include <libGUI.hpp>
+#include <libIDT.hpp>
+#include <libKeyboard.hpp>
+#include <libPCI.hpp>
+#include <libSerial.hpp>
+#include <string.hpp>
 #include <utils.hpp>
-#include <serial.hpp>
-#include <converts.hpp>
- 
 
+#ifdef TEXT_MODE
+using namespace TextRenderer;
+#endif
+#ifndef TEXT_MODE
+using namespace GuiRenderer;
+#endif
 
+extern "C" void main() {
+    // checkKernelMemory(findRSDP());
+    // serialWriteStr("Hello WOrld");
+    string name(5);
+    name = "poggesdrfsdzfgszdf";
 
+    initKernel();
 
+#ifndef TEXT_MODE
+    image();
+    // pong();
+#endif
+#ifdef TEXT_MODE
+    tui();
+#endif
 
-
-extern "C" void main(){	
-	
-	while(1) asm("hlt");
-	
-	// checkKernelMemory();
-	// initKernel();
-	psf_init();
-
-	// TODO:fix new char printing
-	// all bits being detected at 0, instead oa value at variable location
-
-	//https://github.com/chrisy/fontem 
-	amogus();
-	while(1) asm("hlt");
-	return;
+    while (1) {
+        ClearScreen();
+        println("All Programs Finished");
+        asm("hlt");
+    }
 }
 
+void initKernel() {
+    setDrawColor(0x7);
+    setTextFont(&_binary_fonts_Uni2_Terminus12x6_psf_start);
+    println("Successfully Switched to Protected Mode");
+    println("Initalizing and Loading Graphics Mode Fonts");
 
+    println("Initalizing Serial Interface");
+    initSerial();
 
-static void initKernel(){
+    println("Loading IDT Entry for Keyboard Handler");
+    loadIdtEntry(0x21, (uint32_t)keyboardHandlerInt, 0x08, 0x8e);
 
-	using namespace NewGuiRenderer;
+    println("Initalizing IDT");
+    idtInit();
 
-	println((char*)"AAAAAAAAHIJKLMNO\n");
-	println((char*)"abcdefghijklmno\n");
-	println((char*)"1234567890\n");
-	println((char*)"!@#$%^&*(){}[]<>?\\/;:''\n");
+    println("Initalizing Keyboard Interrupt");
+    kbInit();
 
-    load_idt_entry(0x21, (unsigned long) keyboard_handler_int, 0x08, 0x8e);
-	idt_init();
-    kb_init();
-	findRSDP();
-	// println("Initalizing Serial Port");
-	int good = init_serial();
-	serialWriteStr((char*)"Hello World!");
-	println(intToStr(good, 10));
-	// println("Kernel Initalization Complete!");
-	// println("Press any key to continue");
-	asm("hlt");
-	ClearScreen();
+    println("Finding RSDP Pointer");
+    findRSDP();
+    decodeRSDP(rsdpPtr);
 
+    println("Decoding RSDT");
+    decodeRSDT(rsdtPtr);
+
+    println("Kernel Initalization Complete!");
+    println("Welcome To GermOS!");
+    println("Press any key to continue");
+    asm("hlt");
+    ClearScreen();
 }
 
-
-
-bool checkKernelMemory(){
-	for (int i = 0; i < 100000; i++)
-	{
-		uint8_t* address = (uint8_t*)(i);
-		serialWriteStr(intToStr(*address, 16));
-		serialWriteStr(" ");
-	}
-	return true;
+bool checkKernelMemory(int start) {
+    for (int i = start; i < start + 10000; i++) {
+        uint8_t* address = (uint8_t*)(i);
+        serialWriteChar(*address);
+    }
+    return true;
 }

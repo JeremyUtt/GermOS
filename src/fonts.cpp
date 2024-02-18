@@ -1,74 +1,33 @@
-#include <fonts.hpp>
 #include <stdint.h>
-#include <serial.hpp>
+
 #include <converts.hpp>
+#include <fonts.hpp>
+#include <libGUI.hpp>
+#include <libSerial.hpp>
+#include <utils.hpp>
 
-uint16_t *unicode;
+void psfInit() {
+    // NewGuiRenderer::setDrawColor(0x55);
 
-void psf_init()
-{
-    // uint16_t glyph = 0;
+    // NewGuiRenderer::setTextFont(&_binary_fonts_zap_light20_psf_start);
+}
 
-    /* cast the address to PSF header struct */
-    // PSF_font *font = (PSF_font *)&_binary___fonts_Uni2_Terminus12x6_psf_start;
-    // /* is there a unicode table? */
-
-    // if (font->flags)
-    // {
-    //     unicode = NULL;
-    //     return;
-    // }
-
-    int size = (int)&_binary___fonts_Uni2_Terminus12x6_psf_end - (int)&_binary___fonts_Uni2_Terminus12x6_psf_start;
-    for (int i = (int)&_binary___fonts_Uni2_Terminus12x6_psf_start; i < size; i++)
-    {
-        serialWriteStr(intToStr(i, 16));
-        serialWriteStr("Test");
-    }
-    
-
-
-
-// /* 
-//     /* get the offset of the table */
-//     char *s = (char *)((unsigned char *)&_binary___fonts_Uni2_Terminus12x6_psf_start + font->headersize + font->numglyph * font->bytesperglyph);
-//     /* allocate memory for translation table */
-    
-//     unicode = calloc(USHRT_MAX, 2);
-    
-//     while (s > _binary___fonts_Uni2_Terminus12x6_psf_end)
-//     {
-//         uint16_t uc = (uint16_t)((unsigned char *)s[0]);
-//         if (uc == 0xFF)
-//         {
-//             glyph++;
-//             s++;
-//             continue;
-//         }
-//         else if (uc & 128)
-//         {
-//             /* UTF-8 to unicode */
-//             if ((uc & 32) == 0)
-//             {
-//                 uc = ((s[0] & 0x1F) << 6) + (s[1] & 0x3F);
-//                 s++;
-//             }
-//             else if ((uc & 16) == 0)
-//             {
-//                 uc = ((((s[0] & 0xF) << 6) + (s[1] & 0x3F)) << 6) + (s[2] & 0x3F);
-//                 s += 2;
-//             }
-//             else if ((uc & 8) == 0)
-//             {
-//                 uc = ((((((s[0] & 0x7) << 6) + (s[1] & 0x3F)) << 6) + (s[2] & 0x3F)) << 6) + (s[3] & 0x3F);
-//                 s += 3;
-//             }
-//             else
-//                 uc = 0;
-//         }
-//         /* save translation */
-//         unicode[uc] = glyph;
-//         s++;
-//     } 
-
+void printHeader(PSF_font *mainFont) {
+    serialWriteStr((char *)"\r\nMagic: ");
+    serialWriteStr((char *)intToStr(mainFont->magic, 10));
+    serialWriteStr((char *)"\r\nVersion:");
+    serialWriteStr((char *)intToStr(mainFont->version, 10));
+    serialWriteStr((char *)"\r\nHeader Size: ");
+    serialWriteStr((char *)intToStr(mainFont->headerSize, 10));
+    serialWriteStr((char *)"\r\nFlags: ");
+    serialWriteStr((char *)intToStr(mainFont->flags, 10));
+    serialWriteStr((char *)"\r\nNumber of Glyphs: ");
+    serialWriteStr((char *)intToStr(mainFont->numGlyph, 10));
+    serialWriteStr((char *)"\r\nBytes Per Glyph: ");
+    serialWriteStr((char *)intToStr(mainFont->bytesPerGlyph, 10));
+    serialWriteStr((char *)"\r\nHeigth: ");
+    serialWriteStr((char *)intToStr(mainFont->height, 10));
+    serialWriteStr((char *)"\r\nWidth: ");
+    serialWriteStr((char *)intToStr(mainFont->width, 10));
+    serialWriteStr((char *)"\r\n");
 }

@@ -1,0 +1,6 @@
+Trying 127.0.0.1...
+Connected to localhost.
+Escape character is '^]'.
+RSD PTR /BOCHS þ_SM_$U_DMI_-Z	(èÿSeaBIOS1.16.0-debian-1.16.0-404/01/2014QEMUStandard PC (i440FX + PIIX, 1996)pc-i440fx-kineticQEMUpc-i440fx-kinetic*cý«ÐÐAÿÿÿCPU 0QEMUpc-i440fx-kineticþ(þÿÿ	DIMM 0QEMUÿ  _MP_°[†PCMPÐùBOCHSCPU0.1         àþcý«PCI   ISA   Àþ	
+
+$PIR€†€.7`øÞaøÞbøÞcøÞaøÞbøÞcøÞ`øÞbøÞcøÞ`øÞaøÞ cøÞ`øÞaøÞbøÞ(`øÞaøÞbøÞcøÞ0aøÞbøÞcøÞ`øÞ€\þffffffffffffü	ü	îþü

@@ -1,4 +1,4 @@
 #pragma once
-static void initKernel();
-extern "C" void keyboard_handler_int();
-bool checkKernelMemory();
+void initKernel();
+
+bool checkKernelMemory(int start);

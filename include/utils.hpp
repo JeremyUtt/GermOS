@@ -1,10 +1,10 @@
 #pragma once
-
+#include <stdint.h>
 // static void printBorder();
 // static void printLogo();
 // static void setBackground(int color);
 // static void debugRegs();
-// static bool checkMem(char str[], int address);
-// int getMemory(int Address);
+// bool checkMem(char str[], int address);
+uint8_t getMemory(int Address);
 void amogus();
-// static void printColorPallet();
+void printColorPallet();
