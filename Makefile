@@ -30,6 +30,8 @@ OBJS := $(patsubst $(SRC_DIR)/%.asm,$(BUILD_DIR)/%.o,$(ASM_FILES)) \
 
 all: bin/OS.bin bin/OS.sym
 
+text:
+	@make MODEFLAGS="-D TEXT_MODE" --no-print-directory
 
 # ============================================================
 # ===== Start by compiling all source files into Objects =====
