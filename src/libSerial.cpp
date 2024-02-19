@@ -14,7 +14,9 @@ int initSerial() {
     outb(COM1 + 0, 0xAE);  // Test serial chip (send byte 0xAE and check if
                            // serial returns same byte)
     // Check if serial is faulty (i.e: not same byte as sent)
-    if (inb(COM1 + 0) != 0xAE) { return 1; }
+    if (inb(COM1 + 0) != 0xAE) {
+        return 1;
+    }
 
     // If serial is not faulty set it in normal operation mode
     // (not-loopback with IRQs enabled and OUT#1 and OUT#2 bits enabled)
@@ -22,7 +24,9 @@ int initSerial() {
     return 0;
 }
 
-int isTransmitEmpty() { return inb(COM1 + 5) & 0x20; }
+int isTransmitEmpty() {
+    return inb(COM1 + 5) & 0x20;
+}
 
 void serialWriteChar(char a) {
     while (isTransmitEmpty() == 0)
@@ -31,10 +35,18 @@ void serialWriteChar(char a) {
     outb(COM1, a);
 }
 
-void serialWriteStr(char* string) {
-    for (int i = 0; i < getStrLen(string); i++) {
-        serialWriteChar(string[i]);
+// void serialWriteStr(char* string) {
+//     for (int i = 0; i < getStrLen(string); i++) {
+//         serialWriteChar(string[i]);
+//     }
+// }
+
+void serialWriteStr(string str) {
+    for (uint32_t i = 0; i < str.size(); i++) {
+        serialWriteChar(str.at(i));
     }
 }
 
-void serialWriteStr(const char* string) { serialWriteStr((char*)string); }
+// void serialWriteStr(const char* string){
+//     serialWriteStr((char*)string);
+// }

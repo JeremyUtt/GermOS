@@ -33,7 +33,7 @@ void decodeRSDP(rsdpDescriptor* rsdpPointer) {
     serialWriteStr("\r\nRSDP Header: ");
 
     serialWriteStr("\r\n\tsignature: ");
-    serialWriteStr(rsdpPointer->signature);
+    serialWriteStr(string(rsdpPointer->signature, 8));
     serialWriteStr("\r\n\tchecksum: ");
     serialWriteStr(intToStr(rsdpPointer->checksum, 10));
     serialWriteStr("\r\n\tOEMID: ");
@@ -48,7 +48,7 @@ void decodeRSDT(rsdtDescriptor* rsdtPointer) {
     serialWriteStr("\r\nRSDT Header: ");
 
     serialWriteStr("\r\n\tSignature: ");
-    serialWriteStr(rsdtPointer->signature);
+    serialWriteStr(string(rsdtPointer->signature, 8));
     serialWriteStr("\r\n\tLength: ");
     serialWriteStr(intToStr(rsdtPointer->length, 10));
     serialWriteStr("\r\n\tRevision: ");

@@ -78,7 +78,7 @@ void putRect(int x, int y, int width, int height, int color) {
 
     // unsigned char *where = vram;
     // int i, j;
- 
+
     // for (i = 0; i < w; i++) {
     //     for (j = 0; j < h; j++) {
     //         //putpixel(vram, 64 + j, 64 + i, (r << 16) + (g << 8) + b);
@@ -87,7 +87,6 @@ void putRect(int x, int y, int width, int height, int color) {
     //     }
     //     where+=pitch;
     // }
-
 }
 
 void putLine(int x, int y, int length, bool vertical, int color) {
@@ -124,29 +123,22 @@ void putChar(int chr, int x, int y) {
     }
 }
 
-void putString(char* string, int x, int y) {
-    for (int i = 0; i < getStrLen(string); i++) {
+void putString(string str, int x, int y) {
+    for (uint32_t i = 0; i < str.size(); i++) {
         int xPos = x + currentFont->width * i;
 
         if (xPos + currentFont->width >= screenWidth) {
             return;
         }
-        putChar(string[i], xPos, y);
+        putChar(str.at(i), xPos, y);
         // serialWriteStr((char*)"---------------------------------\r\n");
     }
 }
 
-void putString(const char* string, int x, int y) {
-    putString((char*)string, x, y);
-}
 //-----
-void println(char String[]) {
-    putString(String, XcounterPx, YcounterPx);
-    UpdateCounter(getStrLen(String), 1);
-}
-
-void println(const char String[]) {
-    println((char*)String);
+void println(string str) {
+    putString(str, XcounterPx, YcounterPx);
+    UpdateCounter(str.size(), 1);
 }
 
 void printChar(char chr) {
@@ -194,29 +186,21 @@ void putChar(int chr, int x, int y) {
     *location = data;
 }
 
-void putString(char* string, int x, int y) {
-    for (int i = 0; i < getStrLen(string); i++) {
-        putChar(string[i], x + i, y);
+void putString(string str, int x, int y) {
+    for (uint32_t i = 0; i < str.size(); i++) {
+        putChar(str.at(i), x + i, y);
     }
 }
 
-void putString(const char* string, int x, int y) {
-    putString((char*)string, x, y);
-}
-
-void println(char String[]) {
-    putString(String, Xcounter, Ycounter);
-    Xcounter += getStrLen(String);
+void println(string str) {
+    putString(str, Xcounter, Ycounter);
+    Xcounter += str.size();
     if (Xcounter <= screenWidth) {
         Xcounter -= screenMemory;
         Ycounter++;
     }
     Xcounter = 0;
     moveCursor(Xcounter, Ycounter);
-}
-
-void println(const char String[]) {
-    println((char*)String);
 }
 
 }  // namespace TextRenderer

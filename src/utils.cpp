@@ -34,7 +34,7 @@ void printColorPallet() {
     int y = 0;
     for (int i = 0; i < 256; i++) {
         GuiRenderer::putRect(x, y, size, size, i);
-        GuiRenderer::putString((char*)intToStr(i, 10), x, y);
+        GuiRenderer::putString(intToStr(i, 10), x, y);
 
         x += size;
         if (x >= GuiRenderer::screenWidth - size) {

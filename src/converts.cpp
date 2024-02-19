@@ -1,15 +1,15 @@
 #include <converts.hpp>
-char str[330];
-char* intToStr(int value, int base) {
+char strBuf[330];
+string intToStr(int value, int base) {
     char* rc;
     char* ptr;
     char* low;
     // Check for supported base.
     if (base < 2 || base > 36) {
-        *str = '\0';
-        return str;
+        *strBuf = '\0';
+        return strBuf;
     }
-    rc = ptr = str;
+    rc = ptr = strBuf;
     // Set '-' for negative decimals.
     if (value < 0 && base == 10) { *ptr++ = '-'; }
     // Remember where the numbers start.
@@ -30,7 +30,8 @@ char* intToStr(int value, int base) {
         *low++ = *ptr;
         *ptr-- = tmp;
     }
-    return rc;
+
+    return string(rc);
 }
 
 int getStrLen(char String[]) {
