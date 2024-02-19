@@ -1,11 +1,11 @@
 #pragma once
 #include <stdint.h>
 class string {
-private:
+  private:
     char* _content;
     uint32_t _size;
 
-public:
+  public:
     string(char* content);
     string(const char* content);
     string(uint32_t size);

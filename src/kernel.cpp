@@ -3,8 +3,6 @@
 
 #include <stdint.h>
 
-#include <PROGRAM_PONG.hpp>
-#include <PROGRAM_TUI.hpp>
 #include <converts.hpp>
 #include <fonts.hpp>
 #include <kernel.hpp>
@@ -14,6 +12,8 @@
 #include <libKeyboard.hpp>
 #include <libPCI.hpp>
 #include <libSerial.hpp>
+#include <PROGRAM_PONG.hpp>
+#include <PROGRAM_TUI.hpp>
 #include <string.hpp>
 #include <utils.hpp>
 

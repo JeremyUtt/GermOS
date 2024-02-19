@@ -1,7 +1,6 @@
 #pragma once
 #include <stdint.h>
 
-
 #define PIC1_COMMAND 0x20
 #define PIC1_DATA 0x21
 #define PIC2_COMMAND 0xA0
@@ -11,9 +10,7 @@
 #define TEXT_CURSOR1 0x3d4
 #define TEXT_CURSOR2 0x3d5
 
-
-
-void outb (uint16_t port, uint8_t value);
+void outb(uint16_t port, uint8_t value);
 void outw(uint16_t port, uint16_t value);
 uint8_t inb(uint16_t port);
 void io_wait();

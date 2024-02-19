@@ -4,7 +4,7 @@
 struct interrupt_frame;
 #define INTERRUPT __attribute__((interrupt))
 
-struct IdtEntry{
+struct IdtEntry {
     uint16_t offsetLower;
     uint16_t selector;
     uint8_t zero;
@@ -12,7 +12,7 @@ struct IdtEntry{
     uint16_t offsetHigher;
 } __attribute__((packed));
 
-struct IdtPointer{
+struct IdtPointer {
     uint16_t limit;
     IdtEntry* base;
 } __attribute__((packed));

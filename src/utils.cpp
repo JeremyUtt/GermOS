@@ -18,13 +18,10 @@ void amogus() {
     // width, height*3, 0xaa);
 
     GuiRenderer::putRect(startx, starty, width * 3, height * 4, 0xaa);
-    GuiRenderer::putRect(startx + width, starty + height, width * 2, height,
-                            0x55);
+    GuiRenderer::putRect(startx + width, starty + height, width * 2, height, 0x55);
     GuiRenderer::putRect(startx, starty + height * 4, width, height, 0xaa);
-    GuiRenderer::putRect(startx + width * 2, starty + height * 4, width,
-                            height, 0xaa);
-    GuiRenderer::putRect(startx - width, starty + height, width, height * 3,
-                            0xaa);
+    GuiRenderer::putRect(startx + width * 2, starty + height * 4, width, height, 0xaa);
+    GuiRenderer::putRect(startx - width, starty + height, width, height * 3, 0xaa);
 }
 
 void printColorPallet() {

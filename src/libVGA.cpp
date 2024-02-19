@@ -96,5 +96,4 @@ void set_mode_13h() {
         outb(0x03C9, i);  // DAC data register (green)
         outb(0x03C9, i);  // DAC data register (blue)
     }
-
 }

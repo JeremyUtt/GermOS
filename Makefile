@@ -123,3 +123,5 @@ debug:
 	@echo $(OBJS)
 clean:
 	@rm -rf $(BUILD_DIR)/* ./bin/*
+format:
+	@find $(SRC_DIR) $(INCLUDE_DIR) -iname '*.hpp' -o -iname '*.cpp' | xargs clang-format -i

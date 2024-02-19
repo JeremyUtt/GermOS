@@ -1,15 +1,13 @@
 // https://stackoverflow.com/questions/37618111/keyboard-irq-within-an-x86-kernel
-#include <libIO.hpp>
-#include <libIDT.hpp>
 #include <stdint.h>
+
+#include <libIDT.hpp>
+#include <libIO.hpp>
 
 IdtEntry idtTable[IDT_SIZE];
 IdtPointer idtPtr;
 
-
-
-void loadIdtEntry(int32_t isr_number, uint32_t base, uint16_t selector,
-                  uint8_t flags) {
+void loadIdtEntry(int32_t isr_number, uint32_t base, uint16_t selector, uint8_t flags) {
     idtTable[isr_number].offsetLower = base & 0xFFFF;
     idtTable[isr_number].offsetHigher = (base >> 16) & 0xFFFF;
     idtTable[isr_number].selector = selector;

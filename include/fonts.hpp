@@ -4,7 +4,7 @@
 
 #define PSF_FONT_MAGIC 0x864ab572
 
-struct PSF_font{
+struct PSF_font {
     uint32_t magic;         /* magic bytes to identify PSF */
     uint32_t version;       /* zero */
     uint32_t headerSize;    /* offset of bitmaps in file, 32 */

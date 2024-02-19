@@ -7,7 +7,9 @@ rsdtDescriptor* rsdtPtr;
 
 bool check(char str[], int address) {
     for (int i = 0; i < getStrLen(str); i++) {
-        if (*(char*)(address + i) != str[i]) { return false; }
+        if (*(char*)(address + i) != str[i]) {
+            return false;
+        }
     }
     return true;
 }

@@ -1,7 +1,7 @@
-#include <PROGRAM_PONG.hpp>
 #include <converts.hpp>
 #include <libGUI.hpp>
 #include <libKeyboard.hpp>
+#include <PROGRAM_PONG.hpp>
 
 using namespace GuiRenderer;
 
@@ -41,22 +41,18 @@ void pong() {
             rightScore = 0;
 
             for (int i = 0; i < 100000000; i++) {
-            /* code */
+                /* code */
             }
-
 
             asm("hlt");
 
-            while (keyboardBuffer::getKeyBufferIndex() > 0)
-            {
+            while (keyboardBuffer::getKeyBufferIndex() > 0) {
                 char c = keyboardBuffer::popKeyBuffer();
-                if(c == Escape) {
+                if (c == Escape) {
                     println("Program Exiting");
                     return;
                 }
             }
-            
-
         }
     }
 }
@@ -99,18 +95,13 @@ bool loop() {
         ballDY *= -1;
     }
 
-#define BALL_L_X_Intersect \
-    (ballX <= PADDLE_WIDTH && ballX + BALL_SIZE >= PADDLE_WIDTH)
-#define BALL_R_X_INTERSECT                  \
-    (ballX <= screenWidth - PADDLE_WIDTH && \
-     ballX + BALL_SIZE >= screenWidth - PADDLE_WIDTH)
-#define BALL_L_Y_INTERSECT \
-    (ballY <= leftPos + PADDLE_WIDTH && ballY + BALL_SIZE >= leftPos)
-#define BALL_R_Y_INTERSECT \
-    (ballY <= rightPos + PADDLE_WIDTH && ballY + BALL_SIZE >= rightPos)
+#define BALL_L_X_Intersect (ballX <= PADDLE_WIDTH && ballX + BALL_SIZE >= PADDLE_WIDTH)
+#define BALL_R_X_INTERSECT \
+    (ballX <= screenWidth - PADDLE_WIDTH && ballX + BALL_SIZE >= screenWidth - PADDLE_WIDTH)
+#define BALL_L_Y_INTERSECT (ballY <= leftPos + PADDLE_WIDTH && ballY + BALL_SIZE >= leftPos)
+#define BALL_R_Y_INTERSECT (ballY <= rightPos + PADDLE_WIDTH && ballY + BALL_SIZE >= rightPos)
 
-    if ((BALL_L_X_Intersect && BALL_L_Y_INTERSECT) ||
-        (BALL_R_X_INTERSECT && BALL_R_Y_INTERSECT)) {
+    if ((BALL_L_X_Intersect && BALL_L_Y_INTERSECT) || (BALL_R_X_INTERSECT && BALL_R_Y_INTERSECT)) {
         ballDX *= -1;
 
         if (lastScored) {

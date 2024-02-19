@@ -44,8 +44,7 @@ static void InterpretKeyboard(int keycode) {
             return;
     }
 
-    char ascii = QWERTYKeyboard::Translate(
-        keycode, isLeftShiftPressed | isRightShiftPressed);
+    char ascii = QWERTYKeyboard::Translate(keycode, isLeftShiftPressed | isRightShiftPressed);
 
     if (ascii != 0) {
         // NewGuiRenderer::printChar(ascii);
@@ -93,15 +92,13 @@ INTERRUPT void keyboardHandler(struct interrupt_frame* frame) {
 
 namespace QWERTYKeyboard {
 
-const char ASCIITable[] = {
-    0,   Escape, '1',       '2', '3',   '4', '5', '6',  '7', '8', '9', '0',
-    '-', '=',    BackSpace, 0,   'q',   'w', 'e', 'r',  't', 'y', 'u', 'i',
-    'o', 'p',    '[',       ']', Enter, 0,   'a', 's',  'd', 'f', 'g', 'h',
-    'j', 'k',    'l',       ';', '\'',  '`', 0,   '\\', 'z', 'x', 'c', 'v',
-    'b', 'n',    'm',       ',', '.',   '/', 0,   '*',  0,   ' '};
+const char ASCIITable[] = {0,   Escape, '1',       '2', '3',   '4', '5', '6',  '7', '8', '9', '0',
+                           '-', '=',    BackSpace, 0,   'q',   'w', 'e', 'r',  't', 'y', 'u', 'i',
+                           'o', 'p',    '[',       ']', Enter, 0,   'a', 's',  'd', 'f', 'g', 'h',
+                           'j', 'k',    'l',       ';', '\'',  '`', 0,   '\\', 'z', 'x', 'c', 'v',
+                           'b', 'n',    'm',       ',', '.',   '/', 0,   '*',  0,   ' '};
 
-const char SymbolTable[] = {0,   Escape, '!', '@', '#', '$', '%',
-                            '^', '&',    '*', '(', ')', '_', '+'};
+const char SymbolTable[] = {0, Escape, '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+'};
 
 char Translate(uint8_t scancode, bool uppercase) {
     if (scancode > 58) {

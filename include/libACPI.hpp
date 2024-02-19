@@ -28,7 +28,6 @@ struct rsdpDescriptor20 {
     uint8_t reserved[3];
 } __attribute__((packed));
 
-
 rsdpDescriptor* findRSDP();
 void decodeRSDP(rsdpDescriptor* ptr);
 void decodeRSDT(rsdtDescriptor* ptr);

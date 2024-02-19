@@ -64,8 +64,7 @@ void ClearScreen() {
 }
 //-----
 void putPixel(int pos_x, int pos_y, unsigned char VGA_COLOR) {
-    unsigned char* location =
-        (unsigned char*)screenMemory + screenWidth * pos_y + pos_x;
+    unsigned char* location = (unsigned char*)screenMemory + screenWidth * pos_y + pos_x;
     *location = VGA_COLOR;
 }
 
@@ -114,8 +113,7 @@ void putChar(int chr, int x, int y) {
                 uint8_t tmpBool = (lineByte >> bitNum);
                 bool bit = (tmpBool & 0x01);
                 // serialWriteChar((char*)bit ? '#' : '.');
-                int pixelX =
-                    x + (bytesNum * 8) - bitNum + currentFont->width + 1;
+                int pixelX = x + (bytesNum * 8) - bitNum + currentFont->width + 1;
                 putPixel(pixelX, y + lineNum, bit ? printColor : 0x00);
             }
         }

@@ -1,6 +1,7 @@
 #pragma once
-#include <string.hpp>
 #include <stdint.h>
+
+#include <string.hpp>
 int initSerial();
 int isTransmitEmpty();
 void serialWriteChar(char a);
