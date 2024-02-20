@@ -9,6 +9,7 @@
 #include <libACPI.hpp>
 #include <libGUI.hpp>
 #include <libIDT.hpp>
+#include <libIO.hpp>
 #include <libKeyboard.hpp>
 #include <libPCI.hpp>
 #include <libSerial.hpp>
@@ -16,7 +17,7 @@
 #include <PROGRAM_TUI.hpp>
 #include <string.hpp>
 #include <utils.hpp>
-
+#include <libTimer.hpp>
 #ifdef TEXT_MODE
 using namespace TextRenderer;
 #endif
@@ -27,10 +28,11 @@ using namespace GuiRenderer;
 extern "C" void main() {
     // checkKernelMemory(findRSDP());
     // serialWriteStr("Hello WOrld");
-    string name(5);
-    name = "poggesdrfsdzfgszdf";
+
+    // vgaSwitch();
 
     initKernel();
+    printIdtEntry(0x21);
 
 #ifndef TEXT_MODE
     pong();
@@ -55,11 +57,18 @@ void initKernel() {
     println("Initalizing Serial Interface");
     initSerial();
 
+    println("Loading IDT Entry for Timer Handler");
+    loadIdtEntry(0x20, (uint32_t)timerHandler, 0x08, 0x8e);
+
     println("Loading IDT Entry for Keyboard Handler");
     loadIdtEntry(0x21, (uint32_t)keyboardHandler, 0x08, 0x8e);
+    
 
     println("Initalizing IDT");
     idtInit();
+
+    println("Initalizing Timer Interrupt");
+    setTimerStatus(true);
 
     println("Initalizing Keyboard Interrupt");
     kbInit();
@@ -74,7 +83,8 @@ void initKernel() {
     println("Kernel Initalization Complete!");
     println("Welcome To GermOS!");
     println("Press any key to continue");
-    asm("hlt");
+    
+    waitForKeyboard();
     ClearScreen();
 }
 
@@ -85,3 +95,4 @@ bool checkKernelMemory(int start) {
     }
     return true;
 }
+

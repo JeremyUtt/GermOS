@@ -7,6 +7,7 @@
 #include <PROGRAM_PONG.hpp>
 #include <PROGRAM_TUI.hpp>
 #include <utils.hpp>
+#include <libTimer.hpp>
 using namespace TextRenderer;
 void processCommand(char cmd[]);
 void programLoop();
@@ -146,6 +147,8 @@ void cmdPong() {
     x = 1;
     putString("Not Yet Implemented", x, y);
     y++;
+
+    setTimerStatus(false);
 
     // TODO: switch to graphics Mode
     // set_mode_13h();

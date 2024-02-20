@@ -87,7 +87,6 @@ INTERRUPT void keyboardHandler(struct interrupt_frame* frame) {
 
     // End Interrupt
     outb(PIC1_COMMAND, PIC_EOI);
-    outb(PIC1_COMMAND, PIC_EOI);
 }
 
 namespace QWERTYKeyboard {
@@ -139,3 +138,9 @@ char Translate(uint8_t scancode, bool uppercase) {
 }
 
 }  // namespace QWERTYKeyboard
+
+void waitForKeyboard() {
+    while (keyboardBuffer::getKeyBufferIndex() == 0) {
+        asm("hlt");
+    }
+}

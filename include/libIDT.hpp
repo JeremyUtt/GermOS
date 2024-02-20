@@ -6,7 +6,7 @@ struct interrupt_frame;
 
 struct IdtEntry {
     uint16_t offsetLower;
-    uint16_t selector;
+    uint16_t GdtSegment;
     uint8_t zero;
     uint8_t flags;
     uint16_t offsetHigher;
@@ -20,5 +20,6 @@ struct IdtPointer {
 extern IdtPointer idtPtr;
 
 void idtInit();
-void loadIdtEntry(int32_t isr_number, uint32_t base, uint16_t selector, uint8_t flags);
+void loadIdtEntry(int32_t isr_number, uint32_t base, uint16_t GdtSegment, uint8_t flags);
+void printIdtEntry(uint8_t i);
 extern "C" void loadIdt(void*);

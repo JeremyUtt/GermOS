@@ -5,10 +5,7 @@
 [bits 16]
 SECTION .btext
 %include "src/macros.S"
-; [org 0x7c00]                      
 
-; fake _start symbol to get warnings to shut up
-; program actually starts in the bootloader and jumps to here (0x1000) in memory
 global _start
 _start:
 
@@ -137,6 +134,7 @@ GDT_Start:
 
 GDT_End:
 
+global GDT_Descriptor
 GDT_Descriptor:
 	dw GDT_End - GDT_Start - 1 ; size
 	dd GDT_Start

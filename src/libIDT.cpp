@@ -1,23 +1,25 @@
 // https://stackoverflow.com/questions/37618111/keyboard-irq-within-an-x86-kernel
 #include <stdint.h>
 
+#include <converts.hpp>
 #include <libIDT.hpp>
 #include <libIO.hpp>
+#include <libSerial.hpp>
 
 IdtEntry idtTable[IDT_SIZE];
 IdtPointer idtPtr;
 
-void loadIdtEntry(int32_t isr_number, uint32_t base, uint16_t selector, uint8_t flags) {
+void loadIdtEntry(int32_t isr_number, uint32_t base, uint16_t GdtSegment, uint8_t flags) {
     idtTable[isr_number].offsetLower = base & 0xFFFF;
     idtTable[isr_number].offsetHigher = (base >> 16) & 0xFFFF;
-    idtTable[isr_number].selector = selector;
+    idtTable[isr_number].GdtSegment = GdtSegment;
     idtTable[isr_number].flags = flags;
     idtTable[isr_number].zero = 0;
 }
 
 static void initIdtPtr() {
     idtPtr.limit = (sizeof(IdtEntry) * IDT_SIZE) - 1;
-    idtPtr.base = &idtTable[0];
+    idtPtr.base = idtTable;
 }
 
 static void initPic() {
@@ -44,12 +46,23 @@ static void initPic() {
     /* Initialization finished */
 
     /* mask interrupts */
-    outb(0x21, 0xff);
-    outb(0xA1, 0xff);
+    outb(PIC1_DATA, 0xff);
+    outb(PIC2_DATA, 0xff);
 }
 
 void idtInit() {
     initPic();
     initIdtPtr();
     loadIdt(&idtPtr);
+}
+
+void printIdtEntry(uint8_t i) {
+    serialWriteStr("\n\rIDT Entry: 0x");
+    serialWriteStr(intToStr(i, 16));
+    serialWriteStr("\r\n\tOffset: 0x");
+    serialWriteStr(intToStr((idtTable[i].offsetHigher << 16) + idtTable[i].offsetLower, 16));
+    serialWriteStr("\r\n\tGdt Segment: ");
+    serialWriteStr(intToStr(idtTable[i].GdtSegment, 10));
+    serialWriteStr("\r\n\tFlags: 0b");
+    serialWriteStr(intToStr(idtTable[i].flags, 2));
 }
