@@ -48,7 +48,7 @@ void tui() {
     // char command[] = {};
 
     while (true) {
-        asm("hlt");
+        waitForKeyboard();
         programLoop();
     }
 }
@@ -147,8 +147,6 @@ void cmdPong() {
     x = 1;
     putString("Not Yet Implemented", x, y);
     y++;
-
-    setTimerStatus(false);
 
     // TODO: switch to graphics Mode
     // set_mode_13h();

@@ -13,11 +13,12 @@
 #include <libKeyboard.hpp>
 #include <libPCI.hpp>
 #include <libSerial.hpp>
+#include <libTimer.hpp>
 #include <PROGRAM_PONG.hpp>
 #include <PROGRAM_TUI.hpp>
 #include <string.hpp>
+#include <system.hpp>
 #include <utils.hpp>
-#include <libTimer.hpp>
 #ifdef TEXT_MODE
 using namespace TextRenderer;
 #endif
@@ -32,10 +33,9 @@ extern "C" void main() {
     // vgaSwitch();
 
     initKernel();
-    printIdtEntry(0x21);
 
 #ifndef TEXT_MODE
-    pong();
+    PONG::pong();
 #endif
 #ifdef TEXT_MODE
     tui();
@@ -44,7 +44,10 @@ extern "C" void main() {
     while (1) {
         ClearScreen();
         println("All Programs Finished");
-        asm("hlt");
+        println("Interrupts Disabled");
+        println("Processor Halting");
+        disableInterrupts();
+        halt();
     }
 }
 
@@ -62,13 +65,13 @@ void initKernel() {
 
     println("Loading IDT Entry for Keyboard Handler");
     loadIdtEntry(0x21, (uint32_t)keyboardHandler, 0x08, 0x8e);
-    
 
     println("Initalizing IDT");
     idtInit();
 
     println("Initalizing Timer Interrupt");
-    setTimerStatus(true);
+    Timer::setEnabled(true);
+    Timer::setFreq(1000);
 
     println("Initalizing Keyboard Interrupt");
     kbInit();
@@ -83,7 +86,7 @@ void initKernel() {
     println("Kernel Initalization Complete!");
     println("Welcome To GermOS!");
     println("Press any key to continue");
-    
+
     waitForKeyboard();
     ClearScreen();
 }
@@ -95,4 +98,3 @@ bool checkKernelMemory(int start) {
     }
     return true;
 }
-

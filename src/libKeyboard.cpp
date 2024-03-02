@@ -4,6 +4,7 @@
 #include <libIO.hpp>
 #include <libKeyboard.hpp>
 #include <libSerial.hpp>
+#include <system.hpp>
 bool isRightShiftPressed;
 bool isLeftShiftPressed;
 bool isArrowPressed;
@@ -141,6 +142,6 @@ char Translate(uint8_t scancode, bool uppercase) {
 
 void waitForKeyboard() {
     while (keyboardBuffer::getKeyBufferIndex() == 0) {
-        asm("hlt");
+        halt();
     }
 }

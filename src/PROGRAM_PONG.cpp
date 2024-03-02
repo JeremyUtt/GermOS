@@ -1,9 +1,12 @@
 #include <converts.hpp>
 #include <libGUI.hpp>
 #include <libKeyboard.hpp>
+#include <libTimer.hpp>
 #include <PROGRAM_PONG.hpp>
 
 using namespace GuiRenderer;
+
+namespace PONG {
 
 int leftPos, rightPos = screenHeight / 2;
 int ballX = screenWidth / 2;
@@ -23,9 +26,7 @@ bool loop();
 
 void pong() {
     while (true) {
-        for (int i = 0; i < 1000000; i++) {
-            /* code */
-        }
+        sleep(5);
 
         if (loop()) {
             ClearScreen();
@@ -40,11 +41,8 @@ void pong() {
             leftScore = 0;
             rightScore = 0;
 
-            for (int i = 0; i < 100000000; i++) {
-                /* code */
-            }
-
-            asm("hlt");
+            sleep(500);
+            waitForKeyboard();
 
             while (keyboardBuffer::getKeyBufferIndex() > 0) {
                 char c = keyboardBuffer::popKeyBuffer();
@@ -137,3 +135,5 @@ bool loop() {
 
     return false;
 }
+
+}  // namespace PONG
