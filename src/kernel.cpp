@@ -17,6 +17,7 @@
 #include <PROGRAM_PONG.hpp>
 #include <PROGRAM_TUI.hpp>
 #include <string.hpp>
+#include <structPrinter.hpp>
 #include <system.hpp>
 #include <utils.hpp>
 #ifdef TEXT_MODE
@@ -30,7 +31,9 @@ extern "C" void main() {
     // checkKernelMemory(findRSDP());
     // serialWriteStr("Hello WOrld");
 
-    // vgaSwitch();
+    serialWriteStr("FrameBuffer Start: ");
+    serialWriteStr(intToStr(vbeInfo->framebuffer, 16));
+    serialWriteStr("\r\n");
 
     initKernel();
 
@@ -54,6 +57,7 @@ extern "C" void main() {
 void initKernel() {
     setDrawColor(0x7);
     setTextFont(&_binary_fonts_Uni2_Terminus12x6_psf_start);
+    
     println("Successfully Switched to Protected Mode");
     println("Initalizing and Loading Graphics Mode Fonts");
 

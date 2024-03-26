@@ -1,4 +1,5 @@
 %macro printR 1
+%ifdef TEXT_MODE
 %%printer:
     mov si, %%text_string ;set source index to begining of text_string
 
@@ -18,4 +19,5 @@
     %%text_string db %1, 0
     ; section .btext
 %%done:
+%endif
 %endmacro

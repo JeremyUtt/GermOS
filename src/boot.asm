@@ -26,7 +26,26 @@ setMediumGuiMode:
 	mov al, 0x13 ; VGA 320x200
 	int 0x10	; Video Services
 	printR "Set Video Mode to GUI"
-;end setMediumGuiMode
+; ;end setMediumGuiMode
+
+
+; setVesaGuiMode:
+; 	mov ax, 0x4f01
+; 	mov cx, 0x107
+; 	mov di, 0x500
+; 	int 0x10
+	
+	; mov ax, 0x4f02
+	; mov bx, 0x107
+	; int 0x10
+	; cmp ax, 0x4f
+	; je vesaError
+	; jmp done
+	; vesaError:
+	; printR "vesaEr"
+	
+	; done:
+	; printR "Set Video Mode to GUI"
 %endif
 
 printR 0ah

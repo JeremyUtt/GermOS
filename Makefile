@@ -61,7 +61,7 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
  
 # Assemble all ASM files
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.asm
-	@$(NASM) -g $(MODEFLAGS) -f elf -o $@ ./$<
+	@$(NASM) -g $(MODEFLAGS) -f elf -o $@ ./$< -w+gnu-elf-extensions
 	@printf "%b" "\033[0;36m\e0ASM $< \033[0m\n"
 
 # "Compile" all Fonts files (convert to binary blob object)

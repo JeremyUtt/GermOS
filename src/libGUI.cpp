@@ -7,11 +7,15 @@
 #include <libSerial.hpp>
 #include <utils.hpp>
 
+
+vbe_mode_info_structure* vbeInfo = (vbe_mode_info_structure*)0x500;
+
+
 namespace GuiRenderer {
-static int XcounterPx = 0;
-static int YcounterPx = 0;
-static int printColor;
-static PSF_font* currentFont;
+int XcounterPx = 0;
+int YcounterPx = 0;
+int printColor;
+PSF_font* currentFont;
 
 void setTextFont(PSF_font* font) {
     currentFont = font;
@@ -50,7 +54,7 @@ void UpdateCounter(int xIncChars, int yIncChars) {
 
 void ClearScreen() {
     uint8_t* where = (uint8_t*)screenMemory;
-    int i, j;
+    uint32_t i, j;
 
     for (i = 0; i < screenHeight; i++) {
         for (j = 0; j < screenWidth; j++) {
