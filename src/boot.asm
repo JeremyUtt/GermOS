@@ -120,6 +120,8 @@ switchToProtected:
 [bits 32]
 start_protected_mode:
 	[extern main]
+	mov esp, 0x7bFF
+	; mov esp, 0x9000
 	jmp main
 
 ; ====================================================================================

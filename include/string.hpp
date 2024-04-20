@@ -6,6 +6,7 @@ class string {
     uint32_t _size;
 
   public:
+    string();
     string(char* content);
     string(const char* content);
     string(uint32_t size);

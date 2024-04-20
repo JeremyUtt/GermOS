@@ -1,3 +1,6 @@
 #pragma once
-void tui();
+
+namespace TUI {
+void main();
+}
 extern "C" void returnToReal();

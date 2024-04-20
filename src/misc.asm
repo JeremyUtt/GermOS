@@ -1,5 +1,6 @@
 ; Miscellaneous functions that need to be written in asm
 
+SECTION .text
 
 [bits 32]
 global loadIdt

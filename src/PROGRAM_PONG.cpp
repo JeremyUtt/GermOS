@@ -24,7 +24,7 @@ bool lastScored = false;
 
 bool loop();
 
-void pong() {
+void main() {
     while (true) {
         sleep(5);
 

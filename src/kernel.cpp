@@ -17,9 +17,9 @@
 #include <PROGRAM_PONG.hpp>
 #include <PROGRAM_TUI.hpp>
 #include <string.hpp>
-#include <structPrinter.hpp>
 #include <system.hpp>
 #include <utils.hpp>
+#include <process.hpp>
 #ifdef TEXT_MODE
 using namespace TextRenderer;
 #endif
@@ -37,12 +37,17 @@ extern "C" void main() {
 
     initKernel();
 
-#ifndef TEXT_MODE
-    PONG::pong();
-#endif
-#ifdef TEXT_MODE
-    tui();
-#endif
+
+
+
+    #ifndef TEXT_MODE
+        Process pong("Pong", (uint32_t)PONG::main);
+        pong.start();
+    #endif
+    #ifdef TEXT_MODE
+        Process cmd("cmd", (uint32_t)TUI::main);
+        cmd.start();
+    #endif
 
     while (1) {
         ClearScreen();
@@ -54,14 +59,16 @@ extern "C" void main() {
     }
 }
 
+
 void initKernel() {
     setDrawColor(0x7);
     setTextFont(&_binary_fonts_Uni2_Terminus12x6_psf_start);
     
     println("Successfully Switched to Protected Mode");
-    println("Initalizing and Loading Graphics Mode Fonts");
+    println("Setting up Kernel Stack");
+    println("Initializing and Loading Graphics Mode Fonts");
 
-    println("Initalizing Serial Interface");
+    println("Initializing Serial Interface");
     initSerial();
 
     println("Loading IDT Entry for Timer Handler");
@@ -70,24 +77,24 @@ void initKernel() {
     println("Loading IDT Entry for Keyboard Handler");
     loadIdtEntry(0x21, (uint32_t)keyboardHandler, 0x08, 0x8e);
 
-    println("Initalizing IDT");
+    println("Initializing IDT");
     idtInit();
 
-    println("Initalizing Timer Interrupt");
+    println("Initializing Timer Interrupt");
     Timer::setEnabled(true);
     Timer::setFreq(1000);
 
-    println("Initalizing Keyboard Interrupt");
+    println("Initializing Keyboard Interrupt");
     kbInit();
 
-    println("Finding RSDP Pointer");
-    findRSDP();
-    decodeRSDP(rsdpPtr);
+    // println("Finding RSDP Pointer");
+    // findRSDP();
+    // decodeRSDP(rsdpPtr);
 
-    println("Decoding RSDT");
-    decodeRSDT(rsdtPtr);
+    // println("Decoding RSDT");
+    // decodeRSDT(rsdtPtr);
 
-    println("Kernel Initalization Complete!");
+    println("Kernel Initialization Complete!");
     println("Welcome To GermOS!");
     println("Press any key to continue");
 

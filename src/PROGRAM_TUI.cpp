@@ -3,12 +3,15 @@
 #include <libIO.hpp>
 #include <libKeyboard.hpp>
 #include <libSerial.hpp>
+#include <libTimer.hpp>
 #include <libVGA.hpp>
 #include <PROGRAM_PONG.hpp>
 #include <PROGRAM_TUI.hpp>
 #include <utils.hpp>
-#include <libTimer.hpp>
 using namespace TextRenderer;
+
+namespace TUI {
+
 void processCommand(char cmd[]);
 void programLoop();
 void cmdClear();
@@ -20,7 +23,7 @@ int y = 1;
 char command[100] = {};
 int cmdIndex = 0;
 
-void tui() {
+void main() {
     setDrawColor(0x70);
     for (int j = 0; j < screenHeight; j++) {
         for (int i = 0; i < screenWidth; i++) {
@@ -156,3 +159,5 @@ void cmdPong() {
 
     // TODO: switch to text mode
 }
+
+}  // namespace TUI

@@ -2,6 +2,11 @@
 
 #include "converts.hpp"
 
+string::string() {
+    _size = 0;
+    _content = nullptr;
+}
+
 string::string(char* content) {
     _size = getStrLen(content);
     _content = content;

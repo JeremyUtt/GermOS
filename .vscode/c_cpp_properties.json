@@ -1,17 +1,21 @@
 {
     "configurations": [
         {
-            "name": "Linux",
+            "name": "GermOS",
             "includePath": [
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/include"
             ],
-            "defines": [],
+            "defines": [
+                "__STDC_HOSTED__=0",
+                "TEXT_MODE"
+            ],
             "compilerPath": "/opt/i386elfgcc/bin/i386-elf-g++",
             "cStandard": "gnu17",
             "cppStandard": "gnu++17",
             "intelliSenseMode": "linux-gcc-x86",
-            "configurationProvider": "ms-vscode.makefile-tools"
+            "configurationProvider": "ms-vscode.makefile-tools",
+            
         }
     ],
     "version": 4
