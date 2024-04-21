@@ -31,14 +31,14 @@ CPP_FILES := $(wildcard $(SRC_DIR)/*.cpp)
 C_FILES := $(wildcard $(SRC_DIR)/*.c)
 ASM_FILES := $(wildcard $(SRC_DIR)/*.asm)
 FONT_FILES := $(wildcard $(FONTS_DIR)/*.psf)
-IMAGE_FILES := $(wildcard $(FONTS_DIR)/*.raw)
+IMAGE_FILES := $(wildcard $(FONTS_DIR)/*.ppm)
 
 # Combine all above lists and convert all file extensions to ".o"
 OBJS := $(patsubst $(SRC_DIR)/%.asm,$(BUILD_DIR)/%.o,$(ASM_FILES)) \
 		$(patsubst $(SRC_DIR)/%.cpp,$(BUILD_DIR)/%.o,$(CPP_FILES)) \
         $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/%.o,$(C_FILES)) \
 		$(patsubst $(FONTS_DIR)/%.psf,$(BUILD_DIR)/%.o,$(FONT_FILES)) \
-		$(patsubst $(FONTS_DIR)/%.raw,$(BUILD_DIR)/%.o,$(IMAGE_FILES))
+		$(patsubst $(FONTS_DIR)/%.ppm,$(BUILD_DIR)/%.o,$(IMAGE_FILES))
 
 all: bin/OS.bin bin/OS.sym
 
@@ -66,6 +66,12 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.asm
 
 # "Compile" all Fonts files (convert to binary blob object)
 $(BUILD_DIR)/%.o: $(FONTS_DIR)/%.psf
+	@objcopy -O elf32-i386 -B i386 -I binary $< $@
+	@printf "%b" "\033[0;36m\e0OBJCOPY $< \033[0m\n"
+
+
+# "Compile" all ppm files (convert to binary blob object)
+$(BUILD_DIR)/%.o: $(FONTS_DIR)/%.ppm
 	@objcopy -O elf32-i386 -B i386 -I binary $< $@
 	@printf "%b" "\033[0;36m\e0OBJCOPY $< \033[0m\n"
 

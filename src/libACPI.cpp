@@ -6,7 +6,7 @@ rsdpDescriptor* rsdpPtr;
 rsdtDescriptor* rsdtPtr;
 
 bool check(char str[], int address) {
-    for (int i = 0; i < getStrLen(str); i++) {
+    for (uint32_t i = 0; i < getStrLen(str); i++) {
         if (*(char*)(address + i) != str[i]) {
             return false;
         }

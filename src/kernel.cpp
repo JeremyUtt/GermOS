@@ -20,6 +20,7 @@
 #include <system.hpp>
 #include <utils.hpp>
 #include <process.hpp>
+#include <photo.hpp>
 #ifdef TEXT_MODE
 using namespace TextRenderer;
 #endif
@@ -31,16 +32,18 @@ extern "C" void main() {
     // checkKernelMemory(findRSDP());
     // serialWriteStr("Hello WOrld");
 
-    serialWriteStr("FrameBuffer Start: ");
-    serialWriteStr(intToStr(vbeInfo->framebuffer, 16));
-    serialWriteStr("\r\n");
+    // serialWriteStr("FrameBuffer Start: ");
+    // serialWriteStr(intToStr(vbeInfo->framebuffer, 16));
+    // serialWriteStr("\r\n");
 
     initKernel();
 
 
-
-
     #ifndef TEXT_MODE
+        printPhoto(&_binary_fonts_Untitled_ppm_start);
+        
+        sleep(5000);
+        
         Process pong("Pong", (uint32_t)PONG::main);
         pong.start();
     #endif
@@ -85,7 +88,7 @@ void initKernel() {
     Timer::setFreq(1000);
 
     println("Initializing Keyboard Interrupt");
-    kbInit();
+    KB::init();
 
     // println("Finding RSDP Pointer");
     // findRSDP();
@@ -98,7 +101,7 @@ void initKernel() {
     println("Welcome To GermOS!");
     println("Press any key to continue");
 
-    waitForKeyboard();
+    KB::waitForKeyboard();
     ClearScreen();
 }
 

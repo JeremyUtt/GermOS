@@ -11,9 +11,14 @@ class string {
     string(const char* content);
     string(uint32_t size);
     string(char* content, uint32_t size);
+    
     string& operator=(char* str);
     string& operator=(const char* str);
-    uint32_t size();
+    bool operator==(string& str);
+    bool operator==(const char* str);
+    char& operator[](uint32_t index);
+
+    uint32_t size() const;
     char* str();
-    char at(uint32_t index);
+    char& at(uint32_t index);
 };

@@ -4,6 +4,12 @@
 #include <libTimer.hpp>
 #include <PROGRAM_PONG.hpp>
 
+#define PADDLE_SPEED 10
+#define BALL_SPEED_RATIO 5
+#define PADDLE_WIDTH 15
+#define PADDLE_X 15
+#define BALL_SIZE 4
+
 using namespace GuiRenderer;
 
 namespace PONG {
@@ -16,11 +22,6 @@ int ballDY = 1;
 int timer = 0;
 int leftScore, rightScore = 0;
 bool lastScored = false;
-#define PADDLE_SPEED 10
-#define BALL_SPEED_RATIO 5
-#define PADDLE_WIDTH 15
-#define PADDLE_X 15
-#define BALL_SIZE 4
 
 bool loop();
 
@@ -42,10 +43,10 @@ void main() {
             rightScore = 0;
 
             sleep(500);
-            waitForKeyboard();
+            KB::waitForKeyboard();
 
-            while (keyboardBuffer::getKeyBufferIndex() > 0) {
-                char c = keyboardBuffer::popKeyBuffer();
+            while (KB::getKeyBufferIndex() > 0) {
+                char c = KB::popKeyBuffer();
                 if (c == Escape) {
                     println("Program Exiting");
                     return;
@@ -56,8 +57,8 @@ void main() {
 }
 
 bool loop() {
-    if (keyboardBuffer::getKeyBufferIndex() > 0) {
-        char character = keyboardBuffer::popKeyBuffer();
+    if (KB::getKeyBufferIndex() > 0) {
+        char character = KB::popKeyBuffer();
 
         switch (character) {
             case 'w':

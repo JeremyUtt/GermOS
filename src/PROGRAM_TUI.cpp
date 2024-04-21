@@ -20,10 +20,14 @@ void cmdShutdown();
 void cmdPong();
 int x = 2;
 int y = 1;
-char command[100] = {};
+char command[CMD_SIZE] = {0};
 int cmdIndex = 0;
 
 void main() {
+    for (uint8_t i = 0; i < CMD_SIZE; i++) {
+        command[i] = 0;
+    }
+
     setDrawColor(0x70);
     for (int j = 0; j < screenHeight; j++) {
         for (int i = 0; i < screenWidth; i++) {
@@ -51,20 +55,19 @@ void main() {
     // char command[] = {};
 
     while (true) {
-        waitForKeyboard();
+        KB::waitForKeyboard();
         programLoop();
     }
 }
 
 void programLoop() {
-    while (keyboardBuffer::getKeyBufferIndex() > 0) {
-        char character = keyboardBuffer::popKeyBuffer();
+    while (KB::getKeyBufferIndex() > 0) {
+        char character = KB::popKeyBuffer();
 
         switch (character) {
             case Enter:
-                // serialWriteStr("Enter");
                 processCommand(command);
-                for (int i = 0; i < 100; i++) {
+                for (int i = 0; i < CMD_SIZE; i++) {
                     command[i] = 0;
                 }
                 cmdIndex = 0;
@@ -72,7 +75,12 @@ void programLoop() {
             case BackSpace:
                 if (cmdIndex <= 0)
                     return;
+
                 x--;
+                if (x < 1) {
+                    y--;
+                    x = screenWidth - 2;
+                }
                 putChar(' ', x, y);
                 moveCursor(x, y);
                 cmdIndex--;
@@ -83,6 +91,10 @@ void programLoop() {
                 return;
             default:
                 break;
+        }
+
+        if (cmdIndex >= CMD_SIZE) {
+            return;
         }
 
         putChar(character, x, y);
@@ -101,8 +113,6 @@ void programLoop() {
 }
 
 void processCommand(char cmd[]) {
-    // serialWriteStr("Processing: ");
-    // serialWriteStr(cmd);
     y++;
     x = 1;
 

@@ -36,7 +36,7 @@ string intToStr(int value, int base) {
     return string(rc);
 }
 
-int getStrLen(char String[]) {
+uint32_t getStrLen(char String[]) {
     int strLen = 0;
     for (int i = 0; i < 1; i++) {
         if (String[strLen] != 0) {
@@ -47,7 +47,7 @@ int getStrLen(char String[]) {
     return strLen;
 }
 
-int getStrLen(const char String[]) {
+uint32_t getStrLen(const char String[]) {
     int strLen = 0;
     for (int i = 0; i < 1; i++) {
         if (String[strLen] != 0) {

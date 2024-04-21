@@ -5,11 +5,29 @@
 #include <libKeyboard.hpp>
 #include <libSerial.hpp>
 #include <system.hpp>
+
+namespace KB {
 bool isRightShiftPressed;
 bool isLeftShiftPressed;
 bool isArrowPressed;
+char kbBuffer[256] = {0};
+uint8_t keyboardBufferIndex = 0;
+const char ASCIITable[] = {0,   Escape, '1',       '2', '3',   '4', '5', '6',  '7', '8', '9', '0',
+                           '-', '=',    BackSpace, 0,   'q',   'w', 'e', 'r',  't', 'y', 'u', 'i',
+                           'o', 'p',    '[',       ']', Enter, 0,   'a', 's',  'd', 'f', 'g', 'h',
+                           'j', 'k',    'l',       ';', '\'',  '`', 0,   '\\', 'z', 'x', 'c', 'v',
+                           'b', 'n',    'm',       ',', '.',   '/', 0,   '*',  0,   ' '};
 
-void kbInit(void) {
+const char SymbolTable[] = {0, Escape, '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+'};
+
+
+void init() {
+    // Properly Initalized global variables
+    for (uint8_t i = 0; i < 255; i++) {
+        KB::kbBuffer[i] = 0;
+    }
+    KB::keyboardBufferIndex = 0;
+
     /* This is a very basic keyboard initialization. The assumption is we have a
      * PS/2 keyboard and it is already in a proper state. This may not be the
      * case on real hardware. We simply enable the keyboard interupt */
@@ -25,10 +43,22 @@ void kbInit(void) {
     // outb(PIC1_DATA, 0b111111101);
 }
 
-static void InterpretKeyboard(int keycode) {
-    // printScr(keycode, 0x0f);
-    // printScr("-", 0x0f);
+uint8_t getKeyBufferIndex() {
+    return keyboardBufferIndex;
+}
 
+void pushKeyBuffer(char chr) {
+    kbBuffer[keyboardBufferIndex] = chr;
+    keyboardBufferIndex += 1;
+}
+char popKeyBuffer() {
+    char chr = kbBuffer[keyboardBufferIndex - 1];
+
+    keyboardBufferIndex -= 1;
+    return chr;
+}
+
+void InterpretKeyboard(int keycode) {
     // Switch case for shift keys:
     switch (keycode) {
         case LeftShift:
@@ -45,60 +75,15 @@ static void InterpretKeyboard(int keycode) {
             return;
     }
 
-    char ascii = QWERTYKeyboard::Translate(keycode, isLeftShiftPressed | isRightShiftPressed);
+    char ascii = Translate(keycode, isLeftShiftPressed | isRightShiftPressed);
 
     if (ascii != 0) {
         // NewGuiRenderer::printChar(ascii);
         // serialWriteChar(ascii);
-        keyboardBuffer::pushKeyBuffer(ascii);
+        KB::pushKeyBuffer(ascii);
     }
 }
 
-namespace keyboardBuffer {
-char kbBuffer[256] = {};
-static uint8_t keyboardBufferIndex = 0;
-
-uint8_t getKeyBufferIndex() {
-    // for (int i = 0; i < 256; i++)
-    // {
-    //     serialWriteChar(kbBuffer[i]);
-    //     serialWriteChar('-');
-    // }
-
-    return keyboardBufferIndex;
-}
-
-void pushKeyBuffer(char chr) {
-    kbBuffer[keyboardBufferIndex] = chr;
-    keyboardBufferIndex += 1;
-}
-char popKeyBuffer() {
-    char chr = kbBuffer[keyboardBufferIndex - 1];
-
-    keyboardBufferIndex -= 1;
-    return chr;
-}
-}  // namespace keyboardBuffer
-
-INTERRUPT void keyboardHandler(struct interrupt_frame* frame) {
-    signed int keycode;
-    keycode = inb(0x60);
-
-    InterpretKeyboard(keycode);
-
-    // End Interrupt
-    outb(PIC1_COMMAND, PIC_EOI);
-}
-
-namespace QWERTYKeyboard {
-
-const char ASCIITable[] = {0,   Escape, '1',       '2', '3',   '4', '5', '6',  '7', '8', '9', '0',
-                           '-', '=',    BackSpace, 0,   'q',   'w', 'e', 'r',  't', 'y', 'u', 'i',
-                           'o', 'p',    '[',       ']', Enter, 0,   'a', 's',  'd', 'f', 'g', 'h',
-                           'j', 'k',    'l',       ';', '\'',  '`', 0,   '\\', 'z', 'x', 'c', 'v',
-                           'b', 'n',    'm',       ',', '.',   '/', 0,   '*',  0,   ' '};
-
-const char SymbolTable[] = {0, Escape, '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+'};
 
 char Translate(uint8_t scancode, bool uppercase) {
     if (scancode > 58) {
@@ -138,10 +123,20 @@ char Translate(uint8_t scancode, bool uppercase) {
         return ASCIITable[scancode];
 }
 
-}  // namespace QWERTYKeyboard
-
 void waitForKeyboard() {
-    while (keyboardBuffer::getKeyBufferIndex() == 0) {
+    while (KB::getKeyBufferIndex() == 0) {
         halt();
     }
+}
+
+}  // namespace KB
+
+INTERRUPT void keyboardHandler(interrupt_frame*) {
+    signed int keycode;
+    keycode = inb(0x60);
+
+    KB::InterpretKeyboard(keycode);
+
+    // End Interrupt
+    outb(PIC1_COMMAND, PIC_EOI);
 }
