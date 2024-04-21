@@ -36,6 +36,16 @@ string intToStr(int value, int base) {
     return string(rc);
 }
 
+uint32_t strToInt(string value) {
+    uint32_t result = 0;
+    for (uint32_t i = 0; i < value.size(); i++) {
+        result += (value[i] - '0') * pow(10,value.size()-i-1);
+    }
+    return result;
+}
+
+
+
 uint32_t getStrLen(char String[]) {
     int strLen = 0;
     for (int i = 0; i < 1; i++) {
@@ -72,4 +82,12 @@ bool strcmp(char str1[], char str2[]) {
         }
     }
     return true;
+}
+
+uint32_t pow(uint32_t a, uint32_t b) {
+    uint32_t result = 1;
+    for (uint32_t i = 0; i < b; i++) {
+        result *= a;
+    }
+    return result;
 }

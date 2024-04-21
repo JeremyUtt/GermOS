@@ -1,7 +1,7 @@
 {
     "configurations": [
         {
-            "name": "GermOS",
+            "name": "GoopOS",
             "includePath": [
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/include"

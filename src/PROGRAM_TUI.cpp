@@ -47,7 +47,7 @@ void main() {
     putChar(187, screenWidth - 1, 0);
     putChar(188, screenWidth - 1, screenHeight - 1);
 
-    putString("Welcome To GermOS", 31, 0);
+    putString("Welcome To GoopOS", 31, 0);
 
     putChar('>', 1, 1);
     moveCursor(2, 1);

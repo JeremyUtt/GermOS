@@ -1,6 +1,6 @@
 #pragma once
 
+#include <stdint.h>
+extern uint8_t _binary_fonts_Untitled_ppm_start;
 
-extern char _binary_fonts_Untitled_ppm_start;
-
-void printPhoto(char* image);
+void printPhoto(uint8_t* image, int startX, int startY);

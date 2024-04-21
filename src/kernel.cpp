@@ -14,13 +14,13 @@
 #include <libPCI.hpp>
 #include <libSerial.hpp>
 #include <libTimer.hpp>
+#include <photo.hpp>
+#include <process.hpp>
 #include <PROGRAM_PONG.hpp>
 #include <PROGRAM_TUI.hpp>
 #include <string.hpp>
 #include <system.hpp>
 #include <utils.hpp>
-#include <process.hpp>
-#include <photo.hpp>
 #ifdef TEXT_MODE
 using namespace TextRenderer;
 #endif
@@ -38,19 +38,23 @@ extern "C" void main() {
 
     initKernel();
 
+#ifndef TEXT_MODE
+    for (int i = 0; i < screenWidth / 32; i++) {
+        for (int j = 0; j < screenHeight / 32; j++) {
+            printPhoto(&_binary_fonts_Untitled_ppm_start, 32 * i, 32 * j);
+        }
+    }
 
-    #ifndef TEXT_MODE
-        printPhoto(&_binary_fonts_Untitled_ppm_start);
-        
-        sleep(5000);
-        
-        Process pong("Pong", (uint32_t)PONG::main);
-        pong.start();
-    #endif
-    #ifdef TEXT_MODE
-        Process cmd("cmd", (uint32_t)TUI::main);
-        cmd.start();
-    #endif
+    sleep(5000);
+    while (true) {}
+
+    // Process pong("Pong", (uint32_t)PONG::main);
+    // pong.start();
+#endif
+#ifdef TEXT_MODE
+    Process cmd("cmd", (uint32_t)TUI::main);
+    cmd.start();
+#endif
 
     while (1) {
         ClearScreen();
@@ -62,11 +66,10 @@ extern "C" void main() {
     }
 }
 
-
 void initKernel() {
     setDrawColor(0x7);
     setTextFont(&_binary_fonts_Uni2_Terminus12x6_psf_start);
-    
+
     println("Successfully Switched to Protected Mode");
     println("Setting up Kernel Stack");
     println("Initializing and Loading Graphics Mode Fonts");
@@ -98,7 +101,7 @@ void initKernel() {
     // decodeRSDT(rsdtPtr);
 
     println("Kernel Initialization Complete!");
-    println("Welcome To GermOS!");
+    println("Welcome To GoopOS!");
     println("Press any key to continue");
 
     KB::waitForKeyboard();
