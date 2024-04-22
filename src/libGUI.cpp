@@ -105,7 +105,7 @@ void putLine(int x, int y, int length, bool vertical, int color) {
 }
 //-----
 void putChar(int chr, int x, int y) {
-    // PSF_font* currentFont = &_binary_fonts_Uni2_Terminus12x6_psf_start;
+    // PSF_font* currentFont = &_binary_files_Uni2_Terminus12x6_psf_start;
     int paddedWidth = currentFont->width + (8 - currentFont->width % 8);
     int bytesPerLine = paddedWidth / 8;
 

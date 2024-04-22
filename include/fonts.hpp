@@ -17,8 +17,8 @@ struct PSF_font {
     // uint8_t data[256][20][2];
 };
 
-extern PSF_font _binary_fonts_Uni2_Terminus12x6_psf_start;
-extern PSF_font _binary_fonts_zap_light20_psf_start;
+extern PSF_font Uni2Terminus12x6psf;
+extern PSF_font zaplight20psf;
 
 void psfInit();
 bool getPX(PSF_font* mainFont, char character, int x, int y);

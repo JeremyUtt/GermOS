@@ -56,19 +56,56 @@ printR 0ah
 printR 0dh
 
 loadKernelFromDisk:
-	mov ah, 2 ; Read Sectors Into Memory
-	mov al, 65; Number of Sectors to read
-	mov ch, 0 ; Starting Cylinder Number
-	mov cl, 2 ; Starting Sector number
-	mov dh, 0 ; Head Number
-	; dl = Drive number (Already set)
-	mov bx, KERNEL_LOCATION
-	int 0x13 ; add more disk interrupt
-	jc disk_error
+	; set ds and es to 0
+		xor ax, ax
+		mov ds, ax
+		mov es, ax
+
+		mov ah, 2 ; Read Sectors Into Memory
+		mov al, 65; Number of Sectors to read
+		mov ch, 0 ; Starting Cylinder Number
+		mov cl, 2 ; Starting Sector number
+		mov dh, 0 ; Head Number
+		mov dl, 0 ; Drive number
+		mov bx, KERNEL_LOCATION
+		int 0x13 ; add more disk interrupt
+		; Error Checking:
+		; jc disk_error
+		; mov dh, 65
+		; cmp al, dh
+		; jne disk_error
+
+
+	; AGAIN!!!
+		; mov ax, 1
+		; mov es, ax
+		
+		; mov ah, 2 ; Read Sectors Into Memory
+		; mov al, 65; Number of Sectors to read
+		; mov ch, 1 ; Starting Cylinder Number
+		; mov cl, 31 ; Starting Sector number
+		; mov dh, 0 ; Head Number
+		; ; mov dl, 0 ; Drive number
+		; mov bx, 4096 ; 1*16 + 4096 = 65536 = 0x10000
+		; int 0x13 ; add more disk interrupt
+		; printR "Here?"
+		; ; Error Checking:
+		; jc disk_error
+		
+		; mov dh, 65
+		; cmp al, dh
+		; jne disk_error
+
+
 
 	jmp noerror
 	disk_error:
-		printR "Error"
+		printR "Error "
+		
+		mov al, ah
+		mov ah, 0x0e ;for bios interrupt
+    	int 10h 
+		
 		jmp $
 	noerror:
 
@@ -90,10 +127,10 @@ loadKernelFromDisk:
 ; 	int 0x10
 ; ;end pcicheck
 
-printR "Loading GDT"
+; printR "Loading GDT"
 printR 0ah
 printR 0dh
-printR "Switching to Protected Mode"
+; printR "Switching to Protected Mode"
 printR 0ah
 printR 0dh
 
@@ -122,6 +159,7 @@ start_protected_mode:
 	[extern main]
 	mov esp, 0x7bFF
 	; mov esp, 0x9000
+	; jmp $
 	jmp main
 
 ; ====================================================================================
@@ -129,6 +167,7 @@ start_protected_mode:
 ; ====================================================================================
 
 KERNEL_LOCATION equ 0x7E00      
+KERNEL_TWO equ 10000
 CODE_SEG equ code_descriptor - GDT_Start
 DATA_SEG equ data_descriptor - GDT_Start ; equ = constants
 

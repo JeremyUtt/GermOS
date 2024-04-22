@@ -5,7 +5,7 @@
 # Directories
 SRC_DIR := src
 BUILD_DIR := build
-FONTS_DIR := fonts
+BLOBS_DIR := files
 INCLUDE_DIR := include
 CC_DIR := /opt/i386elfgcc/bin
 
@@ -30,15 +30,13 @@ MODEFLAGS := -D TEXT_MODE
 CPP_FILES := $(wildcard $(SRC_DIR)/*.cpp)
 C_FILES := $(wildcard $(SRC_DIR)/*.c)
 ASM_FILES := $(wildcard $(SRC_DIR)/*.asm)
-FONT_FILES := $(wildcard $(FONTS_DIR)/*.psf)
-IMAGE_FILES := $(wildcard $(FONTS_DIR)/*.ppm)
+BLOBS := $(wildcard $(BLOBS_DIR)/*)
 
 # Combine all above lists and convert all file extensions to ".o"
 OBJS := $(patsubst $(SRC_DIR)/%.asm,$(BUILD_DIR)/%.o,$(ASM_FILES)) \
 		$(patsubst $(SRC_DIR)/%.cpp,$(BUILD_DIR)/%.o,$(CPP_FILES)) \
         $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/%.o,$(C_FILES)) \
-		$(patsubst $(FONTS_DIR)/%.psf,$(BUILD_DIR)/%.o,$(FONT_FILES)) \
-		$(patsubst $(FONTS_DIR)/%.ppm,$(BUILD_DIR)/%.o,$(IMAGE_FILES))
+		$(patsubst $(BLOBS_DIR)/%,$(BUILD_DIR)/%.o,$(BLOBS)) 
 
 all: bin/OS.bin bin/OS.sym
 
@@ -64,16 +62,14 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.asm
 	@$(NASM) -g $(MODEFLAGS) -f elf -o $@ ./$< -w+gnu-elf-extensions
 	@printf "%b" "\033[0;36m\e0ASM $< \033[0m\n"
 
-# "Compile" all Fonts files (convert to binary blob object)
-$(BUILD_DIR)/%.o: $(FONTS_DIR)/%.psf
-	@objcopy -O elf32-i386 -B i386 -I binary $< $@
+# "Compile" all Blobs (convert to binary blob object)
+# second line renames start symbol to be just the filename without puncuation
+$(BUILD_DIR)/%.o: $(BLOBS_DIR)/%
+	@objcopy -O elf32-i386 -B i386 -I binary $< $@ 
+	@objcopy --redefine-sym $$(echo -n _binary_$< | tr -c '[A-Za-z0-9]' '_')_start=$$(echo -n $< | sed 's/.*\///' | tr -cd '[A-Za-z0-9]') $@
+	@echo -n $< | sed 's/.*\///' | tr -cd '[A-Za-z0-9]'
 	@printf "%b" "\033[0;36m\e0OBJCOPY $< \033[0m\n"
 
-
-# "Compile" all ppm files (convert to binary blob object)
-$(BUILD_DIR)/%.o: $(FONTS_DIR)/%.ppm
-	@objcopy -O elf32-i386 -B i386 -I binary $< $@
-	@printf "%b" "\033[0;36m\e0OBJCOPY $< \033[0m\n"
 
 # =====================================================================
 # ===== Secondary Linking process, start combining files together =====

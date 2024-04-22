@@ -29,46 +29,40 @@ using namespace GuiRenderer;
 #endif
 
 extern "C" void main() {
-    // checkKernelMemory(findRSDP());
-    // serialWriteStr("Hello WOrld");
-
-    // serialWriteStr("FrameBuffer Start: ");
-    // serialWriteStr(intToStr(vbeInfo->framebuffer, 16));
-    // serialWriteStr("\r\n");
 
     initKernel();
 
-#ifndef TEXT_MODE
-    for (int i = 0; i < screenWidth / 32; i++) {
-        for (int j = 0; j < screenHeight / 32; j++) {
-            printPhoto(&_binary_fonts_Untitled_ppm_start, 32 * i, 32 * j);
+    #ifndef TEXT_MODE
+        for (int i = 0; i < screenWidth / 32; i++) {
+            for (int j = 0; j < screenHeight / 32; j++) {
+                printPhoto(&goop32ppm, 32 * i, 32 * j);
+            }
         }
-    }
+        putString("Welcome to GoopOS", 100, 10);
+        sleep(5000);
+        // while (true) {}
 
-    sleep(5000);
-    while (true) {}
+        Process pong("Pong", (uint32_t)PONG::main);
+        pong.start();
+    #endif
+    #ifdef TEXT_MODE
+        Process cmd("cmd", (uint32_t)TUI::main);
+        cmd.start();
+    #endif
 
-    // Process pong("Pong", (uint32_t)PONG::main);
-    // pong.start();
-#endif
-#ifdef TEXT_MODE
-    Process cmd("cmd", (uint32_t)TUI::main);
-    cmd.start();
-#endif
 
-    while (1) {
-        ClearScreen();
-        println("All Programs Finished");
-        println("Interrupts Disabled");
-        println("Processor Halting");
-        disableInterrupts();
-        halt();
-    }
+    ClearScreen();
+    println("All Programs Finished");
+    println("Interrupts Disabled");
+    println("Processor Halting");
+    disableInterrupts();
+    halt();
+    
 }
 
 void initKernel() {
     setDrawColor(0x7);
-    setTextFont(&_binary_fonts_Uni2_Terminus12x6_psf_start);
+    setTextFont(&Uni2Terminus12x6psf);
 
     println("Successfully Switched to Protected Mode");
     println("Setting up Kernel Stack");
