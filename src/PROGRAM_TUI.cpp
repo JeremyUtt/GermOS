@@ -24,9 +24,6 @@ char command[CMD_SIZE] = {0};
 int cmdIndex = 0;
 
 void main() {
-    for (uint8_t i = 0; i < CMD_SIZE; i++) {
-        command[i] = 0;
-    }
 
     setDrawColor(0x70);
     for (int j = 0; j < screenHeight; j++) {
@@ -51,8 +48,6 @@ void main() {
 
     putChar('>', 1, 1);
     moveCursor(2, 1);
-
-    // char command[] = {};
 
     while (true) {
         KB::waitForKeyboard();

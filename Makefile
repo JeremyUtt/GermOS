@@ -98,8 +98,8 @@ bin/OS.sym: $(BUILD_DIR)/OS.o
 
 run: all
 	@./run.sh
-debug:
-	@echo $(OBJS)
+debug: all
+	@./run.sh debug
 clean:
 	@rm -rf $(BUILD_DIR)/* ./bin/*
 format:

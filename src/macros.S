@@ -1,6 +1,9 @@
 %macro printR 1
 %ifdef TEXT_MODE
 %%printer:
+    push ax
+    push bx
+    push si
     mov si, %%text_string ;set source index to begining of text_string
 
 %%repeat:
@@ -19,5 +22,8 @@
     %%text_string db %1, 0
     ; section .btext
 %%done:
+    pop si
+    pop bx
+    pop ax
 %endif
 %endmacro

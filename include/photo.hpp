@@ -1,7 +1,8 @@
 #pragma once
 
-#include <stdint.h>
-extern uint8_t goop32ppm;
-extern uint8_t hi32ppm;
+typedef unsigned char imagePPM;
 
-void printPhoto(uint8_t* image, int startX, int startY);
+extern imagePPM goop32ppm;
+extern imagePPM hi32ppm;
+
+void printPhoto(imagePPM* image, int startX, int startY);

@@ -29,16 +29,21 @@ using namespace GuiRenderer;
 #endif
 
 extern "C" void main() {
-
     initKernel();
+    serialWriteStr("Hello World");
+
 
     #ifndef TEXT_MODE
         for (int i = 0; i < screenWidth / 32; i++) {
             for (int j = 0; j < screenHeight / 32; j++) {
-                printPhoto(&goop32ppm, 32 * i, 32 * j);
+                // printPhoto(&goop32ppm, 32 * i, 32 * j);
             }
         }
+
+        setDrawColor(0xf);
         putString("Welcome to GoopOS", 100, 10);
+        setDrawColor(0x7);
+    
         sleep(5000);
         // while (true) {}
 
@@ -62,7 +67,7 @@ extern "C" void main() {
 
 void initKernel() {
     setDrawColor(0x7);
-    setTextFont(&Uni2Terminus12x6psf);
+    // setTextFont(&Uni2Terminus12x6psf);
 
     println("Successfully Switched to Protected Mode");
     println("Setting up Kernel Stack");

@@ -22,12 +22,6 @@ const char SymbolTable[] = {0, Escape, '!', '@', '#', '$', '%', '^', '&', '*', '
 
 
 void init() {
-    // Properly Initalized global variables
-    for (uint8_t i = 0; i < 255; i++) {
-        KB::kbBuffer[i] = 0;
-    }
-    KB::keyboardBufferIndex = 0;
-
     /* This is a very basic keyboard initialization. The assumption is we have a
      * PS/2 keyboard and it is already in a proper state. This may not be the
      * case on real hardware. We simply enable the keyboard interupt */

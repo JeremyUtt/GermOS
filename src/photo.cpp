@@ -88,7 +88,7 @@ uint8_t findClosestColor(const RGB& inputColor) {
     return closest;
 }
 
-void printPhoto(uint8_t* image, int startX, int startY) {
+void printPhoto(imagePPM* image, int startX, int startY) {
     // Get position of every newline in header
     uint16_t linesStart[5];
     linesStart[0] = 0;
