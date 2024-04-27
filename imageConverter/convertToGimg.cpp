@@ -1,12 +1,9 @@
-#include "photo.hpp"
+#include <iostream>
+#include <fstream>
+#include <stdint.h>
+#include <vector>
+#include <string>
 
-#include <converts.hpp>
-#include <libGUI.hpp>
-#include <libSerial.hpp>
-#include <string.hpp>
-using namespace GuiRenderer;
-
-namespace PPMImage {
 struct RGB {
     uint8_t r, g, b;
 };
@@ -89,13 +86,25 @@ uint8_t findClosestColor(const RGB& inputColor) {
     return closest;
 }
 
-void printPhoto(binaryFile* image, int startX, int startY) {
+
+int main(int argc, char* argv[]){
+    if(argc != 2){
+        std::cout << "enter filename" << std::endl;
+        return 1;
+    }
+
+    std::ifstream file(argv[1], std::ios::binary);
+    std::vector<uint8_t> buffer(std::istreambuf_iterator<char>(file), {});
+
+    file.close();
+
+
     // Get position of every newline in header
     uint16_t linesStart[5];
     linesStart[0] = 0;
     uint8_t counter = 1;
     for (uint8_t i = 0; i < 255; i++) {
-        if (image[i] == '\n') {
+        if (buffer[i] == '\n') {
             linesStart[counter] = i + 1;
             counter++;
         }
@@ -105,42 +114,67 @@ void printPhoto(binaryFile* image, int startX, int startY) {
     }
 
     // Get width and height of photo
-    char widthS[2];
+    // the third line of the header contains the width and height of the image in ascii, space separated
 
-    widthS[0] = image[linesStart[2]];
-    widthS[1] = image[linesStart[2] + 1];
+    // read in each character o line 3 until  a space is found
+    // convert the ascii to an integer
+    // repeat for the second number
 
-    char heightS[2];
+    std::string widthS = "";
+    std::string heightS = "";
 
-    heightS[0] = image[linesStart[2] + 3];
-    heightS[1] = image[linesStart[2] + 4];
+    for (uint8_t i = linesStart[2]; i < 255; i++) {
+        if (buffer[i] == ' ') {
+            break;
+        }
+        widthS += buffer[i];
+    }
 
-    uint16_t photoWidth = strToInt(string(widthS, 2));
-    uint16_t photoHeight = strToInt(string(heightS, 2));
+    for (uint8_t i = linesStart[2] + widthS.size() + 1; i < 255; i++) {
+        if (buffer[i] == '\n') {
+            break;
+        }
+        heightS += buffer[i];
+    }
 
-    // print pixel
+    uint16_t photoWidth = std::stoi(widthS);
+    uint16_t photoHeight = std::stoi(heightS);
+
+
+    std::vector<uint8_t> newBuffer(photoWidth * photoHeight);
+
+    //convert pizel data to new RGB mapping
     for (uint16_t y = 0; y < photoHeight; y++) {
         for (uint16_t x = 0; x < photoWidth; x++) {
-            uint16_t byteOffset = linesStart[4] + 3 * ((photoWidth * y) + x);
-            RGB color = {image[byteOffset], image[byteOffset + 1], image[byteOffset + 2]};
+            uint32_t byteOffset = linesStart[4] + 3 * ((photoWidth * y) + x);
+            RGB color = {buffer[byteOffset], buffer[byteOffset + 1], buffer[byteOffset + 2]};
 
-            putPixel(startX + x, startY + y, findClosestColor(color));
+            // store closest color in new vector
+            newBuffer[photoWidth * y + x] = findClosestColor(color);
         }
     }
-}
 
-}  // namespace PPMImage
+    std::string newFileName = argv[1];
+    // remove the file extension
+    newFileName = newFileName.substr(0, newFileName.find_last_of('.'));
 
-namespace GOOPImage {
-void draw(binaryFile* image, int startX, int startY) {
-    uint16_t photoWidth = (image[6] << 8) + image[5];
-    uint16_t photoHeight = (image[8] << 8) + image[7];
+    std::ofstream outFile(newFileName + ".gimg", std::ios::binary);
 
+    outFile << "GOOP\n";
+    
+    // output width and height of image in binary (Not ascii)
+    outFile.write(reinterpret_cast<const char*>(&photoWidth), sizeof(photoWidth));
+    outFile.write(reinterpret_cast<const char*>(&photoHeight), sizeof(photoHeight));
+
+    // print newBuffer to console
     for (uint16_t y = 0; y < photoHeight; y++) {
         for (uint16_t x = 0; x < photoWidth; x++) {
-            putPixelM(startX + x, startY + y, image[9 + (photoWidth * y) + x]);
-
+            // output byte to  file in binary (Not ascii)
+            outFile.write(reinterpret_cast<const char*>(&newBuffer[photoWidth * y + x]), sizeof(newBuffer[photoWidth * y + x]));
         }
     }
-}
+
+    outFile.close();
+
+    return 0;
 }

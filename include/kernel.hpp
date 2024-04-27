@@ -1,4 +1,3 @@
 #pragma once
 void initKernel();
-
-bool checkKernelMemory(int start);
+char* checkKernelMemory(uint32_t start, uint32_t len, string toFind);

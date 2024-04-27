@@ -7,7 +7,6 @@
 #include <libSerial.hpp>
 #include <utils.hpp>
 
-
 vbe_mode_info_structure* vbeInfo = (vbe_mode_info_structure*)0x500;
 
 
@@ -68,6 +67,10 @@ void ClearScreen() {
 }
 //-----
 void putPixel(int pos_x, int pos_y, unsigned char VGA_COLOR) {
+    // if (pos_x < 0 || pos_x > screenWidth || pos_y < 0 || pos_y > screenHeight) {
+        // return;
+    // }
+
     unsigned char* location = (unsigned char*)screenMemory + screenWidth * pos_y + pos_x;
     *location = VGA_COLOR;
 }
@@ -75,7 +78,7 @@ void putPixel(int pos_x, int pos_y, unsigned char VGA_COLOR) {
 void putRect(int x, int y, int width, int height, int color) {
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
-            putPixel(x + j, y + i, color);
+            putPixelM(x + j, y + i, color);
         }
     }
 
@@ -95,11 +98,11 @@ void putRect(int x, int y, int width, int height, int color) {
 void putLine(int x, int y, int length, bool vertical, int color) {
     if (vertical) {
         for (int i = 0; i < length; i++) {
-            putPixel(x, y + i, color);
+            putPixelM(x, y + i, color);
         }
     } else {
         for (int i = 0; i < length; i++) {
-            putPixel(x + i, y, color);
+            putPixelM(x + i, y, color);
         }
     }
 }
@@ -118,7 +121,7 @@ void putChar(int chr, int x, int y) {
                 bool bit = (tmpBool & 0x01);
                 // serialWriteChar((char*)bit ? '#' : '.');
                 int pixelX = x + (bytesNum * 8) - bitNum + currentFont->width + 1;
-                putPixel(pixelX, y + lineNum, bit ? printColor : 0x00);
+                putPixelM(pixelX, y + lineNum, bit ? printColor : 0x00);
             }
         }
         // serialWriteStr((char*)"\r\n");
@@ -141,6 +144,11 @@ void putString(string str, int x, int y) {
 void println(string str) {
     putString(str, XcounterPx, YcounterPx);
     UpdateCounter(str.size(), 1);
+}
+
+void print(string str) {
+    putString(str, XcounterPx, YcounterPx);
+    UpdateCounter(str.size(), 0);
 }
 
 void printChar(char chr) {
@@ -202,6 +210,13 @@ void println(string str) {
         Ycounter++;
     }
     Xcounter = 0;
+    moveCursor(Xcounter, Ycounter);
+}
+
+void print(string str) {
+    putString(str, Xcounter, Ycounter);
+    Xcounter += str.size();
+
     moveCursor(Xcounter, Ycounter);
 }
 

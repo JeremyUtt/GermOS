@@ -29,32 +29,34 @@ using namespace GuiRenderer;
 #endif
 
 extern "C" void main() {
+    // GuiRenderer::putRect(50, 50, 50, 50, 0x05);
+
     initKernel();
     serialWriteStr("Hello World");
 
+    GuiRenderer::putRect(50, 50, 50, 50, 0x0f);
 
-    #ifndef TEXT_MODE
-        for (int i = 0; i < screenWidth / 32; i++) {
-            for (int j = 0; j < screenHeight / 32; j++) {
-                // printPhoto(&goop32ppm, 32 * i, 32 * j);
-            }
-        }
-
-        setDrawColor(0xf);
-        putString("Welcome to GoopOS", 100, 10);
-        setDrawColor(0x7);
+#ifndef TEXT_MODE
     
-        sleep(5000);
-        // while (true) {}
+    extern binaryFile goopergimg;
 
-        Process pong("Pong", (uint32_t)PONG::main);
-        pong.start();
-    #endif
-    #ifdef TEXT_MODE
-        Process cmd("cmd", (uint32_t)TUI::main);
-        cmd.start();
-    #endif
+    GOOPImage::draw(&goopergimg, 0, 0);
 
+
+    setDrawColor(0xf);
+    putString("Welcome to GoopOS", 100, 10);
+    setDrawColor(0x7);
+
+    sleep(5000);
+    while (true) {}
+
+    Process pong("Pong", (uint32_t)PONG::main);
+    pong.start();
+#endif
+#ifdef TEXT_MODE
+    Process cmd("cmd", (uint32_t)TUI::main);
+    cmd.start();
+#endif
 
     ClearScreen();
     println("All Programs Finished");
@@ -62,16 +64,29 @@ extern "C" void main() {
     println("Processor Halting");
     disableInterrupts();
     halt();
-    
 }
 
 void initKernel() {
     setDrawColor(0x7);
-    // setTextFont(&Uni2Terminus12x6psf);
+    setTextFont(&Uni2Terminus12x6psf);
 
     println("Successfully Switched to Protected Mode");
     println("Setting up Kernel Stack");
     println("Initializing and Loading Graphics Mode Fonts");
+
+    println("Finding Kernel Memory Mapping");
+    char* mem = checkKernelMemory(0xc000, 0x10000, "42069");
+    if(mem != nullptr){
+        serialWriteStr("\r\n");
+        print("    INFO: Start Addr: 0x7c00, End Addr: 0x");
+        print(intToStr((uint32_t)mem, 16));
+        println("");
+
+    } else{
+        setDrawColor(0x6);
+        println("WARNING: Couldnt find magic number. Kernel May not be fully loaded");
+        setDrawColor(0x7);
+    }
 
     println("Initializing Serial Interface");
     initSerial();
@@ -107,10 +122,22 @@ void initKernel() {
     ClearScreen();
 }
 
-bool checkKernelMemory(int start) {
-    for (int i = start; i < start + 10000; i++) {
-        uint8_t* address = (uint8_t*)(i);
-        serialWriteChar(*address);
+char* checkKernelMemory(uint32_t start, uint32_t len, string toFind) {
+
+    for (uint32_t i = start; i < start + len; i++) {
+
+        bool goodSoFar = true;
+        for (uint32_t j = 0; j < toFind.size(); j++) {
+            char character =  *(char*)(i+j);
+
+            if (character != toFind.at(j)) {
+                goodSoFar = false; 
+                break;
+            }
+        }
+        if (goodSoFar) {
+            return (char*)i;
+        }
     }
-    return true;
+    return nullptr;
 }

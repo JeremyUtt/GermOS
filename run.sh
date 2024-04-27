@@ -18,7 +18,7 @@ debug() {
         -gdb tcp::1269  \
         -chardev stdio,id=seabios \
         -device isa-debugcon,iobase=0x402,chardev=seabios \
-        -bios /home/jeremy/GitRepos/seabios/out/bios.bin
+        -bios /home/jeremy/GitRepos/seabios/out/bios.bin 
         # -S
 
 }

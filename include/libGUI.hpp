@@ -47,6 +47,10 @@ struct vbe_mode_info_structure {
 
 extern vbe_mode_info_structure* vbeInfo;
 
+
+#define putPixelM(x, y, color) *((unsigned char*)screenMemory + screenWidth * (y) + (x)) = color;
+
+
 namespace GuiRenderer {
 
 const int screenMemory = 0xa0000;
@@ -73,6 +77,7 @@ void println(string str);
 void putRect(int x, int y, int width, int height, int color);
 void putLine(int x, int y, int length, bool vertical, int color);
 void printChar(const char chr);
+void print(string str);
 }  // namespace GuiRenderer
 
 namespace TextRenderer {
@@ -86,4 +91,5 @@ void moveCursor(int x, int y);
 void putChar(int chr, int x, int y);
 void putString(string str, int x, int y);
 void println(string str);
+void print(string str);
 }  // namespace TextRenderer

@@ -16,7 +16,7 @@ setTtyMode:
 	mov ah, 0x0	; set Video mode 
 	mov al, 0x3 ; 80 x 25	Color text	CGA, EGA, VGA
 	int 0x10	; Video Services
- 	; printR "Set Video Mode to text"
+ 	; printR "Set Videso Mode to text"
 ;end setTtyMode
 %endif
 
@@ -25,7 +25,7 @@ setMediumGuiMode:
 	mov ah, 0x0	; set Video mode 
 	mov al, 0x13 ; VGA 320x200
 	int 0x10	; Video Services
-	printR "Set Video Mode to GUI"
+	; printR "Set Video Mode to GUI"
 ; ;end setMediumGuiMode
 
 
@@ -52,9 +52,9 @@ setMediumGuiMode:
 ; printR 0ah
 ; printR 0dh
 
-; printR "Loading memory from disk"
-; printR 0ah
-; printR 0dh
+printR "Loading memory from disk"
+printR 0ah
+printR 0dh
 
 
 
@@ -64,10 +64,12 @@ loadKernelFromDisk:
 	mov ds, ax
 	mov es, ax
 
-	mov ax, 35
+	mov ax, 218
+	; mov ax, 150
 	mov bx, KERNEL_LOCATION ; Destination Offset
 	mov cl, 2 				; Starting Sector number
 	mov ch, 0 				; Starting Cylinder Number
+	mov dh, 0 				; Starting Head Number
 	
 	disk_loop:
 		push ax
@@ -75,7 +77,6 @@ loadKernelFromDisk:
 		
 		mov ah, 2 				; Read Sectors Into Memory
 		mov al, 1				; Number of Sectors to read
-		mov dh, 0 				; Head Number
 		; mov dl, 0 			; Drive number
 		int 0x13 				; add more disk interrupt
 	
@@ -89,14 +90,17 @@ loadKernelFromDisk:
 		inc cl
 		cmp cl, 37
 		jnz no_inc
+		; printR "Inc H"
 		mov cl, 1
-		inc ch
-		
-		; cmp ch, 80
-		; jnz no_inc
-		; mov ch, 0
-		; inc dh
+		inc dh		
 		no_inc:
+
+		cmp dh, 2
+		jnz no_inc2
+		; printR "Inc C"
+		mov dh, 0
+		inc ch
+		no_inc2:
 
 		; add 0x20 to es
 		; equix to adding 0x200 to bx
@@ -122,8 +126,8 @@ loadKernelFromDisk:
 ; jmp $
 
 printR "Loading GDT"
-; printR 0ah
-; printR 0dh
+printR 0ah
+printR 0dh
 
 ; Load the GDT table and switch to 32 bit protected mode:
 loadGDT:
@@ -131,17 +135,16 @@ loadGDT:
 	lgdt [GDT_Descriptor] 
 
 switchToProtected:
-	; change last bit of cr0 to 1
-	
-	; printR "Switching to Protected Mode"
-	; printR 0ah
-	; printR 0dh
+	printR "Switching to Protected Mode"
+	printR 0ah
+	printR 0dh
 
+	; change last bit of cr0 to 1
 	mov eax, cr0
 	or eax, 1
 	mov cr0, eax
-	;far jump
-	; jmp $
+
+	; Far jump to enable protected mode
 	jmp CODE_SEG:start_protected_mode
 
 
@@ -158,9 +161,6 @@ disk_error:
 	pop ax
 	ret
 
-
-
-
 ; ====================================================================================
 ; 32 bit Code Section
 ; ====================================================================================
@@ -169,9 +169,12 @@ disk_error:
 [bits 32]
 start_protected_mode:
 	[extern main]
+	
+	; redefine kernel stack location
 	mov esp, 0x7bFF
 	; mov esp, 0x9000
-	; jmp $
+	
+	; Start kernel
 	jmp main
 
 ; ====================================================================================
