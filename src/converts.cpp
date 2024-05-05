@@ -39,12 +39,10 @@ string intToStr(int value, int base) {
 uint32_t strToInt(string value) {
     uint32_t result = 0;
     for (uint32_t i = 0; i < value.size(); i++) {
-        result += (value[i] - '0') * pow(10,value.size()-i-1);
+        result += (value[i] - '0') * pow(10, value.size() - i - 1);
     }
     return result;
 }
-
-
 
 uint32_t getStrLen(char String[]) {
     int strLen = 0;

@@ -1,6 +1,7 @@
 #pragma once
-#include <string.hpp>
 #include <stdint.h>
+
+#include <string.hpp>
 string intToStr(int value, int base);
 uint32_t strToInt(string value);
 uint32_t getStrLen(char String[]);

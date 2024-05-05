@@ -7,7 +7,7 @@ void printPhoto(binaryFile* image, int startX, int startY);
 }
 
 namespace GOOPImage {
-    void draw(binaryFile* image, int startX, int startY);
+void draw(binaryFile* image, int startX, int startY);
 }
 
 // extern binaryFile goop32ppm;

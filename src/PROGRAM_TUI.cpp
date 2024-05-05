@@ -24,7 +24,6 @@ char command[CMD_SIZE] = {0};
 int cmdIndex = 0;
 
 void main() {
-
     setDrawColor(0x70);
     for (int j = 0; j < screenHeight; j++) {
         for (int i = 0; i < screenWidth; i++) {

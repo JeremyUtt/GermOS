@@ -9,6 +9,10 @@
 
 vbe_mode_info_structure* vbeInfo = (vbe_mode_info_structure*)0x500;
 
+// template <class... Args>
+// void printf(Args... args) {
+//     (std::cout << ... << args) << "\n";
+// }
 
 namespace GuiRenderer {
 int XcounterPx = 0;
@@ -68,7 +72,7 @@ void ClearScreen() {
 //-----
 void putPixel(int pos_x, int pos_y, unsigned char VGA_COLOR) {
     // if (pos_x < 0 || pos_x > screenWidth || pos_y < 0 || pos_y > screenHeight) {
-        // return;
+    // return;
     // }
 
     unsigned char* location = (unsigned char*)screenMemory + screenWidth * pos_y + pos_x;
@@ -220,4 +224,44 @@ void print(string str) {
     moveCursor(Xcounter, Ycounter);
 }
 
+void printChar(char chr) {
+    putChar(chr, Xcounter, Ycounter);
+    Xcounter += 1;
+    moveCursor(Xcounter, Ycounter);
+}
+
 }  // namespace TextRenderer
+
+void printf(string format, uint8_t* cock, uint8_t* balls) {
+    bool first = true;
+    for (uint16_t i = 0; i < format.size(); i++) {
+        if (format.at(i) == '%') {
+            switch (format.at(i + 1)) {
+                case 'd':
+                    // Fall into i
+                case 'i':
+                    // Signed decimal integer
+                    if (first) {
+                        serialWriteStr(intToStr((uint32_t)cock, 10));
+                        first = false;
+                    } else {
+                        serialWriteStr(intToStr((uint32_t)balls, 10));
+                    }
+                    break;
+                case 'c':
+                    // Character
+                    // serialWriteChar(cock);
+                    break;
+                case 's':
+                    // String
+                    break;
+                case '%':
+                    serialWriteChar('%');
+                    continue;
+            }
+            i++;
+        } else {
+            serialWriteChar(format[i]);
+        }
+    }
+}

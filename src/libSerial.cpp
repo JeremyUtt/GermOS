@@ -35,18 +35,8 @@ void serialWriteChar(char a) {
     outb(COM1, a);
 }
 
-// void serialWriteStr(char* string) {
-//     for (int i = 0; i < getStrLen(string); i++) {
-//         serialWriteChar(string[i]);
-//     }
-// }
-
 void serialWriteStr(string str) {
     for (uint32_t i = 0; i < str.size(); i++) {
         serialWriteChar(str.at(i));
     }
 }
-
-// void serialWriteStr(const char* string){
-//     serialWriteStr((char*)string);
-// }

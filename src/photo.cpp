@@ -139,8 +139,7 @@ void draw(binaryFile* image, int startX, int startY) {
     for (uint16_t y = 0; y < photoHeight; y++) {
         for (uint16_t x = 0; x < photoWidth; x++) {
             putPixelM(startX + x, startY + y, image[9 + (photoWidth * y) + x]);
-
         }
     }
 }
-}
+}  // namespace GOOPImage

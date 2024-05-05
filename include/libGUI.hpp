@@ -1,7 +1,26 @@
 #pragma once
+#include <stdint-gcc.h>
+
 #include <fonts.hpp>
 #include <string.hpp>
-#include <stdint-gcc.h>
+
+#define VGA_BLACK 0x0
+#define VGA_BLUE 0x1
+#define VGA_GREEN 0x2
+#define VGA_CYAN 0x3
+#define VGA_RED 0x4
+#define VGA_MAGENTA 0x5
+#define VGA_BROWN 0x6
+#define VGA_LIGHT_GRAY 0x7
+#define VGA_DARK_GRAY 0x8
+#define VGA_LIGHT_BLUE 0x9
+#define VGA_LIGHT_GREEN 0xA
+#define VGA_LIGHT_CYAN 0xB
+#define VGA_LIGHT_RED 0xC
+#define VGA_LIGHT_MAGENTA 0xD
+#define VGA_LIGHT_BROWN 0xE
+#define VGA_WHITE 0xF
+
 
 struct vbe_mode_info_structure {
     uint16_t attributes;   // deprecated, only bit 7 should be of interest to you, and it indicates
@@ -47,9 +66,7 @@ struct vbe_mode_info_structure {
 
 extern vbe_mode_info_structure* vbeInfo;
 
-
 #define putPixelM(x, y, color) *((unsigned char*)screenMemory + screenWidth * (y) + (x)) = color;
-
 
 namespace GuiRenderer {
 
@@ -92,4 +109,7 @@ void putChar(int chr, int x, int y);
 void putString(string str, int x, int y);
 void println(string str);
 void print(string str);
+void printChar(char chr);
 }  // namespace TextRenderer
+
+void printf(string format, uint8_t* cock, uint8_t* balls);

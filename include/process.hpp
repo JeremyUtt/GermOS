@@ -1,6 +1,7 @@
 #pragma once
-#include <string.hpp>
 #include <stdint.h>
+
+#include <string.hpp>
 enum ProcessState { Initalized, Running, Queued, Paused, Exited };
 
 struct CpuState {
@@ -41,10 +42,10 @@ class Process {
     void start();
     void kill();
     // void saveManagerState();
-    
+
     // Not properly implemented yet
     void pause();
-    
+
     // Not properly implemented yet
     void resume();
 };

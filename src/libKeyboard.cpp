@@ -20,7 +20,6 @@ const char ASCIITable[] = {0,   Escape, '1',       '2', '3',   '4', '5', '6',  '
 
 const char SymbolTable[] = {0, Escape, '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+'};
 
-
 void init() {
     /* This is a very basic keyboard initialization. The assumption is we have a
      * PS/2 keyboard and it is already in a proper state. This may not be the
@@ -72,12 +71,9 @@ void InterpretKeyboard(int keycode) {
     char ascii = Translate(keycode, isLeftShiftPressed | isRightShiftPressed);
 
     if (ascii != 0) {
-        // NewGuiRenderer::printChar(ascii);
-        // serialWriteChar(ascii);
         KB::pushKeyBuffer(ascii);
     }
 }
-
 
 char Translate(uint8_t scancode, bool uppercase) {
     if (scancode > 58) {
