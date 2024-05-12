@@ -137,21 +137,14 @@ bool string::operator==(const char* str) {
     return true;
 }
 
-string& string::operator+(string& rhs) {
-    uint16_t newSize = _size + rhs.size();
-    char* newContent = (char*)malloc(newSize + 1);
+string string::operator+(string& rhs) {
     
+    string newString(_size + rhs.size());
     for (uint32_t i = 0; i < _size; i++) {
-        newContent[i] = _content[i];
+        newString[i] = _content[i];
     }
     for (uint32_t i = 0; i < rhs.size(); i++) {
-        newContent[_size + i] = rhs[i];
+        newString[i + _size] = rhs[i];
     }
-    if (_content != nullptr && _dynamic) {
-        free(_content);
-    }
-    _content = newContent;
-    _size = newSize;
-    _dynamic = true;
-    return *this;
+    return newString;
 }

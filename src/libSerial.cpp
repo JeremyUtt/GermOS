@@ -29,8 +29,7 @@ int isTransmitEmpty() {
 }
 
 void serialWriteChar(char a) {
-    while (isTransmitEmpty() == 0)
-        ;
+    while (isTransmitEmpty() == 0) {};
 
     outb(COM1, a);
 }

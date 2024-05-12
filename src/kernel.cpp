@@ -23,6 +23,7 @@
 #include <system.hpp>
 #include <utils.hpp>
 #include <error.hpp>
+#include <printf.hpp>
 
 
 #ifdef TEXT_MODE 
@@ -37,12 +38,21 @@
 extern "C" void main() {
     initKernel();
     
-    error("Test Error", false);
-    error("Test Fatal Error", true);
+    // Run Testing Code Here
+
+    // :D
+    int value = sprintf(Serial,  "Hello, %s from %d\n", "World", 69);
+    printf("Printed %d characters\n", value);
+    printf("Printed %d characters\n", value);
+
+    while (true)
+    {
+        halt();
+    }
     
+
+    // Run the UI
     startUI();
-
-
 
 
     // Runs once everything else is done
@@ -66,7 +76,7 @@ void initKernel() {
     println("Initializing Dynamic Memory Allocator");
     println("Finding Kernel Memory Mapping");
     printMem();
-    char* mem = checkKernelMemory(0xd000, 0x100000, "42069");
+    char* mem = checkKernelMemory(0x7c00 + KERNEL_SIZE-10, 20, "42069");
     if (mem != nullptr) {
         serialWriteStr("\r\n");
         print("    INFO: Start Addr: 0x7c00, End Addr: 0x");

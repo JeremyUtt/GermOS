@@ -231,37 +231,3 @@ void printChar(char chr) {
 }
 
 }  // namespace TextRenderer
-
-void printf(string format, uint8_t* cock, uint8_t* balls) {
-    bool first = true;
-    for (uint16_t i = 0; i < format.size(); i++) {
-        if (format.at(i) == '%') {
-            switch (format.at(i + 1)) {
-                case 'd':
-                    // Fall into i
-                case 'i':
-                    // Signed decimal integer
-                    if (first) {
-                        serialWriteStr(intToStr((uint32_t)cock, 10));
-                        first = false;
-                    } else {
-                        serialWriteStr(intToStr((uint32_t)balls, 10));
-                    }
-                    break;
-                case 'c':
-                    // Character
-                    // serialWriteChar(cock);
-                    break;
-                case 's':
-                    // String
-                    break;
-                case '%':
-                    serialWriteChar('%');
-                    continue;
-            }
-            i++;
-        } else {
-            serialWriteChar(format[i]);
-        }
-    }
-}

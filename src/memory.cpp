@@ -110,6 +110,13 @@ void free(void* mem) {
     for (uint16_t i = 0; i < TABLE_SIZE; i++) {
         if (table[i].inUse && table[i].start == (uint8_t*)mem) {
             table[i].inUse = false;
+            
+            // clear memory
+            for (uint16_t j = 0; j < table[i].end - table[i].start; j++) {
+                table[i].start[j] = 0;
+            }
+            
+            
             mergeEntries(table[i]);
             return;
         }
@@ -120,9 +127,9 @@ void printMem() {
     for (uint16_t i = 0; i < TABLE_SIZE; i++) {
         if (table[i].realEntry) {
             if (table[i].inUse) {
-                printf("Entry: Start: %d End: %d, in use\r\n", table[i].start, table[i].end);
+                // printf("Entry: Start: %d End: %d, in use\r\n", table[i].start, table[i].end);
             } else {
-                printf("Entry: Start: %d End: %d, free\r\n", table[i].start, table[i].end);
+                // printf("Entry: Start: %d End: %d, free\r\n", table[i].start, table[i].end);
             }
         }
     }

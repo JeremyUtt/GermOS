@@ -23,7 +23,7 @@ class string {
     bool operator==(string& str);
     bool operator==(const char* str);
     char& operator[](uint32_t index);
-    string& operator+(string& rhs);
+    string operator+(string& rhs);
 
     uint32_t size() const;
     char* cstr();

@@ -21,7 +21,6 @@
 #define VGA_LIGHT_BROWN 0xE
 #define VGA_WHITE 0xF
 
-
 struct vbe_mode_info_structure {
     uint16_t attributes;   // deprecated, only bit 7 should be of interest to you, and it indicates
                            // the mode supports a linear frame buffer.
@@ -111,5 +110,3 @@ void println(string str);
 void print(string str);
 void printChar(char chr);
 }  // namespace TextRenderer
-
-void printf(string format, uint8_t* cock, uint8_t* balls);
