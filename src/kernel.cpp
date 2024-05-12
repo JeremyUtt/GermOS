@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#include <converts.hpp>
+#include <utils.hpp>
 #include <fonts.hpp>
 #include <kernel.hpp>
 #include <libACPI.hpp>
@@ -21,7 +21,7 @@
 #include <PROGRAM_TUI.hpp>
 #include <string.hpp>
 #include <system.hpp>
-#include <utils.hpp>
+#include <tests.hpp>
 #include <error.hpp>
 #include <printf.hpp>
 
@@ -41,15 +41,6 @@ extern "C" void main() {
     // Run Testing Code Here
 
     // :D
-    int value = sprintf(Serial,  "Hello, %s from %d\n", "World", 69);
-    printf("Printed %d characters\n", value);
-    printf("Printed %d characters\n", value);
-
-    while (true)
-    {
-        halt();
-    }
-    
 
     // Run the UI
     startUI();

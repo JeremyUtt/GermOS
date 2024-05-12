@@ -1,83 +1,91 @@
-#include <stdint.h>
-
-#include <converts.hpp>
-#include <libGUI.hpp>
-#include <libSerial.hpp>
 #include <utils.hpp>
-
-void amogus() {
-    int width = 20;
-    int height = 20;
-    int startx = 1050;
-    int starty = 0;
-    // NewGuiRenderer::putRect(startx, starty, width*3, height*4, 0xaa);
-    // NewGuiRenderer::putRect(startx+width, starty+height, width*2, height,
-    // 0x55); NewGuiRenderer::putRect(startx, starty+height*4, width, height,
-    // 0xaa); NewGuiRenderer::putRect(startx+width*2, starty+height*4, width,
-    // height, 0xaa); NewGuiRenderer::putRect(startx-width, starty+height,
-    // width, height*3, 0xaa);
-
-    GuiRenderer::putRect(startx, starty, width * 3, height * 4, 0xaa);
-    GuiRenderer::putRect(startx + width, starty + height, width * 2, height, 0x55);
-    GuiRenderer::putRect(startx, starty + height * 4, width, height, 0xaa);
-    GuiRenderer::putRect(startx + width * 2, starty + height * 4, width, height, 0xaa);
-    GuiRenderer::putRect(startx - width, starty + height, width, height * 3, 0xaa);
-}
-
-void printColorPallet() {
-    int size = 15;
-
-    int x = 0;
-    int y = 0;
-    for (int i = 0; i < 256; i++) {
-        GuiRenderer::putRect(x, y, size, size, i);
-        GuiRenderer::putString(intToStr(i, 10), x, y);
-
-        x += size;
-        if (x >= GuiRenderer::screenWidth - size) {
-            y += size;
-            x = 0;
-        }
+char strBuf[330];
+string intToStr(int value, int base) {
+    char* rc;
+    char* ptr;
+    char* low;
+    // Check for supported base.
+    if (base < 2 || base > 36) {
+        *strBuf = '\0';
+        return strBuf;
+    }
+    rc = ptr = strBuf;
+    // Set '-' for negative decimals.
+    if (value < 0 && base == 10) {
+        *ptr++ = '-';
+    }
+    // Remember where the numbers start.
+    low = ptr;
+    // The actual conversion.
+    do {
+        // Modulo is negative for negative value. This trick makes abs()
+        // unnecessary.
+        *ptr++ = "zyxwvutsrqponmlkjihgfedcba9876543210123456789abcdefghijklmnop"
+                 "qrstuvwxyz"[35 + value % base];
+        value /= base;
+    } while (value);
+    // Terminating the string.
+    *ptr-- = '\0';
+    // Invert the numbers.
+    while (low < ptr) {
+        char tmp = *low;
+        *low++ = *ptr;
+        *ptr-- = tmp;
     }
 
-    // for (int i = 0; i < screenWidth / size; i++) {
-    //   for (int j = 0; j < screenHeight / size; j++) {
-    //     NewGuiRenderer::putRect(i * size, j * size, size, size, i * j + i);
-    //     NewGuiRenderer::putString((char*)intToStr(i * j + i, 16), i * size,
-    //                               j * size);
-    //     // serialWriteStr
-    //     color1++;
-    //   }
-    // }
+    return string(rc);
 }
 
-// static void setBackground(int color){
-// 	for (int i = 0; i < (80*25); i++){
-// 		int g = {*(int*)(screenMemory+2*i)};
-// 		int j = {*(int*)(screenMemory+2*i+1)};
-// 		// printChar(g, i, 0, (j | color));
-// 	}
+uint32_t strToInt(string value) {
+    uint32_t result = 0;
+    for (uint32_t i = 0; i < value.size(); i++) {
+        result += (value[i] - '0') * pow(10, value.size() - i - 1);
+    }
+    return result;
+}
 
-// }
+uint32_t getStrLen(char String[]) {
+    int strLen = 0;
+    for (int i = 0; i < 1; i++) {
+        if (String[strLen] != 0) {
+            i--;
+            strLen++;
+        }
+    }
+    return strLen;
+}
 
-// static bool checkMem(char str[], int address){
-//     int strLen = 0;
-// 	for (int i = 0; i < 1; i++){
-// 		if (str[strLen] != 0){
-// 			i--;
-// 			strLen++;
-// 		}
-// 	}
+uint32_t getStrLen(const char String[]) {
+    int strLen = 0;
+    for (int i = 0; i < 1; i++) {
+        if (String[strLen] != 0) {
+            i--;
+            strLen++;
+        }
+    }
+    return strLen;
+}
 
-//     for (int i = 0; i < strLen; i++){
-//         if(*(char*)(address+i) != str[i]){
-//             return false;
-//         }
-//     }
-//     return true;
-// }
+bool strcmp(char str1[], char str2[]) {
+    int len1 = getStrLen(str1);
+    int len2 = getStrLen(str2);
 
-uint8_t getMemory(int Address) {
-    uint8_t i = {*(uint8_t*)(Address)};
-    return i;
+    if (len1 != len2) {
+        return false;
+    }
+
+    for (int i = 0; i < len1; i++) {
+        if (str1[i] != str2[i]) {
+            return false;
+        }
+    }
+    return true;
+}
+
+uint32_t pow(uint32_t a, uint32_t b) {
+    uint32_t result = 1;
+    for (uint32_t i = 0; i < b; i++) {
+        result *= a;
+    }
+    return result;
 }

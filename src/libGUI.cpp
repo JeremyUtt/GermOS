@@ -1,18 +1,12 @@
 #include <stdint.h>
 
-#include <converts.hpp>
+#include <utils.hpp>
 #include <fonts.hpp>
 #include <libGUI.hpp>
 #include <libIO.hpp>
 #include <libSerial.hpp>
-#include <utils.hpp>
 
 vbe_mode_info_structure* vbeInfo = (vbe_mode_info_structure*)0x500;
-
-// template <class... Args>
-// void printf(Args... args) {
-//     (std::cout << ... << args) << "\n";
-// }
 
 namespace GuiRenderer {
 int XcounterPx = 0;

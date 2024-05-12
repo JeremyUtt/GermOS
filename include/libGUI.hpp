@@ -3,6 +3,7 @@
 
 #include <fonts.hpp>
 #include <string.hpp>
+#include <utils.hpp>
 
 #define VGA_BLACK 0x0
 #define VGA_BLUE 0x1
