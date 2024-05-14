@@ -7,15 +7,17 @@
 
 #define PADDLE_SPEED 10
 #define BALL_SPEED_RATIO 5
-#define PADDLE_WIDTH 15
+#define PADDLE_HEIGHT 20
+#define PADDLE_PADDING 15
 #define PADDLE_X 15
 #define BALL_SIZE 4
 
 namespace PONG {
 
-int leftPos, rightPos = screenWidthPx / 2;
+int leftPos = (screenHeightPx / 2) + (PADDLE_HEIGHT / 2);
+int rightPos = (screenHeightPx / 2) - (PADDLE_HEIGHT / 2);
 int ballX = screenWidthPx / 2;
-int ballY = screenWidthPx / 2;
+int ballY = screenHeightPx / 2;
 int ballDX = 1;
 int ballDY = 1;
 int timer = 0;
@@ -24,32 +26,41 @@ bool lastScored = false;
 GuiTextRenderer* renderer = nullptr;
 string* score = nullptr;
 
+#define printScore()                                                     \
+    renderer->putString(*score, 5, 0);                                   \
+    renderer->putString(intToStr(leftScore, 10), 45, 0);                 \
+    renderer->putString(*score, screenWidthPx - PADDLE_PADDING - 40, 0); \
+    renderer->putString(intToStr(rightScore, 10), screenWidthPx - PADDLE_PADDING, 0);
+
 bool loop();
 
 void main() {
-    GuiTextRenderer temp(0, 0, screenWidthPx, screenWidthPx);
+    GuiTextRenderer temp(0, 0, screenWidthPx, screenHeightPx);
     renderer = &temp;
     renderer->setDrawColor(WHITE);
     renderer->setTextFont(&Uni2Terminus12x6psf);
+    updateStdout(*renderer);
 
     string tmp = "Score: ";
     score = &tmp;
+
+    // print initial score
+    printScore();
 
     while (true) {
         sleep(5);
 
         if (loop()) {
             ClearScreen();
+            renderer->clearBox();
             printf("Game Over\n");
             printf("Press Escape to exit\n");
             printf("Press any other button to play again\n");
-            leftPos = screenWidthPx / 2;
-            rightPos = screenWidthPx / 2;
+            leftPos = (screenHeightPx / 2) + (PADDLE_HEIGHT / 2);
+            rightPos = (screenHeightPx / 2) - (PADDLE_HEIGHT / 2);
             ballX = screenWidthPx / 2;
-            ballY = screenWidthPx / 2;
+            ballY = screenHeightPx / 2;
             timer = 0;
-            leftScore = 0;
-            rightScore = 0;
 
             sleep(500);
             KB::waitForKeyboard();
@@ -61,11 +72,21 @@ void main() {
                     return;
                 }
             }
+            ClearScreen();
+            renderer->clearBox();
+
+            // update score
+            printScore();
         }
     }
 }
 
 bool loop() {
+    // Draw everything as black
+    putRect(ballX, ballY, 4, 4, BLACK);
+    putLine(PADDLE_PADDING, leftPos, PADDLE_HEIGHT, true, BLACK);
+    putLine(screenWidthPx - PADDLE_PADDING, rightPos, PADDLE_HEIGHT, true, BLACK);
+
     if (KB::getKeyBufferIndex() > 0) {
         char character = KB::popKeyBuffer();
 
@@ -78,8 +99,8 @@ bool loop() {
                 break;
             case 's':
                 leftPos += PADDLE_SPEED;
-                if (leftPos + PADDLE_WIDTH > screenHeightPx) {
-                    leftPos = screenHeightPx - PADDLE_WIDTH;
+                if (leftPos + PADDLE_HEIGHT > screenHeightPx) {
+                    leftPos = screenHeightPx - PADDLE_HEIGHT;
                 }
                 break;
             case 'i':
@@ -90,8 +111,8 @@ bool loop() {
                 break;
             case 'k':
                 rightPos += PADDLE_SPEED;
-                if (rightPos + PADDLE_WIDTH > screenHeightPx) {
-                    rightPos = screenHeightPx - PADDLE_WIDTH;
+                if (rightPos + PADDLE_HEIGHT > screenHeightPx) {
+                    rightPos = screenHeightPx - PADDLE_HEIGHT;
                 }
                 break;
             default:
@@ -103,25 +124,21 @@ bool loop() {
         ballDY *= -1;
     }
 
-#define BALL_L_X_Intersect (ballX <= PADDLE_WIDTH && ballX + BALL_SIZE >= PADDLE_WIDTH)
+#define BALL_L_X_Intersect (ballX <= PADDLE_PADDING && ballX + BALL_SIZE >= PADDLE_PADDING)
 #define BALL_R_X_INTERSECT \
-    (ballX <= screenWidthPx - PADDLE_WIDTH && ballX + BALL_SIZE >= screenWidthPx - PADDLE_WIDTH)
-#define BALL_L_Y_INTERSECT (ballY <= leftPos + PADDLE_WIDTH && ballY + BALL_SIZE >= leftPos)
-#define BALL_R_Y_INTERSECT (ballY <= rightPos + PADDLE_WIDTH && ballY + BALL_SIZE >= rightPos)
+    (ballX <= screenWidthPx - PADDLE_PADDING && ballX + BALL_SIZE >= screenWidthPx - PADDLE_PADDING)
+#define BALL_L_Y_INTERSECT (ballY <= leftPos + PADDLE_HEIGHT && ballY + BALL_SIZE >= leftPos)
+#define BALL_R_Y_INTERSECT (ballY <= rightPos + PADDLE_HEIGHT && ballY + BALL_SIZE >= rightPos)
 
     if ((BALL_L_X_Intersect && BALL_L_Y_INTERSECT) || (BALL_R_X_INTERSECT && BALL_R_Y_INTERSECT)) {
         ballDX *= -1;
-
-        if (lastScored) {
-            leftScore++;
-            lastScored = false;
-        } else {
-            rightScore++;
-            lastScored = true;
-        }
     }
 
-    if (ballX <= 0 || ballX >= screenWidthPx) {
+    if (ballX <= 0) {
+        rightScore++;
+        return true;
+    } else if (ballX >= screenWidthPx) {
+        leftScore++;
         return true;
     }
 
@@ -131,17 +148,17 @@ bool loop() {
     }
     ballX += ballDX;
 
-    ClearScreen();
+    // reprint score incase ball overlaps it
+    // (reprint every 200 frames to avoid lag)
+    if (timer % 200 == 0) {
+        printScore();
+    }
 
-    renderer->putString(*score, 5, 0);
-    renderer->putString(intToStr(leftScore, 10), 45, 0);
-
-    renderer->putString(*score, screenWidthPx - PADDLE_WIDTH - 40, 0);
-    renderer->putString(intToStr(rightScore, 10), screenWidthPx - PADDLE_WIDTH, 0);
+    // ClearScreen();
 
     putRect(ballX, ballY, 4, 4, RED);
-    putLine(PADDLE_WIDTH, leftPos, PADDLE_WIDTH, true, MAGENTA);
-    putLine(screenWidthPx - PADDLE_WIDTH, rightPos, PADDLE_WIDTH, true, MAGENTA);
+    putLine(PADDLE_PADDING, leftPos, PADDLE_HEIGHT, true, MAGENTA);
+    putLine(screenWidthPx - PADDLE_PADDING, rightPos, PADDLE_HEIGHT, true, MAGENTA);
 
     return false;
 }

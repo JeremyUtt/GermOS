@@ -52,6 +52,8 @@ extern "C" void main() {
 
     // Runs once everything else is done
     ClearScreen();
+    updateStdout(renderer);
+    renderer.clearBox();
     printf("All Programs Finished\n");
     printf("Interrupts Disabled\n");
     printf("Processor Halting\n");
@@ -144,16 +146,16 @@ void startTUI() {
 
 #ifndef TEXT_MODE
 void startGUI() {
-    extern binaryFile goopergimg;
-    GOOPImage::draw(&goopergimg, 0, 0);
+    // extern binaryFile goopergimg;
+    // GOOPImage::draw(&goopergimg, 0, 0);
 
-    GuiTextRenderer renderer(0, 0, 320, 200);
-    renderer.setTextFont(&Uni2Terminus12x6psf);
-    renderer.setDrawColor(WHITE);
-    renderer.putString("Welcome to GoopOS", 100, 10);
-    renderer.setDrawColor(LIGHT_GRAY);
+    // GuiTextRenderer renderer(0, 0, 320, 200);
+    // renderer.setTextFont(&Uni2Terminus12x6psf);
+    // renderer.setDrawColor(WHITE);
+    // renderer.putString("Welcome to GoopOS", 100, 10);
+    // renderer.setDrawColor(LIGHT_GRAY);
 
-    sleep(5000);
+    // sleep(5000);
 
     Process pong("Pong", (uint32_t)PONG::main);
     pong.start();

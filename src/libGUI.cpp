@@ -205,6 +205,8 @@ void GuiTextRenderer::printChar(char chr) {
 
 void GuiTextRenderer::clearBox() {
     GuiRenderer::putRect(boxStartX, boxStartY, boxWidth, boxHeight, BLACK);
+    cursorX = 0;
+    cursorY = 0;
 }
 
 void newGuiTest() {
