@@ -1,8 +1,8 @@
-#include <utils.hpp>
-#include <libGUI.hpp>
+#include <libGUI_old.hpp>
 #include <libKeyboard.hpp>
 #include <libTimer.hpp>
 #include <PROGRAM_PONG.hpp>
+#include <utils.hpp>
 
 #define PADDLE_SPEED 10
 #define BALL_SPEED_RATIO 5

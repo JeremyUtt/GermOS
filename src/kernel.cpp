@@ -8,6 +8,7 @@
 #include <kernel.hpp>
 #include <libACPI.hpp>
 #include <libGUI.hpp>
+#include <libGUI_old.hpp>
 #include <libIDT.hpp>
 #include <libIO.hpp>
 #include <libKeyboard.hpp>
@@ -15,7 +16,6 @@
 #include <libSerial.hpp>
 #include <libTimer.hpp>
 #include <memory.hpp>
-#include <newLibGui.hpp>
 #include <photo.hpp>
 #include <printf.hpp>
 #include <process.hpp>
@@ -28,21 +28,27 @@
 
 #ifdef TEXT_MODE
 using namespace TextRenderer;
+
 #define startUI() startTUI()
+#define boxHeight 25
+#define boxWidth 80
+#define boxStartY 3
+
 #else
 using namespace GuiRenderer;
 #define startUI() startGUI()
+#define boxHeight 200
+#define boxWidth 320
+#define boxStartY 0
 #endif
 
 extern "C" void main() {
-    initKernel();
+    GenericRenderer renderer(0, boxStartY, boxWidth, boxHeight);
+    initKernel(renderer);
 
     // Run Testing Code Here
-    ClearScreen();
 
     // :D
-    newTuiTest();
-    while (true) {}
 
     // Run the UI
     startUI();
@@ -56,45 +62,47 @@ extern "C" void main() {
     halt();
 }
 
-void initKernel() {
-    setDrawColor(VGA_LIGHT_GRAY);
-    setTextFont(&Uni2Terminus12x6psf);
+void initKernel(GenericRenderer& renderer) {
+    updateStdout(renderer);
+    renderer.setDrawColor(LIGHT_GRAY);
+
+#ifndef TEXT_MODE
+    renderer.setTextFont(&Uni2Terminus12x6psf);
+#endif
 
     initMem();
-    println("Successfully Switched to Protected Mode");
-    println("Setting up Kernel Stack");
-    println("Initializing and Loading Graphics Mode Fonts");
-    println("Initializing Dynamic Memory Allocator");
-    println("Finding Kernel Memory Mapping");
+    printf("Successfully Switched to Protected Mode\n");
+    printf("Setting up Kernel Stack\n");
+    printf("Initializing and Loading Graphics Mode Fonts\n");
+    printf("Initializing Dynamic Memory Allocator\n");
+    printf("Finding Kernel Memory Mapping\n");
     printMem();
     char* mem = checkKernelMemory(0x7c00 + KERNEL_SIZE - 10, 20, "42069");
     if (mem != nullptr) {
-        printf("    INFO: Start Addr: 0x7c00, End Addr: 0x%s", intToStr((uint32_t)mem, 16));
-        println("");
-
+        printf("    INFO: Start Addr: 0x7c00, End Addr: 0x%s\n", intToStr((uint32_t)mem, 16));
     } else {
-        setDrawColor(VGA_BROWN);
-        println("WARNING: Couldnt find magic number. Kernel May not be fully loaded");
-        setDrawColor(VGA_LIGHT_GRAY);
+        renderer.setDrawColor(BROWN);
+        printf("WARNING: Couldnt find magic number. Kernel May not be fully loaded\n");
+        renderer.setDrawColor(LIGHT_GRAY);
     }
 
-    println("Initializing Serial Interface");
+    printf("Initializing Serial Interface\n");
     initSerial();
 
-    println("Loading IDT Entry for Timer Handler");
+    printf("Loading IDT Entry for Timer Handler\n");
     loadIdtEntry(0x20, (uint32_t)timerHandler, 0x08, 0x8e);
 
-    println("Loading IDT Entry for Keyboard Handler");
+    printf("Loading IDT Entry for Keyboard Handler\n");
     loadIdtEntry(0x21, (uint32_t)keyboardHandler, 0x08, 0x8e);
 
-    println("Initializing IDT");
+    printf("Initializing IDT");
     idtInit();
 
-    println("Initializing Timer Interrupt");
+    printf("Initializing Timer Interrupt\n");
     Timer::setEnabled(true);
     Timer::setFreq(1000);
 
-    println("Initializing Keyboard Interrupt");
+    printf("Initializing Keyboard Interrupt\n");
     KB::init();
 
     // println("Finding RSDP Pointer");
@@ -104,9 +112,9 @@ void initKernel() {
     // println("Decoding RSDT");
     // decodeRSDT(rsdtPtr);
 
-    println("Kernel Initialization Complete!");
-    println("Welcome To GoopOS!");
-    println("Press any key to continue");
+    printf("Kernel Initialization Complete!\n");
+    printf("Welcome To GoopOS!\n");
+    printf("Press any key to continue\n");
 
     KB::waitForKeyboard();
     ClearScreen();

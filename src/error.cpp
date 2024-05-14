@@ -1,6 +1,6 @@
 #include "error.hpp"
 
-#include <libGUI.hpp>
+#include <libGUI_old.hpp>
 #include <libSerial.hpp>
 #include <system.hpp>
 
@@ -14,7 +14,6 @@ void error(string msg, bool fatal) {
     serialWriteStr("ERROR: ");
     serialWriteStr(msg);
     serialWriteStr("\r\n");
-
 
     setDrawColor(VGA_RED);
     print("ERROR: ");

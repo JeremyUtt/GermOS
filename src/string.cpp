@@ -1,7 +1,7 @@
 #include "string.hpp"
 
 #include <error.hpp>
-#include <libGUI.hpp>
+#include <libGUI_old.hpp>
 #include <libSerial.hpp>
 #include <memory.hpp>
 
@@ -139,7 +139,6 @@ bool string::operator==(const char* str) {
 }
 
 string string::operator+(string& rhs) {
-    
     string newString(_size + rhs.size());
     for (uint32_t i = 0; i < _size; i++) {
         newString[i] = _content[i];

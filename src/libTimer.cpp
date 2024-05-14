@@ -1,10 +1,10 @@
 #include <stdint.h>
 
-#include <utils.hpp>
 #include <libIO.hpp>
 #include <libSerial.hpp>
 #include <libTimer.hpp>
 #include <system.hpp>
+#include <utils.hpp>
 
 namespace Timer {
 int timerPIT = 0;

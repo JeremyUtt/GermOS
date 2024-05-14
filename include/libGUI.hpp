@@ -1,113 +1,143 @@
 #pragma once
-#include <stdint-gcc.h>
-
 #include <fonts.hpp>
 #include <string.hpp>
 #include <utils.hpp>
 
-#define VGA_BLACK 0x0
-#define VGA_BLUE 0x1
-#define VGA_GREEN 0x2
-#define VGA_CYAN 0x3
-#define VGA_RED 0x4
-#define VGA_MAGENTA 0x5
-#define VGA_BROWN 0x6
-#define VGA_LIGHT_GRAY 0x7
-#define VGA_DARK_GRAY 0x8
-#define VGA_LIGHT_BLUE 0x9
-#define VGA_LIGHT_GREEN 0xA
-#define VGA_LIGHT_CYAN 0xB
-#define VGA_LIGHT_RED 0xC
-#define VGA_LIGHT_MAGENTA 0xD
-#define VGA_LIGHT_BROWN 0xE
-#define VGA_WHITE 0xF
+// For graphics mode
+const int screenWidthPx = 320;
+const int screenHeightPx = 200;
 
-struct vbe_mode_info_structure {
-    uint16_t attributes;   // deprecated, only bit 7 should be of interest to you, and it indicates
-                           // the mode supports a linear frame buffer.
-    uint8_t window_a;      // deprecated
-    uint8_t window_b;      // deprecated
-    uint16_t granularity;  // deprecated; used while calculating bank numbers
-    uint16_t window_size;
-    uint16_t segment_a;
-    uint16_t segment_b;
-    uint32_t win_func_ptr;  // deprecated; used to switch banks from protected mode without
-                            // returning to real mode
-    uint16_t pitch;         // number of bytes per horizontal line
-    uint16_t width;         // width in pixels
-    uint16_t height;        // height in pixels
-    uint8_t w_char;         // unused...
-    uint8_t y_char;         // ...
-    uint8_t planes;
-    uint8_t bpp;    // bits per pixel in this mode
-    uint8_t banks;  // deprecated; total number of banks in this mode
-    uint8_t memory_model;
-    uint8_t bank_size;  // deprecated; size of a bank, almost always 64 KB but may be 16 KB...
-    uint8_t image_pages;
-    uint8_t reserved0;
+// For text mode
+const int screenWidthChar = 80;
+const int screenHeightChar = 25;
 
-    uint8_t red_mask;
-    uint8_t red_position;
-    uint8_t green_mask;
-    uint8_t green_position;
-    uint8_t blue_mask;
-    uint8_t blue_position;
-    uint8_t reserved_mask;
-    uint8_t reserved_position;
-    uint8_t direct_color_attributes;
+enum Color {
+    BLACK = 0x00,
+    BLUE = 0x01,
+    GREEN = 0x02,
+    CYAN = 0x03,
+    RED = 0x04,
+    MAGENTA = 0x05,
+    BROWN = 0x06,
+    LIGHT_GRAY = 0x07,
+    DARK_GRAY = 0x08,
+    LIGHT_BLUE = 0x09,
+    LIGHT_GREEN = 0x0A,
+    LIGHT_CYAN = 0x0B,
+    LIGHT_RED = 0x0C,
+    LIGHT_MAGENTA = 0x0D,
+    YELLOW = 0x0E,
+    WHITE = 0x0F
+};
 
-    uint32_t framebuffer;  // physical address of the linear frame buffer; write here to draw to the
-                           // screen
-    uint32_t off_screen_mem_off;
-    uint16_t off_screen_mem_size;  // size of memory in the framebuffer but not being displayed on
-                                   // the screen
-    uint8_t reserved1[206];
-} __attribute__((packed));
+// Graphics Mode functions
+void putPixel(int pos_x, int pos_y, Color color);
+void putRect(int x, int y, int width, int height, Color color);
+void putLine(int x, int y, int length, bool vertical, Color color);
 
-extern vbe_mode_info_structure* vbeInfo;
+// Text Mode functions
 
-#define putPixelM(x, y, color) *((unsigned char*)screenMemory + screenWidth * (y) + (x)) = color;
+// Note: Polymorphism doesn't work yet in this environment
+class Renderer {
+  protected:
+    Color color;
+    uint16_t boxStartX;
+    uint16_t boxStartY;
+    uint16_t boxWidth;
+    uint16_t boxHeight;
+    uint16_t cursorX;  // The cursor x position in either characters or pixels
+    uint16_t cursorY;  // The cursor y position in either characters or pixels
 
-namespace GuiRenderer {
+  public:
+    Renderer();
+    Renderer(int boxStartX, int boxStartY, int boxWidth, int boxHeight);
+    ~Renderer();
+    void setDrawColor(Color color);
+};
 
-const int screenMemory = 0xa0000;
-const int screenWidth = 320;
-const int screenHeight = 200;
+class TuiTextRenderer : public Renderer {
+  public:
+    using Renderer::Renderer;
+    void clearBox();
+    void putChar(int chr, int x, int y);
+    pair<int, int> putString(string str, int x, int y);
+    void print(string str);
+    void printChar(char chr);
 
-// const int screenWidth = 1280;
-// const int screenHeight = 1024;
-// const int screenMemory = 4244635648;
-// const int screenMemory = 0x3000000;
+    /**
+     * @brief moves the cursor to the position specified by cursorX and cursorY.
+     *
+     */
+    void updateCursor();
+};
 
-// const int screenWidth = 640;
-// const int screenHeight = 350;
-void setTextFont(PSF_font*);
-void setDrawColor(int color);
-void UpdateCounter(int xInc, int yInc);
-void ClearScreen();
+class GuiTextRenderer : public Renderer {
+  private:
+    PSF_font* currentFont;
 
-void putPixel(int pos_x, int pos_y, unsigned char VGA_COLOR);
-void putChar(int chr, int x, int y);
-void putString(string str, int x, int y);
+  public:
+    using Renderer::Renderer;
 
-void println(string str);
-void putRect(int x, int y, int width, int height, int color);
-void putLine(int x, int y, int length, bool vertical, int color);
-void printChar(const char chr);
-void print(string str);
-}  // namespace GuiRenderer
+    /**
+     * @brief Set the Text Font object
+     *
+     * @param font A pointer to the font to use
+     */
+    void setTextFont(PSF_font* font);
 
-namespace TextRenderer {
-const int screenWidth = 80;
-const int screenHeight = 25;
+    /**
+     * @brief Clears the box with Black.
+     */
+    void clearBox();
+
+    /**
+     * @brief puts a character on the screen at the specified position.
+     * Does NOT update cursor position (See printChar()).
+     * Does NOT handle newline characters.
+     * @param chr The character to be rendered.
+     * @param x The x position in pixels, relative to the box.
+     * @param y The y position in pixels, relative to the box.
+     */
+    void putChar(int chr, int x, int y);
+
+    /**
+     * @brief Renders a string on the GUI at the specified position.
+     * Does NOT wrap lines that overflow box.
+     * Does handle newline characters.
+     * Does NOT update cursor position.
+     *
+     * @param str The string to be rendered.
+     * @param x The x-coordinate (in pixels relative to the box) of the starting position.
+     * @param y The y-coordinate (in pixels relative to the box) of the starting position.
+     * @return pair<int, int> The x and y coordinates of the last character rendered.
+     */
+    pair<int, int> putString(string str, int x, int y);
+
+    /**
+     * @brief Put a string on the screen at the current cursor position.
+     *
+     * @param str String to be printed.
+     */
+    void print(string str);
+
+    /**
+     * @brief Put a character on the screen at the current cursor position.
+     * Does update cursor position.
+     * Does NOT handle newline characters.
+     *
+     * @param chr Character to be printed.
+     */
+    void printChar(char chr);
+};
+
+void newGuiTest();
+void newTuiTest();
+
+// Polymorphism doesnt work yet in this environment
+#ifdef TEXT_MODE
 const int screenMemory = 0xb8000;
-void setTextFont(PSF_font*);
-void setDrawColor(int color);
-void ClearScreen();
-void moveCursor(int x, int y);
-void putChar(int chr, int x, int y);
-void putString(string str, int x, int y);
-void println(string str);
-void print(string str);
-void printChar(char chr);
-}  // namespace TextRenderer
+typedef TuiTextRenderer GenericRenderer;
+#else
+const int screenMemory = 0xA0000;
+typedef GuiTextRenderer GenericRenderer;
+#endif

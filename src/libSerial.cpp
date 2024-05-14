@@ -1,6 +1,6 @@
-#include <utils.hpp>
 #include <libIO.hpp>
 #include <libSerial.hpp>
+#include <utils.hpp>
 
 int initSerial() {
     outb(COM1 + 1, 0x00);  // Disable all interrupts

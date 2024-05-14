@@ -1,10 +1,10 @@
 // https://stackoverflow.com/questions/37618111/keyboard-irq-within-an-x86-kernel
 #include <stdint.h>
 
-#include <utils.hpp>
 #include <libIDT.hpp>
 #include <libIO.hpp>
 #include <libSerial.hpp>
+#include <utils.hpp>
 
 IdtEntry idtTable[IDT_SIZE];
 IdtPointer idtPtr;

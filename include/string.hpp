@@ -11,12 +11,11 @@ class string {
     string(string& str);
     ~string();
     string& operator=(string& str);
-    
+
     string(char* content);
     string(const char* content);
     string(uint32_t size);
     string(char* content, uint32_t size);
-
 
     string& operator=(char* str);
     string& operator=(const char* str);

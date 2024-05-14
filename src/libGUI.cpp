@@ -1,112 +1,116 @@
-#include <stdint.h>
+#include "libGUI.hpp"
 
-#include <utils.hpp>
-#include <fonts.hpp>
-#include <libGUI.hpp>
+#include <libGUI_old.hpp>
 #include <libIO.hpp>
-#include <libSerial.hpp>
+#include <libTimer.hpp>
+#include <utils.hpp>
 
-vbe_mode_info_structure* vbeInfo = (vbe_mode_info_structure*)0x500;
+#define putPixelM_new(x, y, color) \
+    *((unsigned char*)screenMemory + screenWidthPx * (y) + (x)) = color;
 
-namespace GuiRenderer {
-int XcounterPx = 0;
-int YcounterPx = 0;
-int printColor;
-PSF_font* currentFont;
+// ===============================================
+// ============== Renderer Functions =============
+// ===============================================
 
-void setTextFont(PSF_font* font) {
+Renderer::Renderer() {
+    color = WHITE;
+    boxStartX = 0;
+    boxStartY = 0;
+    boxWidth = screenWidthPx;
+    boxHeight = screenHeightPx;
+    cursorX = 0;
+    cursorY = 0;
+}
+
+Renderer::Renderer(int boxStartX, int boxStartY, int boxWidth, int boxHeight) {
+    color = WHITE;
+    this->boxStartX = boxStartX;
+    this->boxStartY = boxStartY;
+    this->boxWidth = boxWidth;
+    this->boxHeight = boxHeight;
+    cursorX = 0;
+    cursorY = 0;
+}
+
+Renderer::~Renderer() {
+}
+
+void Renderer::setDrawColor(Color color) {
+    this->color = color;
+}
+// ===============================================
+// ========= TUI Text Renderer Functions =========
+// ===============================================
+
+void TuiTextRenderer::clearBox() {
+    for (uint16_t i = boxStartX; i < boxWidth; i++) {
+        for (uint16_t j = boxStartY; j < boxHeight; j++) {
+            putChar(' ', i, j);
+        }
+    }
+}
+
+void TuiTextRenderer::putChar(int chr, int x, int y) {
+    uint16_t data = (color << 8) + chr;
+
+    uint16_t* location =
+        (uint16_t*)(screenMemory) + screenWidthChar * (y + boxStartY) + (x + boxStartX);
+    *location = data;
+}
+
+pair<int, int> TuiTextRenderer::putString(string str, int x, int y) {
+    pair<int, int> pos = {cursorX, cursorY};
+
+    for (uint32_t i = 0; i < str.size(); i++) {
+        if (str.at(i) == '\n') {
+            y += 1;
+            pos.second += 1;
+            x = 0;
+            pos.first = 0;
+            continue;
+        }
+
+        if (x > boxWidth || y > boxHeight) {
+            continue;
+        }
+
+        putChar(str.at(i), x, y);
+        x += 1;
+        pos.first += 1;
+    }
+    return pos;
+}
+void TuiTextRenderer::print(string str) {
+    pair<int, int> update = putString(str, cursorX, cursorY);
+    cursorX = update.first;
+    cursorY = update.second;
+    updateCursor();
+}
+
+void TuiTextRenderer::printChar(char chr) {
+    putChar(chr, cursorX, cursorY);
+    cursorX += 1;
+    updateCursor();
+}
+
+void TuiTextRenderer::updateCursor() {
+    uint16_t pos = boxStartX + cursorX + (boxStartY + cursorY) * screenWidthChar;
+
+    outb(TEXT_CURSOR1, 0x0F);
+    outb(TEXT_CURSOR2, (uint8_t)(pos & 0xFF));
+    outb(TEXT_CURSOR1, 0x0E);
+    outb(TEXT_CURSOR2, (uint8_t)((pos >> 8) & 0xFF));
+}
+
+// ===============================================
+// ============ GUI Renderer Functions ===========
+// ===============================================
+
+void GuiTextRenderer::setTextFont(PSF_font* font) {
     currentFont = font;
 }
 
-void setDrawColor(int color) {
-    printColor = color;
-}
-
-void UpdateCounter(int xIncChars, int yIncChars) {
-    // Provide
-    YcounterPx += yIncChars * currentFont->height;
-    XcounterPx += xIncChars * currentFont->width;
-
-    if (yIncChars) {
-        XcounterPx = 0;
-    }
-    if (XcounterPx >= screenWidth) {
-        XcounterPx = 0;
-        YcounterPx += currentFont->height;
-    }
-
-    if (XcounterPx < 0) {
-        XcounterPx = screenWidth - 1;
-        YcounterPx -= currentFont->height;
-    }
-
-    if (YcounterPx > screenHeight) {
-        YcounterPx = screenHeight - currentFont->height;
-    }
-
-    if (YcounterPx < 0) {
-        YcounterPx = 0;
-    }
-}
-
-void ClearScreen() {
-    uint8_t* where = (uint8_t*)screenMemory;
-    uint32_t i, j;
-
-    for (i = 0; i < screenHeight; i++) {
-        for (j = 0; j < screenWidth; j++) {
-            where[j] = 0;
-        }
-        where += screenWidth;
-    }
-
-    XcounterPx = 0;
-    YcounterPx = 0;
-}
-//-----
-void putPixel(int pos_x, int pos_y, unsigned char VGA_COLOR) {
-    // if (pos_x < 0 || pos_x > screenWidth || pos_y < 0 || pos_y > screenHeight) {
-    // return;
-    // }
-
-    unsigned char* location = (unsigned char*)screenMemory + screenWidth * pos_y + pos_x;
-    *location = VGA_COLOR;
-}
-
-void putRect(int x, int y, int width, int height, int color) {
-    for (int i = 0; i < height; i++) {
-        for (int j = 0; j < width; j++) {
-            putPixelM(x + j, y + i, color);
-        }
-    }
-
-    // unsigned char *where = vram;
-    // int i, j;
-
-    // for (i = 0; i < w; i++) {
-    //     for (j = 0; j < h; j++) {
-    //         //putpixel(vram, 64 + j, 64 + i, (r << 16) + (g << 8) + b);
-    //         where[j] = r;
-
-    //     }
-    //     where+=pitch;
-    // }
-}
-
-void putLine(int x, int y, int length, bool vertical, int color) {
-    if (vertical) {
-        for (int i = 0; i < length; i++) {
-            putPixelM(x, y + i, color);
-        }
-    } else {
-        for (int i = 0; i < length; i++) {
-            putPixelM(x + i, y, color);
-        }
-    }
-}
-//-----
-void putChar(int chr, int x, int y) {
-    // PSF_font* currentFont = &_binary_files_Uni2_Terminus12x6_psf_start;
+void GuiTextRenderer::putChar(int chr, int x, int y) {
     int paddedWidth = currentFont->width + (8 - currentFont->width % 8);
     int bytesPerLine = paddedWidth / 8;
 
@@ -117,111 +121,116 @@ void putChar(int chr, int x, int y) {
             for (int bitNum = 8 - 1; bitNum >= 0; bitNum--) {
                 uint8_t tmpBool = (lineByte >> bitNum);
                 bool bit = (tmpBool & 0x01);
-                // serialWriteChar((char*)bit ? '#' : '.');
                 int pixelX = x + (bytesNum * 8) - bitNum + currentFont->width + 1;
-                putPixelM(pixelX, y + lineNum, bit ? printColor : 0x00);
+                putPixelM_new(pixelX + boxStartX, y + lineNum + boxStartY, bit ? color : 0x00);
             }
         }
-        // serialWriteStr((char*)"\r\n");
     }
 }
 
-void putString(string str, int x, int y) {
+pair<int, int> GuiTextRenderer::putString(string str, int x, int y) {
+    pair<int, int> pos = {cursorX, cursorY};
+
     for (uint32_t i = 0; i < str.size(); i++) {
-        int xPos = x + currentFont->width * i;
-
-        if (xPos + currentFont->width >= screenWidth) {
-            return;
+        if (str.at(i) == '\n') {
+            y += currentFont->height;
+            pos.second += currentFont->height;
+            x = 0;
+            pos.first = 0;
+            continue;
         }
-        putChar(str.at(i), xPos, y);
-        // serialWriteStr((char*)"---------------------------------\r\n");
-    }
-}
 
-//-----
-void println(string str) {
-    putString(str, XcounterPx, YcounterPx);
-    UpdateCounter(str.size(), 1);
-}
-
-void print(string str) {
-    putString(str, XcounterPx, YcounterPx);
-    UpdateCounter(str.size(), 0);
-}
-
-void printChar(char chr) {
-}
-}  // namespace GuiRenderer
-
-namespace TextRenderer {
-
-static int Xcounter = 0;
-// TODO: fix hacky default y value
-static int Ycounter = 4;
-static int printColor;
-void setDrawColor(int color) {
-    printColor = color;
-}
-
-void setTextFont(PSF_font* font) {
-    return;
-}
-
-void ClearScreen() {
-    for (int i = 0; i < screenHeight; i++) {
-        for (int j = 0; j < screenWidth; j++) {
-            putChar(0, j, i);
+        if (x + currentFont->width > boxWidth || y + currentFont->height > boxHeight) {
+            // continue instead of return because of detection of new line
+            continue;
         }
+
+        putChar(str.at(i), x, y);
+        x += currentFont->width;
+        pos.first += currentFont->width;
     }
-    Xcounter = 0;
-    Ycounter = 0;
-    moveCursor(0, 0);
+    return pos;
 }
 
-void moveCursor(int x, int y) {
-    uint16_t pos = y * screenWidth + x;
-
-    outb(TEXT_CURSOR1, 0x0F);
-    outb(TEXT_CURSOR2, (uint8_t)(pos & 0xFF));
-    outb(TEXT_CURSOR1, 0x0E);
-    outb(TEXT_CURSOR2, (uint8_t)((pos >> 8) & 0xFF));
+void GuiTextRenderer::print(string str) {
+    pair<int, int> update = putString(str, cursorX, cursorY);
+    cursorX = update.first;
+    cursorY = update.second;
 }
 
-void putChar(int chr, int x, int y) {
-    uint16_t data = (printColor << 8) + chr;
-
-    uint16_t* location = (uint16_t*)(screenMemory) + screenWidth * y + x;
-    *location = data;
+void GuiTextRenderer::printChar(char chr) {
+    putChar(chr, cursorX, cursorY);
+    cursorX += currentFont->width;
 }
 
-void putString(string str, int x, int y) {
-    for (uint32_t i = 0; i < str.size(); i++) {
-        putChar(str.at(i), x + i, y);
-    }
+void GuiTextRenderer::clearBox() {
+    GuiRenderer::putRect(boxStartX, boxStartY, boxWidth, boxHeight, BLACK);
 }
 
-void println(string str) {
-    putString(str, Xcounter, Ycounter);
-    Xcounter += str.size();
-    if (Xcounter <= screenWidth) {
-        Xcounter -= screenMemory;
-        Ycounter++;
-    }
-    Xcounter = 0;
-    moveCursor(Xcounter, Ycounter);
+void newGuiTest() {
+    GuiTextRenderer pog(0, 0, 320, 200);
+
+    pog.setTextFont(&Uni2Terminus12x6psf);
+    pog.setDrawColor(LIGHT_GRAY);
+    pog.print("Hello World!\n");
+    pog.print("Hello World!");
+    pog.print("Hello World!");
+    pog.print("Hello World!\n");
+    pog.print("Hello World!");
+    pog.print("Hello World!");
+    pog.print("Hello World!");
+    pog.print("Hello World!\n");
+
+    sleep(1000);
+    pog.clearBox();
+    sleep(1000);
+
+    GuiTextRenderer pog2(50, 50, 320 - 100, 200 - 100);
+    GuiRenderer::putRect(50, 50, 320 - 100, 200 - 100, BLUE);
+    pog2.setTextFont(&Uni2Terminus12x6psf);
+    pog2.setDrawColor(LIGHT_GRAY);
+    pog2.print("Hello World!\n");
+    pog2.print("Hello World!");
+    pog2.print("Hello World!");
+    pog2.print("Hello World!\n");
+    pog2.print("Hello World!");
+    pog2.print("Hello World!");
+    pog2.print("Hello World!");
+    pog2.print("Hello World!\n");
+
+    sleep(10000);
 }
 
-void print(string str) {
-    putString(str, Xcounter, Ycounter);
-    Xcounter += str.size();
+void newTuiTest() {
+    TuiTextRenderer pog(0, 0, 80, 25);
 
-    moveCursor(Xcounter, Ycounter);
+    // pog.setTextFont(&Uni2Terminus12x6psf);
+    pog.setDrawColor(LIGHT_GRAY);
+    pog.print("Hello World!\n");
+    pog.print("Hello World!");
+    pog.print("Hello World!");
+    pog.print("Hello World!\n");
+    pog.print("Hello World!");
+    pog.print("Hello World!");
+    pog.print("Hello World!");
+    pog.print("Hello World!\n");
+
+    sleep(1000);
+    pog.clearBox();
+    sleep(1000);
+
+    TuiTextRenderer pog2(10, 10, 80 - 20, 25 - 20);
+    // GuiRenderer::putRect(50, 50, 320-100, 200-100, BLUE);
+    // pog2.setTextFont(&Uni2Terminus12x6psf);
+    pog2.setDrawColor(LIGHT_GRAY);
+    pog2.print("Hello World!\n");
+    pog2.print("Hello World!");
+    pog2.print("Hello World!");
+    pog2.print("Hello World!\n");
+    pog2.print("Hello World!");
+    pog2.print("Hello World!");
+    pog2.print("Hello World!");
+    pog2.print("Hello World!\n");
+
+    sleep(10000);
 }
-
-void printChar(char chr) {
-    putChar(chr, Xcounter, Ycounter);
-    Xcounter += 1;
-    moveCursor(Xcounter, Ycounter);
-}
-
-}  // namespace TextRenderer

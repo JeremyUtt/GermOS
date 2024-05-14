@@ -3,6 +3,13 @@
 #include <libSerial.hpp>
 #include <string.hpp>
 
+/**
+ * @brief Updates where printf will print to
+ *
+ * @param renderer renderer to print to
+ */
+void updateStdout(GenericRenderer& renderer);
+
 enum stream {
     Serial,
     Screen,

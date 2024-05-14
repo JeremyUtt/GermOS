@@ -6,24 +6,26 @@ int sprintf(stream serial, string format) {
     return printValue(serial, format);
 }
 
-int printf(string format){
+int printf(string format) {
     return printValue(Screen, format);
 }
 
-
+// Node: Polymorphism doesn't work yet in this environment
 #ifdef TEXT_MODE
-using namespace TextRenderer;
+TuiTextRenderer* output;
+void updateStdout(TuiTextRenderer& renderer) {
+    output = &renderer;
+}
 #else
-using namespace GuiRenderer;
+GuiTextRenderer* output;
+void updateStdout(GuiTextRenderer& renderer) {
+    output = &renderer;
+}
 #endif
 
 int printValue(stream serial, char c) {
     if (serial == Screen) {
-        if (c == '\n') {
-            println("");
-            return 1;
-        }
-        printChar(c);
+        output->printChar(c);
         return 1;
     }
 
@@ -38,7 +40,7 @@ int printValue(stream serial, char c) {
 
 int printValue(stream serial, string& s) {
     if (serial == Screen) {
-        print(s);
+        output->print(s);
     } else {
         serialWriteStr(s);
     }
@@ -48,7 +50,7 @@ int printValue(stream serial, string& s) {
 
 int printValue(stream serial, const char* s) {
     if (serial == Screen) {
-        print(s);
+        output->print(s);
     } else {
         serialWriteStr(s);
     }
@@ -58,7 +60,7 @@ int printValue(stream serial, const char* s) {
 
 int printValue(stream serial, int i) {
     if (serial == Screen) {
-        print(intToStr(i, 10));
+        output->print(intToStr(i, 10));
     } else {
         serialWriteStr(intToStr(i, 10));
     }

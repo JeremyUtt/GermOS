@@ -1,6 +1,6 @@
-#include <utils.hpp>
 #include <libACPI.hpp>
 #include <libSerial.hpp>
+#include <utils.hpp>
 
 rsdpDescriptor* rsdpPtr;
 rsdtDescriptor* rsdtPtr;

@@ -3,10 +3,10 @@
 #include "memory.hpp"
 #define HEAP_SIZE 32768
 #define TABLE_SIZE 1000
-#include <utils.hpp>
-#include <libGUI.hpp>
-#include <libSerial.hpp>
 #include <error.hpp>
+#include <libGUI_old.hpp>
+#include <libSerial.hpp>
+#include <utils.hpp>
 
 struct allocEntry {
     bool realEntry;
@@ -71,7 +71,7 @@ void* malloc(uint16_t bytes) {
     // --> could not find any memory
 
     error("Failed to allocate memory", true);
-    return nullptr; // Wont ever reach here
+    return nullptr;  // Wont ever reach here
 }
 
 void mergeEntries(allocEntry& a) {
@@ -110,13 +110,12 @@ void free(void* mem) {
     for (uint16_t i = 0; i < TABLE_SIZE; i++) {
         if (table[i].inUse && table[i].start == (uint8_t*)mem) {
             table[i].inUse = false;
-            
+
             // clear memory
             for (uint16_t j = 0; j < table[i].end - table[i].start; j++) {
                 table[i].start[j] = 0;
             }
-            
-            
+
             mergeEntries(table[i]);
             return;
         }
