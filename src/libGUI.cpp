@@ -8,6 +8,38 @@
 #define putPixelM_new(x, y, color) \
     *((unsigned char*)screenMemory + screenWidthPx * (y) + (x)) = color;
 
+void putRect(int x, int y, int width, int height, Color color) {
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            putPixelM_new(x + j, y + i, color);
+        }
+    }
+}
+
+void putLine(int x, int y, int length, bool vertical, Color color) {
+    if (vertical) {
+        for (int i = 0; i < length; i++) {
+            putPixelM_new(x, y + i, color);
+        }
+    } else {
+        for (int i = 0; i < length; i++) {
+            putPixelM_new(x + i, y, color);
+        }
+    }
+}
+
+void ClearScreen() {
+    uint8_t* where = (uint8_t*)screenMemory;
+    uint32_t i, j;
+
+    for (i = 0; i < screenHeightPx; i++) {
+        for (j = 0; j < screenWidthPx; j++) {
+            where[j] = 0;
+        }
+        where += screenWidthPx;
+    }
+}
+
 // ===============================================
 // ============== Renderer Functions =============
 // ===============================================
@@ -128,7 +160,7 @@ void GuiTextRenderer::putChar(int chr, int x, int y) {
     }
 }
 
-pair<int, int> GuiTextRenderer::putString(string str, int x, int y) {
+pair<int, int> GuiTextRenderer::putString(string& str, int x, int y) {
     pair<int, int> pos = {cursorX, cursorY};
 
     for (uint32_t i = 0; i < str.size(); i++) {
@@ -152,10 +184,18 @@ pair<int, int> GuiTextRenderer::putString(string str, int x, int y) {
     return pos;
 }
 
-void GuiTextRenderer::print(string str) {
+pair<int, int> GuiTextRenderer::putString(string&& str, int x, int y) {
+    return putString(str, x, y);
+}
+
+void GuiTextRenderer::print(string& str) {
     pair<int, int> update = putString(str, cursorX, cursorY);
     cursorX = update.first;
     cursorY = update.second;
+}
+
+void GuiTextRenderer::print(string&& str) {
+    print(str);
 }
 
 void GuiTextRenderer::printChar(char chr) {

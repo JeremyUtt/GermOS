@@ -8,7 +8,7 @@
 #include <kernel.hpp>
 #include <libACPI.hpp>
 #include <libGUI.hpp>
-#include <libGUI_old.hpp>
+// #include <libGUI_old.hpp>
 #include <libIDT.hpp>
 #include <libIO.hpp>
 #include <libKeyboard.hpp>
@@ -27,15 +27,12 @@
 #include <utils.hpp>
 
 #ifdef TEXT_MODE
-using namespace TextRenderer;
-
 #define startUI() startTUI()
 #define boxHeight 25
 #define boxWidth 80
 #define boxStartY 3
 
 #else
-using namespace GuiRenderer;
 #define startUI() startGUI()
 #define boxHeight 200
 #define boxWidth 320
@@ -55,9 +52,9 @@ extern "C" void main() {
 
     // Runs once everything else is done
     ClearScreen();
-    println("All Programs Finished");
-    println("Interrupts Disabled");
-    println("Processor Halting");
+    printf("All Programs Finished\n");
+    printf("Interrupts Disabled\n");
+    printf("Processor Halting\n");
     disableInterrupts();
     halt();
 }
@@ -148,15 +145,15 @@ void startTUI() {
 #ifndef TEXT_MODE
 void startGUI() {
     extern binaryFile goopergimg;
-
     GOOPImage::draw(&goopergimg, 0, 0);
 
-    setDrawColor(0xf);
-    putString("Welcome to GoopOS", 100, 10);
-    setDrawColor(0x7);
+    GuiTextRenderer renderer(0, 0, 320, 200);
+    renderer.setTextFont(&Uni2Terminus12x6psf);
+    renderer.setDrawColor(WHITE);
+    renderer.putString("Welcome to GoopOS", 100, 10);
+    renderer.setDrawColor(LIGHT_GRAY);
 
     sleep(5000);
-    while (true) {}
 
     Process pong("Pong", (uint32_t)PONG::main);
     pong.start();

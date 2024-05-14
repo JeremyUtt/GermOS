@@ -111,14 +111,16 @@ class GuiTextRenderer : public Renderer {
      * @param y The y-coordinate (in pixels relative to the box) of the starting position.
      * @return pair<int, int> The x and y coordinates of the last character rendered.
      */
-    pair<int, int> putString(string str, int x, int y);
+    pair<int, int> putString(string& str, int x, int y);
+    pair<int, int> putString(string&& str, int x, int y);
 
     /**
      * @brief Put a string on the screen at the current cursor position.
      *
      * @param str String to be printed.
      */
-    void print(string str);
+    void print(string& str);
+    void print(string&& str);
 
     /**
      * @brief Put a character on the screen at the current cursor position.
@@ -132,6 +134,10 @@ class GuiTextRenderer : public Renderer {
 
 void newGuiTest();
 void newTuiTest();
+
+void putRect(int x, int y, int width, int height, Color color);
+void putLine(int x, int y, int length, bool vertical, Color color);
+void ClearScreen();
 
 // Polymorphism doesnt work yet in this environment
 #ifdef TEXT_MODE
