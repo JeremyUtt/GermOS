@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#include <utils.hpp>
+#include <error.hpp>
 #include <fonts.hpp>
 #include <kernel.hpp>
 #include <libACPI.hpp>
@@ -15,36 +15,37 @@
 #include <libSerial.hpp>
 #include <libTimer.hpp>
 #include <memory.hpp>
+#include <newLibGui.hpp>
 #include <photo.hpp>
+#include <printf.hpp>
 #include <process.hpp>
 #include <PROGRAM_PONG.hpp>
 #include <PROGRAM_TUI.hpp>
 #include <string.hpp>
 #include <system.hpp>
 #include <tests.hpp>
-#include <error.hpp>
-#include <printf.hpp>
+#include <utils.hpp>
 
-
-#ifdef TEXT_MODE 
-    using namespace TextRenderer; 
-    #define startUI() startTUI()
-#else 
-    using namespace GuiRenderer;      
-    #define startUI() startGUI()
+#ifdef TEXT_MODE
+using namespace TextRenderer;
+#define startUI() startTUI()
+#else
+using namespace GuiRenderer;
+#define startUI() startGUI()
 #endif
-
 
 extern "C" void main() {
     initKernel();
-    
+
     // Run Testing Code Here
+    ClearScreen();
 
     // :D
+    newTuiTest();
+    while (true) {}
 
     // Run the UI
     startUI();
-
 
     // Runs once everything else is done
     ClearScreen();
@@ -54,7 +55,6 @@ extern "C" void main() {
     disableInterrupts();
     halt();
 }
-
 
 void initKernel() {
     setDrawColor(VGA_LIGHT_GRAY);
@@ -67,11 +67,9 @@ void initKernel() {
     println("Initializing Dynamic Memory Allocator");
     println("Finding Kernel Memory Mapping");
     printMem();
-    char* mem = checkKernelMemory(0x7c00 + KERNEL_SIZE-10, 20, "42069");
+    char* mem = checkKernelMemory(0x7c00 + KERNEL_SIZE - 10, 20, "42069");
     if (mem != nullptr) {
-        serialWriteStr("\r\n");
-        print("    INFO: Start Addr: 0x7c00, End Addr: 0x");
-        print(intToStr((uint32_t)mem, 16));
+        printf("    INFO: Start Addr: 0x7c00, End Addr: 0x%s", intToStr((uint32_t)mem, 16));
         println("");
 
     } else {
@@ -138,7 +136,6 @@ void startTUI() {
     cmd.start();
 }
 #endif
-
 
 #ifndef TEXT_MODE
 void startGUI() {

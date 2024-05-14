@@ -17,20 +17,24 @@ int printValue(stream serial, int i);
 template <typename T, typename... Args>
 int sprintf(stream serial, string format, T value, Args... args) {
     int characters = 0;
-    for (uint16_t i = 0; i < format.size(); i++) {
+    for (uint32_t i = 0; i < format.size(); i++) {
         if (format[i] == '%' && format[i + 1] == '%') {
             characters += printValue(serial, '%');
             i++;  // Skip both '%'
         } else if (format[i] == '%') {
             characters += printValue(serial, value);
 
-            string newFormat(&format[i + 2]);
+            if (i + 2 >= format.size()) {
+                return characters;
+            }
 
+            string newFormat(&format[i + 2]);
             return characters + sprintf(serial, newFormat, args...);
 
         } else {
             // Just print regular characters
-            characters+= printValue(serial, format[i]);;
+            characters += printValue(serial, format[i]);
+            ;
         }
     }
     return characters;

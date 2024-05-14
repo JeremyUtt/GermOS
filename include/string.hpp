@@ -4,6 +4,7 @@ class string {
   private:
     char* _content;
     uint32_t _size;
+    bool _dynamic;
 
   public:
     string();
@@ -16,7 +17,6 @@ class string {
     string(uint32_t size);
     string(char* content, uint32_t size);
 
-    bool _dynamic;
 
     string& operator=(char* str);
     string& operator=(const char* str);

@@ -29,6 +29,7 @@ string::string(string& str) {
     for (uint32_t i = 0; i < _size; i++) {
         _content[i] = str[i];
     }
+    _content[_size] = 0;
     _dynamic = true;
 }
 
