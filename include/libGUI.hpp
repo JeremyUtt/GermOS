@@ -3,6 +3,9 @@
 #include <string.hpp>
 #include <utils.hpp>
 
+
+const int tabSize = 4;
+
 // For graphics mode
 const int screenWidthPx = 320;
 const int screenHeightPx = 200;
@@ -97,8 +100,9 @@ class GuiTextRenderer : public Renderer {
      * @param chr The character to be rendered.
      * @param x The x position in pixels, relative to the box.
      * @param y The y position in pixels, relative to the box.
+     * @return pair<int, int> The x and y coordinates after the last character rendered.
      */
-    void putChar(int chr, int x, int y);
+    pair<int, int> putChar(int chr, int x, int y);
 
     /**
      * @brief Renders a string on the GUI at the specified position.

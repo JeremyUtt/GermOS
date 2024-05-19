@@ -3,11 +3,11 @@
 #include <utils.hpp>
 
 int sprintf(stream serial, string format) {
-    return printValue(serial, format);
+    return printValue(serial, format, NULL);
 }
 
 int printf(string format) {
-    return printValue(Screen, format);
+    return printValue(Screen, format, NULL);
 }
 
 // Node: Polymorphism doesn't work yet in this environment
@@ -23,7 +23,7 @@ void updateStdout(GuiTextRenderer& renderer) {
 }
 #endif
 
-int printValue(stream serial, char c) {
+int printValue(stream serial, char c, int unused) {
     if (serial == Screen) {
         output->printChar(c);
         return 1;
@@ -38,7 +38,7 @@ int printValue(stream serial, char c) {
     return 1;
 }
 
-int printValue(stream serial, string& s) {
+int printValue(stream serial, string& s, int unused) {
     if (serial == Screen) {
         output->print(s);
     } else {
@@ -48,7 +48,7 @@ int printValue(stream serial, string& s) {
     return s.size();
 }
 
-int printValue(stream serial, const char* s) {
+int printValue(stream serial, const char* s, int unused) {
     if (serial == Screen) {
         output->print(s);
     } else {
@@ -58,11 +58,15 @@ int printValue(stream serial, const char* s) {
     return getStrLen(s);
 }
 
-int printValue(stream serial, int i) {
+int printValue(stream serial, int i, int base) {
+    if (base == NULL) {
+        base = 10;
+    }
+
     if (serial == Screen) {
-        output->print(intToStr(i, 10));
+        output->print(intToStr(i, base));
     } else {
-        serialWriteStr(intToStr(i, 10));
+        serialWriteStr(intToStr(i, base));
     }
 
     return intToStr(i, 10).size();

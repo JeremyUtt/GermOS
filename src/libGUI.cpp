@@ -102,6 +102,13 @@ pair<int, int> TuiTextRenderer::putString(string str, int x, int y) {
             continue;
         }
 
+        if (str.at(i) == '\t') {
+            for (int8_t i = 0; i < tabSize; i++) {
+                putChar(' ', x + i, y);
+            }
+            continue;
+        }
+
         if (x > boxWidth || y > boxHeight) {
             continue;
         }
@@ -142,9 +149,28 @@ void GuiTextRenderer::setTextFont(PSF_font* font) {
     currentFont = font;
 }
 
-void GuiTextRenderer::putChar(int chr, int x, int y) {
+pair<int, int> GuiTextRenderer::putChar(int chr, int x, int y) {
     int paddedWidth = currentFont->width + (8 - currentFont->width % 8);
     int bytesPerLine = paddedWidth / 8;
+
+    pair<int, int> pos = {x, y};
+
+    // however, we still need to update the cursor position from here
+    switch (chr) {
+        case '\n':
+            pos.second += currentFont->height;
+            pos.first = 0;
+            return pos;
+        case '\t':
+            pos.first += currentFont->width * tabSize;
+            for (int i = 0; i < tabSize; i++) {
+                putChar(' ', x + i * currentFont->width, y);
+            }
+            return pos;
+        default:
+            pos.first += currentFont->width;
+            break;
+    };
 
     for (uint32_t lineNum = 0; lineNum < currentFont->height; lineNum++) {
         for (int bytesNum = 0; bytesNum < bytesPerLine; bytesNum++) {
@@ -158,28 +184,20 @@ void GuiTextRenderer::putChar(int chr, int x, int y) {
             }
         }
     }
+
+    return pos;
 }
 
 pair<int, int> GuiTextRenderer::putString(string& str, int x, int y) {
-    pair<int, int> pos = {cursorX, cursorY};
+    pair<int, int> pos = {x, y};
 
     for (uint32_t i = 0; i < str.size(); i++) {
-        if (str.at(i) == '\n') {
-            y += currentFont->height;
-            pos.second += currentFont->height;
-            x = 0;
-            pos.first = 0;
-            continue;
-        }
-
         if (x + currentFont->width > boxWidth || y + currentFont->height > boxHeight) {
             // continue instead of return because of detection of new line
             continue;
         }
 
-        putChar(str.at(i), x, y);
-        x += currentFont->width;
-        pos.first += currentFont->width;
+        pos = putChar(str.at(i), x + i*currentFont->width, y);
     }
     return pos;
 }
@@ -199,8 +217,9 @@ void GuiTextRenderer::print(string&& str) {
 }
 
 void GuiTextRenderer::printChar(char chr) {
-    putChar(chr, cursorX, cursorY);
-    cursorX += currentFont->width;
+    pair<int, int> pos = putChar(chr, cursorX, cursorY);
+    cursorX = pos.first;
+    cursorY = pos.second;
 }
 
 void GuiTextRenderer::clearBox() {

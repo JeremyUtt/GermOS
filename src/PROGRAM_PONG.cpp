@@ -1,3 +1,5 @@
+#ifndef TEXT_MODE
+
 #include <libGUI.hpp>
 #include <libKeyboard.hpp>
 #include <libTimer.hpp>
@@ -164,3 +166,5 @@ bool loop() {
 }
 
 }  // namespace PONG
+
+#endif

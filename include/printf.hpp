@@ -3,6 +3,9 @@
 #include <libSerial.hpp>
 #include <string.hpp>
 
+#ifndef NULL
+#define NULL 0
+#endif
 /**
  * @brief Updates where printf will print to
  *
@@ -16,20 +19,32 @@ enum stream {
 };
 
 int sprintf(stream serial, string format);
-int printValue(stream serial, char c);
-int printValue(stream serial, string& s);
-int printValue(stream serial, const char* s);
-int printValue(stream serial, int i);
+int printValue(stream serial, char c, int unused);
+int printValue(stream serial, string& s, int unused);
+int printValue(stream serial, const char* s, int unused);
+int printValue(stream serial, int i, int base);
 
 template <typename T, typename... Args>
 int sprintf(stream serial, string format, T value, Args... args) {
     int characters = 0;
     for (uint32_t i = 0; i < format.size(); i++) {
-        if (format[i] == '%' && format[i + 1] == '%') {
-            characters += printValue(serial, '%');
-            i++;  // Skip both '%'
-        } else if (format[i] == '%') {
-            characters += printValue(serial, value);
+        if (format[i] == '%') {
+            if (format[i + 1] == '%') {
+                characters += printValue(serial, '%', NULL);
+                i++;  // Skip both '%'
+                break;
+            }
+
+            // Switch case for different integer types
+            switch (format[i + 1]) {
+                case 'x':
+                case 'X':
+                    characters += printValue(serial, value, 16);
+                    break;
+                default:
+                    characters += printValue(serial, value, NULL);
+                    break;
+            }
 
             if (i + 2 >= format.size()) {
                 return characters;
@@ -40,8 +55,7 @@ int sprintf(stream serial, string format, T value, Args... args) {
 
         } else {
             // Just print regular characters
-            characters += printValue(serial, format[i]);
-            ;
+            characters += printValue(serial, format[i], NULL);
         }
     }
     return characters;

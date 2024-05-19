@@ -36,6 +36,9 @@ void serialWriteChar(char a) {
 
 void serialWriteStr(string str) {
     for (uint32_t i = 0; i < str.size(); i++) {
+        if (str.at(i) == '\n') {
+            serialWriteChar('\r');
+        }
         serialWriteChar(str.at(i));
     }
 }

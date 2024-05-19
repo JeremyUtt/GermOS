@@ -15,7 +15,7 @@ NASM := /usr/bin/nasm
 # Flags
 CFLAGS := -ffreestanding -m32 -g -c -mgeneral-regs-only \
 	      -Wall -Werror -mno-red-zone -I ./$(INCLUDE_DIR) \
-		  -fno-exceptions
+		  -fno-exceptions -O0
 LDFLAGS := -T linker.ld --no-warn-rwx-segments
 
 # ===============================================
@@ -24,14 +24,15 @@ LDFLAGS := -T linker.ld --no-warn-rwx-segments
 
 MODEFLAGS := -D TEXT_MODE
 # Color codes for terminal/STDOUT text coloring
-# CYAN := "\033[0;36m"
-# NOCOLOR := "\033[0m"
+CYAN := "\033[0;36m"
+NOCOLOR := "\033[0m"
 
 # Get list of all types of files 
 CPP_FILES := $(wildcard $(SRC_DIR)/*.cpp)
 C_FILES := $(wildcard $(SRC_DIR)/*.c)
 ASM_FILES := $(wildcard $(SRC_DIR)/*.asm)
 BLOBS := $(wildcard $(BLOBS_DIR)/*)
+HEADERS := $(wildcard $(INCLUDE_DIR)/*.hpp)
 
 # Combine all above lists and convert all file extensions to ".o"
 OBJS := $(patsubst $(SRC_DIR)/%.asm,$(BUILD_DIR)/%.o,$(ASM_FILES)) \
@@ -107,6 +108,15 @@ bin/OS.bin : $(BUILD_DIR)/OS.o $(SRC_DIR)/zeros.bin
 	@cat $(BUILD_DIR)/OS1.bin $(SRC_DIR)/zeros.bin > $@
 	@printf "%b" "\033[0;36m\e0CAT $< \033[0m\n"
 
+# Convert ELF file to Symbol file for Debugger (OS.sym) 
+bin/OS.sym: $(BUILD_DIR)/OS.o
+	@objcopy --only-keep-debug $(BUILD_DIR)/OS.o $@
+	@printf "%b" "\033[0;36m\e0OBJCOPY $< \033[0m\n"
+
+# =====================================
+# ===== Define othe make commands =====
+# =====================================
+
 # i <3 Copilot and Generative AI!
 info:
 	@echo "INFO: Bootloader uses \
@@ -116,15 +126,6 @@ info:
 	%) of the boot sector" 
 
 	@echo "INFO: Kernel uses $$(du -k bin/OS.bin | cut -f1) KB of memory"
-
-# Convert ELF file to Symbol file for Debugger (OS.sym) 
-bin/OS.sym: $(BUILD_DIR)/OS.o
-	@objcopy --only-keep-debug $(BUILD_DIR)/OS.o $@
-	@printf "%b" "\033[0;36m\e0OBJCOPY $< \033[0m\n"
-
-# =====================================
-# ===== Define othe make commands =====
-# =====================================
 
 run: bin/OS.sym bin/OS.bin
 	@./run.sh

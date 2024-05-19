@@ -1,3 +1,5 @@
+#ifdef TEXT_MODE
+
 #include <libGUI_old.hpp>
 #include <libIO.hpp>
 #include <libKeyboard.hpp>
@@ -164,3 +166,5 @@ void cmdPong() {
 }
 
 }  // namespace TUI
+
+#endif

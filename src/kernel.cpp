@@ -46,7 +46,7 @@ extern "C" void main() {
     // Run Testing Code Here
 
     // :D
-
+    
     // Run the UI
     startUI();
 
@@ -78,7 +78,7 @@ void initKernel(GenericRenderer& renderer) {
     printMem();
     char* mem = checkKernelMemory(0x7c00 + KERNEL_SIZE - 10, 20, "42069");
     if (mem != nullptr) {
-        printf("    INFO: Start Addr: 0x7c00, End Addr: 0x%s\n", intToStr((uint32_t)mem, 16));
+        printf("\tINFO: Start Addr: 0x7c00, End Addr: 0x%x\n", (int)mem);
     } else {
         renderer.setDrawColor(BROWN);
         printf("WARNING: Couldnt find magic number. Kernel May not be fully loaded\n");
@@ -94,7 +94,7 @@ void initKernel(GenericRenderer& renderer) {
     printf("Loading IDT Entry for Keyboard Handler\n");
     loadIdtEntry(0x21, (uint32_t)keyboardHandler, 0x08, 0x8e);
 
-    printf("Initializing IDT");
+    printf("Initializing IDT\n");
     idtInit();
 
     printf("Initializing Timer Interrupt\n");

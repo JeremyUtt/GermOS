@@ -3,18 +3,18 @@
 
 #include <libIDT.hpp>
 #include <libIO.hpp>
-#include <libSerial.hpp>
+#include <printf.hpp>
 #include <utils.hpp>
 
 IdtEntry idtTable[IDT_SIZE];
 IdtPointer idtPtr;
 
-void loadIdtEntry(int32_t isr_number, uint32_t base, uint16_t GdtSegment, uint8_t flags) {
-    idtTable[isr_number].offsetLower = base & 0xFFFF;
-    idtTable[isr_number].offsetHigher = (base >> 16) & 0xFFFF;
-    idtTable[isr_number].GdtSegment = GdtSegment;
-    idtTable[isr_number].flags = flags;
-    idtTable[isr_number].zero = 0;
+void loadIdtEntry(int32_t isrNumber, uint32_t baseAddress, uint16_t gdtSegment, uint8_t flags) {
+    idtTable[isrNumber].offsetLower = baseAddress & 0xFFFF;
+    idtTable[isrNumber].offsetHigher = (baseAddress >> 16) & 0xFFFF;
+    idtTable[isrNumber].GdtSegment = gdtSegment;
+    idtTable[isrNumber].flags = flags;
+    idtTable[isrNumber].zero = 0;
 }
 
 static void initIdtPtr() {
@@ -57,12 +57,8 @@ void idtInit() {
 }
 
 void printIdtEntry(uint8_t i) {
-    serialWriteStr("\n\rIDT Entry: 0x");
-    serialWriteStr(intToStr(i, 16));
-    serialWriteStr("\r\n\tOffset: 0x");
-    serialWriteStr(intToStr((idtTable[i].offsetHigher << 16) + idtTable[i].offsetLower, 16));
-    serialWriteStr("\r\n\tGdt Segment: ");
-    serialWriteStr(intToStr(idtTable[i].GdtSegment, 10));
-    serialWriteStr("\r\n\tFlags: 0b");
-    serialWriteStr(intToStr(idtTable[i].flags, 2));
+    sprintf(Serial, "IDT Entry: 0x%X\n", i);
+    sprintf(Serial, "\tOffset: 0x%X\n", (idtTable[i].offsetHigher << 16) + idtTable[i].offsetLower);
+    sprintf(Serial, "\tGdt Segment: %d\n", idtTable[i].GdtSegment);
+    sprintf(Serial, "\tFlags: 0b%d\n", idtTable[i].flags);
 }
