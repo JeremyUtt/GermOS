@@ -46,6 +46,7 @@ void ClearScreen() {
 
 Renderer::Renderer() {
     color = WHITE;
+    bgColor = BLACK;
     boxStartX = 0;
     boxStartY = 0;
     boxWidth = screenWidthPx;
@@ -70,52 +71,76 @@ Renderer::~Renderer() {
 void Renderer::setDrawColor(Color color) {
     this->color = color;
 }
+
+void Renderer::setBackgroundColor(Color color) {
+    this->bgColor = color;
+}
+
 // ===============================================
 // ========= TUI Text Renderer Functions =========
 // ===============================================
 
 void TuiTextRenderer::clearBox() {
-    for (uint16_t i = boxStartX; i < boxWidth; i++) {
-        for (uint16_t j = boxStartY; j < boxHeight; j++) {
-            putChar(' ', i, j);
+    for (uint16_t i = boxStartX; i < boxStartX + boxWidth; i++) {
+        for (uint16_t j = boxStartY; j < boxStartY + boxHeight; j++) {
+            putChar(' ', i - 1, j - 1);
         }
     }
+    cursorX = 0;
+    cursorY = 0;
 }
 
-void TuiTextRenderer::putChar(int chr, int x, int y) {
-    uint16_t data = (color << 8) + chr;
+pair<int, int> TuiTextRenderer::putChar(int chr, int x, int y) {
+    pair<int, int> pos = {x, y};
+
+    switch (chr) {
+        case '\n':
+            pos.second += 1;
+            pos.first = 0;
+            return pos;
+        case '\t':
+            for (int8_t i = 0; i < tabSize; i++) {
+                putChar(' ', x + i, y);
+            }
+            pos.first += tabSize;
+            return pos;
+        default:
+            pos.first++;
+            break;
+    }
+
+    if (x >= boxWidth) {
+        x = 0;
+        pos.first = 0;
+        y++;
+        pos.second = y;
+    }
+    if (y >= boxHeight) {
+        return pos;
+    }
+
+    uint8_t fullColor = (bgColor << 4) | color;
+    uint16_t data = (fullColor << 8) | chr;
 
     uint16_t* location =
         (uint16_t*)(screenMemory) + screenWidthChar * (y + boxStartY) + (x + boxStartX);
     *location = data;
+
+    return pos;
 }
 
 pair<int, int> TuiTextRenderer::putString(string str, int x, int y) {
-    pair<int, int> pos = {cursorX, cursorY};
+    pair<int, int> pos = {x, y};
 
     for (uint32_t i = 0; i < str.size(); i++) {
-        if (str.at(i) == '\n') {
-            y += 1;
-            pos.second += 1;
-            x = 0;
-            pos.first = 0;
-            continue;
-        }
-
-        if (str.at(i) == '\t') {
-            for (int8_t i = 0; i < tabSize; i++) {
-                putChar(' ', x + i, y);
-            }
-            continue;
-        }
-
         if (x > boxWidth || y > boxHeight) {
+            // continue instead of return because of detection of new line
             continue;
         }
 
-        putChar(str.at(i), x, y);
-        x += 1;
-        pos.first += 1;
+        pos = putChar(str.at(i), x, y);
+        x = pos.first;
+        y = pos.second;
     }
     return pos;
 }
@@ -127,8 +152,9 @@ void TuiTextRenderer::print(string str) {
 }
 
 void TuiTextRenderer::printChar(char chr) {
-    putChar(chr, cursorX, cursorY);
-    cursorX += 1;
+    pair<int, int> pos = putChar(chr, cursorX, cursorY);
+    cursorX = pos.first;
+    cursorY = pos.second;
     updateCursor();
 }
 
@@ -139,6 +165,17 @@ void TuiTextRenderer::updateCursor() {
     outb(TEXT_CURSOR2, (uint8_t)(pos & 0xFF));
     outb(TEXT_CURSOR1, 0x0E);
     outb(TEXT_CURSOR2, (uint8_t)((pos >> 8) & 0xFF));
+}
+
+void TuiTextRenderer::backspace() {
+    if (cursorX <= 0) {
+        cursorX = screenWidthChar - 1;
+        cursorY--;
+    } else {
+        cursorX--;
+    }
+    putChar(' ', cursorX, cursorY);
+    updateCursor();
 }
 
 // ===============================================
@@ -155,7 +192,6 @@ pair<int, int> GuiTextRenderer::putChar(int chr, int x, int y) {
 
     pair<int, int> pos = {x, y};
 
-    // however, we still need to update the cursor position from here
     switch (chr) {
         case '\n':
             pos.second += currentFont->height;
@@ -197,7 +233,9 @@ pair<int, int> GuiTextRenderer::putString(string& str, int x, int y) {
             continue;
         }
 
-        pos = putChar(str.at(i), x + i*currentFont->width, y);
+        pos = putChar(str.at(i), x, y);
+        x = pos.first;
+        y = pos.second;
     }
     return pos;
 }

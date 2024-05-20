@@ -1,6 +1,8 @@
 #ifdef TEXT_MODE
 
-#include <libGUI_old.hpp>
+#include <libGUI.hpp>
+// #include <libGUI_old.hpp>
+#include <printf.hpp>
 #include <libIO.hpp>
 #include <libKeyboard.hpp>
 #include <libSerial.hpp>
@@ -9,7 +11,7 @@
 #include <PROGRAM_PONG.hpp>
 #include <PROGRAM_TUI.hpp>
 #include <utils.hpp>
-using namespace TextRenderer;
+// using namespace TextRenderer;
 
 namespace TUI {
 
@@ -19,35 +21,44 @@ void cmdClear();
 void cmdHelp();
 void cmdShutdown();
 void cmdPong();
-int x = 2;
-int y = 1;
 char command[CMD_SIZE] = {0};
 int cmdIndex = 0;
+TuiTextRenderer* textBox;
 
 void main() {
-    setDrawColor(0x70);
-    for (int j = 0; j < screenHeight; j++) {
-        for (int i = 0; i < screenWidth; i++) {
-            putChar(' ', i, j);
+    TuiTextRenderer border(0, 0, screenWidthChar, screenHeightChar);
+    border.setDrawColor(BLACK);
+    border.setBackgroundColor(LIGHT_GRAY);
+    
+    TuiTextRenderer temp(1, 1, screenWidthChar-2, screenHeightChar-2);
+    textBox = &temp;
+    textBox->setDrawColor(BLACK);
+    textBox->setBackgroundColor(LIGHT_GRAY);
+    updateStdout(*textBox);
+    
+    
+    for (int j = 0; j < screenHeightChar; j++) {
+        for (int i = 0; i < screenWidthChar; i++) {
+            border.putChar(' ', i, j);
         }
-        putChar(186, 0, j);
-        putChar(186, screenWidth - 1, j);
+        border.putChar(186, 0, j);
+        border.putChar(186, screenWidthChar - 1, j);
     }
 
-    for (int i = 0; i < screenWidth; i++) {
-        putChar(205, i, 0);
-        putChar(205, i, screenHeight - 1);
+    for (int i = 0; i < screenWidthChar; i++) {
+        border.putChar(205, i, 0);
+        border.putChar(205, i, screenHeightChar - 1);
     }
 
-    putChar(201, 0, 0);
-    putChar(200, 0, screenHeight - 1);
-    putChar(187, screenWidth - 1, 0);
-    putChar(188, screenWidth - 1, screenHeight - 1);
+    border.putChar(201, 0, 0);
+    border.putChar(200, 0, screenHeightChar - 1);
+    border.putChar(187, screenWidthChar - 1, 0);
+    border.putChar(188, screenWidthChar - 1, screenHeightChar - 1);
 
-    putString("Welcome To GoopOS", 31, 0);
+    border.putString("Welcome To GoopOS", 31, 0);
 
-    putChar('>', 1, 1);
-    moveCursor(2, 1);
+    
+    printf("%c", '>');
 
     while (true) {
         KB::waitForKeyboard();
@@ -61,6 +72,7 @@ void programLoop() {
 
         switch (character) {
             case Enter:
+            printf("\n");
                 processCommand(command);
                 for (int i = 0; i < CMD_SIZE; i++) {
                     command[i] = 0;
@@ -70,14 +82,7 @@ void programLoop() {
             case BackSpace:
                 if (cmdIndex <= 0)
                     return;
-
-                x--;
-                if (x < 1) {
-                    y--;
-                    x = screenWidth - 2;
-                }
-                putChar(' ', x, y);
-                moveCursor(x, y);
+                textBox->backspace();
                 cmdIndex--;
                 command[cmdIndex] = 0;
                 return;
@@ -92,25 +97,15 @@ void programLoop() {
             return;
         }
 
-        putChar(character, x, y);
+        printf("%c", character);
 
         command[cmdIndex] = character;
         cmdIndex++;
 
-        x++;
-        if (x >= screenWidth - 1) {
-            y++;
-            x = 1;
-        }
-
-        moveCursor(x, y);
     }
 }
 
 void processCommand(char cmd[]) {
-    y++;
-    x = 1;
-
     if (strcmp(cmd, (char*)"help"))
         cmdHelp();
     else if (strcmp(cmd, (char*)"clear"))
@@ -120,41 +115,31 @@ void processCommand(char cmd[]) {
     else if (strcmp(cmd, (char*)"pong"))
         cmdPong();
     else
-        putString("Unknown Command. Try: help", x, y);
+        printf("Unknown Command. Try: help\n");
 
-    x = 2;
-    y++;
-    putChar('>', 1, y);
-    moveCursor(x, y);
+    printf(">");
 }
 
 void cmdHelp() {
-    x = 1;
-    putString("List of the Currently Avalable Commands:", x, y);
-    y++;
-    putString("   -help: Prints This Page", x, y);
-    y++;
-    putString("   -clear: Clears the Terminal", x, y);
-    y++;
-    putString("   -exit: Shuts Down the Machine", x, y);
+    printf("List of the Currently Available Commands:\n");
+    printf("\t-help: Prints This Page\n");
+    printf("\t-clear: Clears the Terminal\n");
+    printf("\t-exit: Shuts Down the Machine\n");
 }
 void cmdClear() {
-    for (int i = 1; i < screenWidth - 1; i++) {
-        for (int j = 1; j < screenHeight - 1; j++) {
-            putChar(' ', i, j);
-        }
-    }
-    x = 1;
-    y = 0;
+    textBox->clearBox();
 }
 void cmdShutdown() {
     // QEMU only
     outw(0x604, 0x2000);
 }
 void cmdPong() {
-    x = 1;
-    putString("Not Yet Implemented", x, y);
-    y++;
+    textBox->setDrawColor(RED);
+    textBox->setBackgroundColor(BLACK);
+    printf("ERROR: Not Yet Implemented\n");
+    textBox->setBackgroundColor(LIGHT_GRAY);
+    textBox->setDrawColor(BLACK);
+
 
     // TODO: switch to graphics Mode
     // set_mode_13h();

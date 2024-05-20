@@ -44,6 +44,7 @@ void putLine(int x, int y, int length, bool vertical, Color color);
 class Renderer {
   protected:
     Color color;
+    Color bgColor;
     uint16_t boxStartX;
     uint16_t boxStartY;
     uint16_t boxWidth;
@@ -56,17 +57,18 @@ class Renderer {
     Renderer(int boxStartX, int boxStartY, int boxWidth, int boxHeight);
     ~Renderer();
     void setDrawColor(Color color);
+    void setBackgroundColor(Color color);
 };
 
 class TuiTextRenderer : public Renderer {
   public:
     using Renderer::Renderer;
     void clearBox();
-    void putChar(int chr, int x, int y);
+    pair<int, int> putChar(int chr, int x, int y);
     pair<int, int> putString(string str, int x, int y);
     void print(string str);
     void printChar(char chr);
-
+    void backspace();
     /**
      * @brief moves the cursor to the position specified by cursorX and cursorY.
      *
