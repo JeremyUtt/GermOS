@@ -2,7 +2,7 @@
 
 #include <utils.hpp>
 
-int sprintf(stream serial, string format) {
+int fprintf(stream serial, string format) {
     return printValue(serial, format, NULL);
 }
 

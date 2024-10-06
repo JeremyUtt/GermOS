@@ -57,8 +57,8 @@ void idtInit() {
 }
 
 void printIdtEntry(uint8_t i) {
-    sprintf(Serial, "IDT Entry: 0x%X\n", i);
-    sprintf(Serial, "\tOffset: 0x%X\n", (idtTable[i].offsetHigher << 16) + idtTable[i].offsetLower);
-    sprintf(Serial, "\tGdt Segment: %d\n", idtTable[i].GdtSegment);
-    sprintf(Serial, "\tFlags: 0b%d\n", idtTable[i].flags);
+    fprintf(Serial, "IDT Entry: 0x%X\n", i);
+    fprintf(Serial, "\tOffset: 0x%X\n", (idtTable[i].offsetHigher << 16) + idtTable[i].offsetLower);
+    fprintf(Serial, "\tGdt Segment: %d\n", idtTable[i].GdtSegment);
+    fprintf(Serial, "\tFlags: 0b%d\n", idtTable[i].flags);
 }

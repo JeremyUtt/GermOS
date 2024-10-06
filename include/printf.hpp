@@ -18,14 +18,14 @@ enum stream {
     Screen,
 };
 
-int sprintf(stream serial, string format);
+int fprintf(stream serial, string format);
 int printValue(stream serial, char c, int unused);
 int printValue(stream serial, string& s, int unused);
 int printValue(stream serial, const char* s, int unused);
 int printValue(stream serial, int i, int base);
 
 template <typename T, typename... Args>
-int sprintf(stream serial, string format, T value, Args... args) {
+int fprintf(stream serial, string format, T value, Args... args) {
     int characters = 0;
     for (uint32_t i = 0; i < format.size(); i++) {
         if (format[i] == '%') {
@@ -51,7 +51,7 @@ int sprintf(stream serial, string format, T value, Args... args) {
             }
 
             string newFormat(&format[i + 2]);
-            return characters + sprintf(serial, newFormat, args...);
+            return characters + fprintf(serial, newFormat, args...);
 
         } else {
             // Just print regular characters
@@ -65,5 +65,5 @@ int printf(string format);
 
 template <typename... Args>
 int printf(string format, Args... args) {
-    return sprintf(Screen, format, args...);
+    return fprintf(Screen, format, args...);
 }
