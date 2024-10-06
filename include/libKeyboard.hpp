@@ -3,17 +3,21 @@
 
 #include <libIDT.hpp>
 
+// Scancodes for keyboard buttons
 #define LeftShift 0x2A
 #define RightShift 0x36
-#define Enter 0x1C
-#define BackSpace 0x0E
-#define Escape 0x1b
-#define Spacebar 0x39
 #define Left 0x4b
 #define Right 0x4d
 #define Up 0x48
 #define Down 0x50
-#define Special 0xe0
+#define Spacebar 0x39
+#define Enter 0x1C
+#define BackSpace 0x0E
+
+// ASCII codes for special keys
+#define Escape_ASCII 0x1b
+#define BackSpace_ASCII 0x08
+#define Enter_ASCII '\n'
 
 namespace KB {
 uint8_t getKeyBufferIndex();

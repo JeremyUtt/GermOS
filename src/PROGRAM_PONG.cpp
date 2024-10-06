@@ -69,7 +69,7 @@ void main() {
 
             while (KB::getKeyBufferIndex() > 0) {
                 char c = KB::popKeyBuffer();
-                if (c == Escape) {
+                if (c == Escape_ASCII) {
                     printf("Program Exiting\n");
                     return;
                 }

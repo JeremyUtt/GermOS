@@ -71,7 +71,7 @@ void programLoop() {
         char character = KB::popKeyBuffer();
 
         switch (character) {
-            case Enter:
+            case Enter_ASCII:
             printf("\n");
                 processCommand(command);
                 for (int i = 0; i < CMD_SIZE; i++) {
@@ -79,14 +79,14 @@ void programLoop() {
                 }
                 cmdIndex = 0;
                 return;
-            case BackSpace:
+            case BackSpace_ASCII:
                 if (cmdIndex <= 0)
                     return;
                 textBox->backspace();
                 cmdIndex--;
                 command[cmdIndex] = 0;
                 return;
-            case Escape:
+            case Escape_ASCII:
                 serialWriteStr("Escape");
                 return;
             default:
