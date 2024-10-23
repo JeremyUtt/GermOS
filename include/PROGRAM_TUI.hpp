@@ -4,6 +4,7 @@
 
 namespace TUI {
 void main();
+void drawBorder(TuiTextRenderer &border);
 }
 
 #define CMD_SIZE 100

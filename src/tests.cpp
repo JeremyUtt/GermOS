@@ -4,7 +4,7 @@
 #include <libSerial.hpp>
 #include <tests.hpp>
 #include <utils.hpp>
-
+#include <libTimer.hpp>
 void amogus() {
     int width = 20;
     int height = 20;
@@ -17,11 +17,16 @@ void amogus() {
     // height, 0xaa); NewGuiRenderer::putRect(startx-width, starty+height,
     // width, height*3, 0xaa);
 
-    GuiRenderer::putRect(startx, starty, width * 3, height * 4, 0xaa);
-    GuiRenderer::putRect(startx + width, starty + height, width * 2, height, 0x55);
-    GuiRenderer::putRect(startx, starty + height * 4, width, height, 0xaa);
-    GuiRenderer::putRect(startx + width * 2, starty + height * 4, width, height, 0xaa);
-    GuiRenderer::putRect(startx - width, starty + height, width, height * 3, 0xaa);
+    int color1 = 0xaa;
+    int color2 = 0x55;
+
+    GuiRenderer::putRect(startx, starty, width * 3, height * 4, color1);
+    GuiRenderer::putRect(startx + width, starty + height, width * 2, height, color2);
+    GuiRenderer::putRect(startx, starty + height * 4, width, height, color1);
+    GuiRenderer::putRect(startx + width * 2, starty + height * 4, width, height, color1);
+    GuiRenderer::putRect(startx - width, starty + height, width, height * 3, color1);
+
+
 }
 
 void printColorPallet() {
@@ -29,10 +34,10 @@ void printColorPallet() {
 
     int x = 0;
     int y = 0;
-    for (int i = 0; i < 256; i++) {
-        GuiRenderer::putRect(x, y, size, size, i);
+    for (int i = 0; i < 2048; i++) {
+        GuiRenderer::putRect(x, y, size, size, i%64);
         GuiRenderer::putString(intToStr(i, 10), x, y);
-
+        // sleep(10);
         x += size;
         if (x >= GuiRenderer::screenWidth - size) {
             y += size;

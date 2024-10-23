@@ -64,7 +64,7 @@ loadKernelFromDisk:
 	mov ds, ax
 	mov es, ax
 
-	mov ax, 218
+	mov ax, 255
 	mov bx, KERNEL_LOCATION ; Destination Offset
 	mov cl, 2 				; Starting Sector number
 	mov ch, 0 				; Starting Cylinder Number

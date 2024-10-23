@@ -11,6 +11,8 @@
 #include <PROGRAM_PONG.hpp>
 #include <PROGRAM_TUI.hpp>
 #include <utils.hpp>
+
+#include <vgaModes.hpp>
 // using namespace TextRenderer;
 
 namespace TUI {
@@ -21,6 +23,8 @@ void cmdClear();
 void cmdHelp();
 void cmdShutdown();
 void cmdPong();
+void cmdPrint();
+void redrawBorder();
 char command[CMD_SIZE] = {0};
 int cmdIndex = 0;
 TuiTextRenderer* textBox;
@@ -66,6 +70,29 @@ void main() {
     }
 }
 
+void redrawBorder() {
+    TuiTextRenderer border(0, 0, screenWidthChar, screenHeightChar);
+    border.setDrawColor(BLACK);
+    border.setBackgroundColor(LIGHT_GRAY);
+    
+    for (int j = 0; j < screenHeightChar; j++) {
+        border.putChar(186, 0, j);
+        border.putChar(186, screenWidthChar - 1, j);
+    }
+
+    for (int i = 0; i < screenWidthChar; i++) {
+        border.putChar(205, i, 0);
+        border.putChar(205, i, screenHeightChar - 1);
+    }
+
+    border.putChar(201, 0, 0);
+    border.putChar(200, 0, screenHeightChar - 1);
+    border.putChar(187, screenWidthChar - 1, 0);
+    border.putChar(188, screenWidthChar - 1, screenHeightChar - 1);
+
+    border.putString("Welcome To GoopOS", 31, 0);
+}
+
 void programLoop() {
     while (KB::getKeyBufferIndex() > 0) {
         char character = KB::popKeyBuffer();
@@ -78,6 +105,8 @@ void programLoop() {
                     command[i] = 0;
                 }
                 cmdIndex = 0;
+                // redraw border incase program messed it up
+                redrawBorder();
                 return;
             case BackSpace_ASCII:
                 if (cmdIndex <= 0)
@@ -114,6 +143,8 @@ void processCommand(char cmd[]) {
         cmdShutdown();
     else if (strcmp(cmd, (char*)"pong"))
         cmdPong();
+    else if (strcmp(cmd, (char*)"print"))
+        cmdPrint();
     else
         printf("Unknown Command. Try: help\n");
 
@@ -126,6 +157,11 @@ void cmdHelp() {
     printf("\t-clear: Clears the Terminal\n");
     printf("\t-exit: Shuts Down the Machine\n");
 }
+
+void cmdPrint() {
+    fprintf(Serial, "Hello World!");
+}
+
 void cmdClear() {
     textBox->clearBox();
 }
@@ -141,6 +177,7 @@ void cmdPong() {
     textBox->setDrawColor(BLACK);
 
 
+    main2(0, nullptr);
     // TODO: switch to graphics Mode
     // set_mode_13h();
 
@@ -151,5 +188,7 @@ void cmdPong() {
 }
 
 }  // namespace TUI
+
+
 
 #endif

@@ -25,6 +25,7 @@
 #include <system.hpp>
 #include <tests.hpp>
 #include <utils.hpp>
+#include <vgaModes.hpp>
 
 #ifdef TEXT_MODE
 #define startUI() startTUI()
@@ -45,6 +46,7 @@ extern "C" void main() {
 
     // Run Testing Code Here
 
+    // dump_state();
     // :D
     
     // Run the UI
