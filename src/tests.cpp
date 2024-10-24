@@ -17,8 +17,10 @@ void amogus() {
     // height, 0xaa); NewGuiRenderer::putRect(startx-width, starty+height,
     // width, height*3, 0xaa);
 
-    int color1 = 0xaa;
-    int color2 = 0x55;
+    // int color1 = 0xaa;
+    // int color2 = 0x55;
+    int color1 = 5;
+    int color2 = 6;
 
     putRect(startx, starty, width * 3, height * 4, color1);
     putRect(startx + width, starty + height, width * 2, height, color2);

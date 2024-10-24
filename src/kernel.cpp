@@ -26,7 +26,7 @@
 #include <system.hpp>
 #include <tests.hpp>
 #include <utils.hpp>
-#include <vgaModes.hpp>
+#include <libVGA.hpp>
 #ifdef TEXT_MODE
 #define startUI() startTUI()
 #define boxHeight 25
@@ -124,6 +124,7 @@ void initKernel(Renderer& renderer) {
     printf("Press any key to continue\n");
 
     KB::waitForKeyboard();
+    KB::popKeyBuffer();
     ClearScreenGUI();  // clears area around box
     renderer.clearBox();
 }
@@ -148,7 +149,7 @@ char* checkKernelMemory(uint32_t start, uint32_t len, string toFind) {
 
 #ifdef TEXT_MODE
 void startTUI() {
-    Process cmd("cmd", (uint32_t)TUI::main);
+    Process cmd("cmd", (uint32_t)TUI::main, TEXT);
     cmd.start();
 }
 #endif
@@ -166,7 +167,7 @@ void startGUI() {
 
     sleep(5000);
 
-    Process pong("Pong", (uint32_t)PONG::main);
+    Process pong("Pong", (uint32_t)PONG::main, GRAPHICS);
     pong.start();
 }
 #endif

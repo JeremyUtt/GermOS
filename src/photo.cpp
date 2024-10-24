@@ -4,6 +4,7 @@
 #include <libSerial.hpp>
 #include <string.hpp>
 #include <utils.hpp>
+#include <libTimer.hpp>
 
 namespace PPMImage {
 struct RGB {
@@ -129,6 +130,7 @@ void printPhoto(binaryFile* image, int startX, int startY) {
 }
 
 }  // namespace PPMImage
+extern binaryFile goopergimg;
 
 namespace GOOPImage {
 void draw(binaryFile* image, int startX, int startY) {
@@ -141,4 +143,9 @@ void draw(binaryFile* image, int startX, int startY) {
         }
     }
 }
-}  // namespace GOOPImage
+
+void drawGoop() {    
+    draw(&goopergimg, 0, 0);
+    sleep(5000);
+}
+};  // namespace GOOPImage

@@ -9,7 +9,12 @@
 #include <PROGRAM_PONG.hpp>
 #include <PROGRAM_TUI.hpp>
 #include <utils.hpp>
-#include <vgaModes.hpp>
+#include <libVGA.hpp>
+#include <tests.hpp>
+#include <fonts.hpp>
+#include <process.hpp>
+#include <photo.hpp>
+
 // using namespace TextRenderer;
 
 namespace TUI {
@@ -21,7 +26,10 @@ void cmdHelp();
 void cmdShutdown();
 void cmdPong();
 void cmdPrint();
+void cmdVgatest();
+void cmdGoop();
 void redrawBorder();
+
 char command[CMD_SIZE] = {0};
 int cmdIndex = 0;
 TuiTextRenderer* textBox;
@@ -139,6 +147,10 @@ void processCommand(char cmd[]) {
         cmdPong();
     else if (strcmp(cmd, (char*)"print"))
         cmdPrint();
+    else if (strcmp(cmd, (char*)"vga"))
+        cmdVgatest();
+    else if (strcmp(cmd, (char*)"goop"))
+        cmdGoop();
     else
         printf("Unknown Command. Try: help\n");
 
@@ -147,8 +159,12 @@ void processCommand(char cmd[]) {
 
 void cmdHelp() {
     printf("List of the Currently Available Commands:\n");
+    printf("\t-pong: Play Pong\n");
     printf("\t-help: Prints This Page\n");
     printf("\t-clear: Clears the Terminal\n");
+    printf("\t-print: prints 'hello world' to serial port\n");
+    printf("\t-vga: tests\n");
+    printf("\t-goop: draw goop\n");
     printf("\t-exit: Shuts Down the Machine\n");
 }
 
@@ -163,21 +179,53 @@ void cmdShutdown() {
     // QEMU only
     outw(0x604, 0x2000);
 }
+
+
 void cmdPong() {
-    textBox->setDrawColor(RED);
-    textBox->setBackgroundColor(BLACK);
-    printf("ERROR: Not Yet Implemented\n");
-    textBox->setBackgroundColor(LIGHT_GRAY);
-    textBox->setDrawColor(BLACK);
+    char bufferCache[80 * 25 * 2];
+    for (int i = 0; i < 80 * 25 * 2; i++) {
+        bufferCache[i] = ((uint8_t*)TuiTextRenderer::screenMemory)[i];
+    }
 
+    Process cmd("cmd", (uint32_t)PONG::main, GRAPHICS);
+    cmd.start();
+
+    updateStdout(*textBox);
+    for (int i = 0; i < 320 * 200; i++) {
+        ((uint8_t*)TuiTextRenderer::screenMemory)[i] = bufferCache[i];
+    }
+}
+
+void cmdGoop() {
+    char bufferCache[80 * 25 * 2];
+    for (int i = 0; i < 80 * 25 * 2; i++) {
+        bufferCache[i] = ((uint8_t*)TuiTextRenderer::screenMemory)[i];
+    }
+
+    Process cmd("goop", (uint32_t)GOOPImage::drawGoop, GRAPHICS);
+    cmd.start();
+    
+    for (int i = 0; i < 320 * 200; i++) {
+        ((uint8_t*)TuiTextRenderer::screenMemory)[i] = bufferCache[i];
+    }
+}
+
+
+void cmdVgatest(){
     main2(0, nullptr);
-    // TODO: switch to graphics Mode
-    // set_mode_13h();
 
-    // returnToReal();
-    // pong();
+    setUiMode(GRAPHICS);
+    GuiTextRenderer renderer;
+    renderer.clearBox();
+    renderer.setDrawColor(RED);
+    renderer.setTextFont(&Uni2Terminus12x6psf);
+    renderer.print("Hello World");
+    amogus();
 
-    // TODO: switch to text mode
+    KB::waitForKeyboard();
+    KB::popKeyBuffer();
+
+    setUiMode(TEXT);
 }
 
 }  // namespace TUI

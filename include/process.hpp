@@ -2,6 +2,7 @@
 #include <stdint.h>
 
 #include <string.hpp>
+#include <libVGA.hpp>
 enum ProcessState { Initalized, Running, Queued, Paused, Exited };
 
 struct CpuState {
@@ -35,10 +36,11 @@ class Process {
     CpuState _cState;
     string _name;
     uint32_t _entrypoint;
-    static CpuState _managerState;
+    static CpuState _dispatcherState;
+    UiMode _uiMode;
 
   public:
-    Process(string name, uint32_t entrypoint);
+    Process(string name, uint32_t entrypoint, UiMode uiMode);
     void start();
     void kill();
     // void saveManagerState();

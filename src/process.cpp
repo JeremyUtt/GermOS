@@ -1,11 +1,12 @@
 
 #include <process.hpp>
 
-Process::Process(string name, uint32_t entrypoint) {
+Process::Process(string name, uint32_t entrypoint, UiMode uiMode) {
     _cState = {0};
     _name = name;
     _pState = Initalized;
     _entrypoint = entrypoint;
+    _uiMode = uiMode;
 
     _cState.eax = 0;
     _cState.ebx = 0;
@@ -32,11 +33,25 @@ Process::Process(string name, uint32_t entrypoint) {
 }
 
 void Process::start() {
+    bool needToChangeMode = false;
+    if (getUiMode() != _uiMode) {
+        setUiMode(_uiMode);
+        needToChangeMode = true;
+    }
+
     _pState = Running;
 
     auto func = (void (*)())_entrypoint;
     func();
     _pState = Exited;
+
+    if (needToChangeMode) {
+        if (_uiMode == GRAPHICS) {
+            setUiMode(TEXT);
+        } else {
+            setUiMode(GRAPHICS);
+        }
+    }
 }
 
 void Process::kill() {
@@ -46,28 +61,28 @@ void Process::kill() {
 /*
 void Process::saveManagerState(){
     // save all registers
-    asm volatile("mov %0, %%eax" : : "r"(_managerState.eax));
-    asm volatile("mov %0, %%ebx" : : "r"(_managerState.ebx));
-    asm volatile("mov %0, %%ecx" : : "r"(_managerState.ecx));
-    asm volatile("mov %0, %%edx" : : "r"(_managerState.edx));
+    asm volatile("mov %0, %%eax" : : "r"(_dispatcherState.eax));
+    asm volatile("mov %0, %%ebx" : : "r"(_dispatcherState.ebx));
+    asm volatile("mov %0, %%ecx" : : "r"(_dispatcherState.ecx));
+    asm volatile("mov %0, %%edx" : : "r"(_dispatcherState.edx));
 
-    // asm volatile("mov %0, %%esi" : : "r"(_managerState.esi));
-    // asm volatile("mov %0, %%edi" : : "r"(_managerState.edi));
+    // asm volatile("mov %0, %%esi" : : "r"(_dispatcherState.esi));
+    // asm volatile("mov %0, %%edi" : : "r"(_dispatcherState.edi));
 
-    // asm volatile("mov %0, %%eip" : : "r"(_managerState.eip));
+    // asm volatile("mov %0, %%eip" : : "r"(_dispatcherState.eip));
 
-    // asm volatile("mov %0, %%ebp" : : "r"(_managerState.ebp));
-    // asm volatile("mov %0, %%esp" : : "r"(_managerState.esp));
-    asm volatile("mov %0, %%ss" : : "r"(_managerState.ss));
+    // asm volatile("mov %0, %%ebp" : : "r"(_dispatcherState.ebp));
+    // asm volatile("mov %0, %%esp" : : "r"(_dispatcherState.esp));
+    asm volatile("mov %0, %%ss" : : "r"(_dispatcherState.ss));
 
-    asm volatile("mov %0, %%cs" : : "r"(_managerState.cs));
-    asm volatile("mov %0, %%ds" : : "r"(_managerState.ds));
+    asm volatile("mov %0, %%cs" : : "r"(_dispatcherState.cs));
+    asm volatile("mov %0, %%ds" : : "r"(_dispatcherState.ds));
 
-    asm volatile("mov %0, %%es" : : "r"(_managerState.es));
-    asm volatile("mov %0, %%gs" : : "r"(_managerState.gs));
-    asm volatile("mov %0, %%fs" : : "r"(_managerState.fs));
+    asm volatile("mov %0, %%es" : : "r"(_dispatcherState.es));
+    asm volatile("mov %0, %%gs" : : "r"(_dispatcherState.gs));
+    asm volatile("mov %0, %%fs" : : "r"(_dispatcherState.fs));
 
-    // asm volatile("mov %0, %%eflags" : : "r"(_managerState.eflags));
+    // asm volatile("mov %0, %%eflags" : : "r"(_dispatcherState.eflags));
 
 }
  */
