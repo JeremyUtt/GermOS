@@ -4,7 +4,6 @@
 #define HEAP_SIZE 32768
 #define TABLE_SIZE 1000
 #include <error.hpp>
-#include <libGUI_old.hpp>
 #include <libSerial.hpp>
 #include <utils.hpp>
 

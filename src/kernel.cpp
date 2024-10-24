@@ -9,6 +9,7 @@
 #include <libACPI.hpp>
 #include <libGUI.hpp>
 // #include <libGUI_old.hpp>
+#include <classTest.hpp>
 #include <libIDT.hpp>
 #include <libIO.hpp>
 #include <libKeyboard.hpp>
@@ -26,7 +27,6 @@
 #include <tests.hpp>
 #include <utils.hpp>
 #include <vgaModes.hpp>
-
 #ifdef TEXT_MODE
 #define startUI() startTUI()
 #define boxHeight 25
@@ -41,19 +41,27 @@
 #endif
 
 extern "C" void main() {
-    GenericRenderer renderer(0, boxStartY, boxWidth, boxHeight);
+#ifdef TEXT_MODE
+    TuiTextRenderer temp(0, boxStartY, boxWidth, boxHeight);
+#else
+    GuiTextRenderer temp(0, boxStartY, boxWidth, boxHeight);
+#endif
+
+    Renderer& renderer = temp;
+
     initKernel(renderer);
 
     // Run Testing Code Here
-
+    // testStuff();
+    // sleep(5000);
     // dump_state();
     // :D
-    
+
     // Run the UI
     startUI();
 
     // Runs once everything else is done
-    ClearScreen();
+    ClearScreenGUI();
     updateStdout(renderer);
     renderer.clearBox();
     printf("All Programs Finished\n");
@@ -63,13 +71,11 @@ extern "C" void main() {
     halt();
 }
 
-void initKernel(GenericRenderer& renderer) {
+void initKernel(Renderer& renderer) {
     updateStdout(renderer);
     renderer.setDrawColor(LIGHT_GRAY);
 
-#ifndef TEXT_MODE
     renderer.setTextFont(&Uni2Terminus12x6psf);
-#endif
 
     initMem();
     printf("Successfully Switched to Protected Mode\n");
@@ -118,7 +124,8 @@ void initKernel(GenericRenderer& renderer) {
     printf("Press any key to continue\n");
 
     KB::waitForKeyboard();
-    ClearScreen();
+    ClearScreenGUI();  // clears area around box
+    renderer.clearBox();
 }
 
 char* checkKernelMemory(uint32_t start, uint32_t len, string toFind) {
@@ -163,4 +170,3 @@ void startGUI() {
     pong.start();
 }
 #endif
-

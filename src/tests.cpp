@@ -1,10 +1,10 @@
 #include <stdint.h>
 
-#include <libGUI_old.hpp>
+#include <libGUI.hpp>
 #include <libSerial.hpp>
+#include <libTimer.hpp>
 #include <tests.hpp>
 #include <utils.hpp>
-#include <libTimer.hpp>
 void amogus() {
     int width = 20;
     int height = 20;
@@ -20,26 +20,27 @@ void amogus() {
     int color1 = 0xaa;
     int color2 = 0x55;
 
-    GuiRenderer::putRect(startx, starty, width * 3, height * 4, color1);
-    GuiRenderer::putRect(startx + width, starty + height, width * 2, height, color2);
-    GuiRenderer::putRect(startx, starty + height * 4, width, height, color1);
-    GuiRenderer::putRect(startx + width * 2, starty + height * 4, width, height, color1);
-    GuiRenderer::putRect(startx - width, starty + height, width, height * 3, color1);
-
-
+    putRect(startx, starty, width * 3, height * 4, color1);
+    putRect(startx + width, starty + height, width * 2, height, color2);
+    putRect(startx, starty + height * 4, width, height, color1);
+    putRect(startx + width * 2, starty + height * 4, width, height, color1);
+    putRect(startx - width, starty + height, width, height * 3, color1);
 }
 
 void printColorPallet() {
+    GuiTextRenderer renderer;
+
     int size = 15;
 
     int x = 0;
     int y = 0;
     for (int i = 0; i < 2048; i++) {
-        GuiRenderer::putRect(x, y, size, size, i%64);
-        GuiRenderer::putString(intToStr(i, 10), x, y);
+        putRect(x, y, size, size, i % 64);
+        string str = intToStr(i, 10);
+        renderer.putString(str, x, y);
         // sleep(10);
         x += size;
-        if (x >= GuiRenderer::screenWidth - size) {
+        if (x >= GuiTextRenderer::screenWidth - size) {
             y += size;
             x = 0;
         }

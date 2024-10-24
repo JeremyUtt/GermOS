@@ -11,7 +11,7 @@
  *
  * @param renderer renderer to print to
  */
-void updateStdout(GenericRenderer& renderer);
+void updateStdout(Renderer& renderer);
 
 enum stream {
     Serial,

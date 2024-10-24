@@ -1,7 +1,6 @@
 #include <stdint.h>
 
 #include <fonts.hpp>
-#include <libGUI_old.hpp>
 #include <libSerial.hpp>
 #include <tests.hpp>
 #include <utils.hpp>

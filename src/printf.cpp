@@ -10,18 +10,10 @@ int printf(string format) {
     return printValue(Screen, format, NULL);
 }
 
-// Node: Polymorphism doesn't work yet in this environment
-#ifdef TEXT_MODE
-TuiTextRenderer* output;
-void updateStdout(TuiTextRenderer& renderer) {
+Renderer* output;
+void updateStdout(Renderer& renderer) {
     output = &renderer;
 }
-#else
-GuiTextRenderer* output;
-void updateStdout(GuiTextRenderer& renderer) {
-    output = &renderer;
-}
-#endif
 
 int printValue(stream serial, char c, int unused) {
     if (serial == Screen) {

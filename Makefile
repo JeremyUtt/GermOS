@@ -15,7 +15,7 @@ NASM := /usr/bin/nasm
 # Flags
 CFLAGS := -ffreestanding -m32 -g -c -mgeneral-regs-only \
 	      -mno-red-zone -I ./$(INCLUDE_DIR) \
-		  -fno-exceptions -O0
+		  -fno-exceptions -O0 -fno-rtti
 LDFLAGS := -T linker.ld --no-warn-rwx-segments
 
 # ===============================================

@@ -1,7 +1,6 @@
 #include "string.hpp"
 
 #include <error.hpp>
-#include <libGUI_old.hpp>
 #include <libSerial.hpp>
 #include <memory.hpp>
 

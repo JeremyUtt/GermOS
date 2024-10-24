@@ -1,4 +1,5 @@
 #pragma once
+#include <stdint.h>
 
 #define IDT_SIZE 256
 struct interrupt_frame;

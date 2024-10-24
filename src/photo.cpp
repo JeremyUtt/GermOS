@@ -1,10 +1,9 @@
 #include "photo.hpp"
 
-#include <libGUI_old.hpp>
+#include <libGUI.hpp>
 #include <libSerial.hpp>
 #include <string.hpp>
 #include <utils.hpp>
-using namespace GuiRenderer;
 
 namespace PPMImage {
 struct RGB {
@@ -124,7 +123,7 @@ void printPhoto(binaryFile* image, int startX, int startY) {
             uint16_t byteOffset = linesStart[4] + 3 * ((photoWidth * y) + x);
             RGB color = {image[byteOffset], image[byteOffset + 1], image[byteOffset + 2]};
 
-            putPixel(startX + x, startY + y, findClosestColor(color));
+            putPixelM_new(startX + x, startY + y, findClosestColor(color));
         }
     }
 }
@@ -138,7 +137,7 @@ void draw(binaryFile* image, int startX, int startY) {
 
     for (uint16_t y = 0; y < photoHeight; y++) {
         for (uint16_t x = 0; x < photoWidth; x++) {
-            putPixelM(startX + x, startY + y, image[9 + (photoWidth * y) + x]);
+            putPixelM_new(startX + x, startY + y, image[9 + (photoWidth * y) + x]);
         }
     }
 }

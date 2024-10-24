@@ -1,4 +1,5 @@
-#include <libGUI_old.hpp>
+#include <stdint.h>
+
 #include <libIDT.hpp>
 #include <libIO.hpp>
 #include <libKeyboard.hpp>
@@ -12,13 +13,29 @@ bool isLeftShiftPressed;
 bool isArrowPressed;
 char kbBuffer[256] = {0};
 uint8_t keyboardBufferIndex = 0;
-const char ASCIITable[] = {0,   Escape_ASCII, '1',       '2', '3',   '4', '5', '6',  '7', '8', '9', '0',
-                           '-', '=',    BackSpace_ASCII, 0,   'q',   'w', 'e', 'r',  't', 'y', 'u', 'i',
-                           'o', 'p',    '[',       ']', Enter_ASCII, 0,   'a', 's',  'd', 'f', 'g', 'h',
-                           'j', 'k',    'l',       ';', '\'',  '`', 0,   '\\', 'z', 'x', 'c', 'v',
-                           'b', 'n',    'm',       ',', '.',   '/', 0,   '*',  0,   ' '};
+const char ASCIITable[] = {0,   Escape_ASCII, '1',
+                           '2', '3',          '4',
+                           '5', '6',          '7',
+                           '8', '9',          '0',
+                           '-', '=',          BackSpace_ASCII,
+                           0,   'q',          'w',
+                           'e', 'r',          't',
+                           'y', 'u',          'i',
+                           'o', 'p',          '[',
+                           ']', Enter_ASCII,  0,
+                           'a', 's',          'd',
+                           'f', 'g',          'h',
+                           'j', 'k',          'l',
+                           ';', '\'',         '`',
+                           0,   '\\',         'z',
+                           'x', 'c',          'v',
+                           'b', 'n',          'm',
+                           ',', '.',          '/',
+                           0,   '*',          0,
+                           ' '};
 
-const char SymbolTable[] = {0, Escape_ASCII, '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+'};
+const char SymbolTable[] = {
+    0, Escape_ASCII, '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+'};
 
 void init() {
     /* This is a very basic keyboard initialization. The assumption is we have a

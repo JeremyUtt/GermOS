@@ -1,17 +1,14 @@
-#ifdef TEXT_MODE
-
 #include <libGUI.hpp>
 // #include <libGUI_old.hpp>
-#include <printf.hpp>
 #include <libIO.hpp>
 #include <libKeyboard.hpp>
 #include <libSerial.hpp>
 #include <libTimer.hpp>
 #include <libVGA.hpp>
+#include <printf.hpp>
 #include <PROGRAM_PONG.hpp>
 #include <PROGRAM_TUI.hpp>
 #include <utils.hpp>
-
 #include <vgaModes.hpp>
 // using namespace TextRenderer;
 
@@ -30,38 +27,36 @@ int cmdIndex = 0;
 TuiTextRenderer* textBox;
 
 void main() {
-    TuiTextRenderer border(0, 0, screenWidthChar, screenHeightChar);
+    TuiTextRenderer border(0, 0, TuiTextRenderer::screenWidth, TuiTextRenderer::screenHeight);
     border.setDrawColor(BLACK);
     border.setBackgroundColor(LIGHT_GRAY);
-    
-    TuiTextRenderer temp(1, 1, screenWidthChar-2, screenHeightChar-2);
+
+    TuiTextRenderer temp(1, 1, TuiTextRenderer::screenWidth - 2, TuiTextRenderer::screenHeight - 2);
     textBox = &temp;
     textBox->setDrawColor(BLACK);
     textBox->setBackgroundColor(LIGHT_GRAY);
     updateStdout(*textBox);
-    
-    
-    for (int j = 0; j < screenHeightChar; j++) {
-        for (int i = 0; i < screenWidthChar; i++) {
+
+    for (int j = 0; j < TuiTextRenderer::screenHeight; j++) {
+        for (int i = 0; i < TuiTextRenderer::screenWidth; i++) {
             border.putChar(' ', i, j);
         }
         border.putChar(186, 0, j);
-        border.putChar(186, screenWidthChar - 1, j);
+        border.putChar(186, TuiTextRenderer::screenWidth - 1, j);
     }
 
-    for (int i = 0; i < screenWidthChar; i++) {
+    for (int i = 0; i < TuiTextRenderer::screenWidth; i++) {
         border.putChar(205, i, 0);
-        border.putChar(205, i, screenHeightChar - 1);
+        border.putChar(205, i, TuiTextRenderer::screenHeight - 1);
     }
 
     border.putChar(201, 0, 0);
-    border.putChar(200, 0, screenHeightChar - 1);
-    border.putChar(187, screenWidthChar - 1, 0);
-    border.putChar(188, screenWidthChar - 1, screenHeightChar - 1);
+    border.putChar(200, 0, TuiTextRenderer::screenHeight - 1);
+    border.putChar(187, TuiTextRenderer::screenWidth - 1, 0);
+    border.putChar(188, TuiTextRenderer::screenWidth - 1, TuiTextRenderer::screenHeight - 1);
 
     border.putString("Welcome To GoopOS", 31, 0);
 
-    
     printf("%c", '>');
 
     while (true) {
@@ -71,24 +66,24 @@ void main() {
 }
 
 void redrawBorder() {
-    TuiTextRenderer border(0, 0, screenWidthChar, screenHeightChar);
+    TuiTextRenderer border(0, 0, TuiTextRenderer::screenWidth, TuiTextRenderer::screenHeight);
     border.setDrawColor(BLACK);
     border.setBackgroundColor(LIGHT_GRAY);
-    
-    for (int j = 0; j < screenHeightChar; j++) {
+
+    for (int j = 0; j < TuiTextRenderer::screenHeight; j++) {
         border.putChar(186, 0, j);
-        border.putChar(186, screenWidthChar - 1, j);
+        border.putChar(186, TuiTextRenderer::screenWidth - 1, j);
     }
 
-    for (int i = 0; i < screenWidthChar; i++) {
+    for (int i = 0; i < TuiTextRenderer::screenWidth; i++) {
         border.putChar(205, i, 0);
-        border.putChar(205, i, screenHeightChar - 1);
+        border.putChar(205, i, TuiTextRenderer::screenHeight - 1);
     }
 
     border.putChar(201, 0, 0);
-    border.putChar(200, 0, screenHeightChar - 1);
-    border.putChar(187, screenWidthChar - 1, 0);
-    border.putChar(188, screenWidthChar - 1, screenHeightChar - 1);
+    border.putChar(200, 0, TuiTextRenderer::screenHeight - 1);
+    border.putChar(187, TuiTextRenderer::screenWidth - 1, 0);
+    border.putChar(188, TuiTextRenderer::screenWidth - 1, TuiTextRenderer::screenHeight - 1);
 
     border.putString("Welcome To GoopOS", 31, 0);
 }
@@ -99,7 +94,7 @@ void programLoop() {
 
         switch (character) {
             case Enter_ASCII:
-            printf("\n");
+                printf("\n");
                 processCommand(command);
                 for (int i = 0; i < CMD_SIZE; i++) {
                     command[i] = 0;
@@ -130,7 +125,6 @@ void programLoop() {
 
         command[cmdIndex] = character;
         cmdIndex++;
-
     }
 }
 
@@ -176,7 +170,6 @@ void cmdPong() {
     textBox->setBackgroundColor(LIGHT_GRAY);
     textBox->setDrawColor(BLACK);
 
-
     main2(0, nullptr);
     // TODO: switch to graphics Mode
     // set_mode_13h();
@@ -188,7 +181,3 @@ void cmdPong() {
 }
 
 }  // namespace TUI
-
-
-
-#endif

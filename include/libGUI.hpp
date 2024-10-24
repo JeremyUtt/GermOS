@@ -3,16 +3,11 @@
 #include <string.hpp>
 #include <utils.hpp>
 
+#define putPixelM_new(x, y, color)                                                                \
+    *((unsigned char*)GuiTextRenderer::screenMemory + GuiTextRenderer::screenWidth * (y) + (x)) = \
+        color;
 
 const int tabSize = 4;
-
-// For graphics mode
-const int screenWidthPx = 320;
-const int screenHeightPx = 200;
-
-// For text mode
-const int screenWidthChar = 80;
-const int screenHeightChar = 25;
 
 enum Color {
     BLACK = 0x00,
@@ -34,9 +29,10 @@ enum Color {
 };
 
 // Graphics Mode functions
-void putPixel(int pos_x, int pos_y, Color color);
-void putRect(int x, int y, int width, int height, Color color);
+void putRect(int x, int y, int width, int height, uint8_t color);
+void putLine(int x, int y, int length, bool vertical, uint8_t color);
 void putLine(int x, int y, int length, bool vertical, Color color);
+void putRect(int x, int y, int width, int height, Color color);
 
 // Text Mode functions
 
@@ -53,27 +49,44 @@ class Renderer {
     uint16_t cursorY;  // The cursor y position in either characters or pixels
 
   public:
+    static const int screenWidth;
+    static const int screenHeight;
+
     Renderer();
     Renderer(int boxStartX, int boxStartY, int boxWidth, int boxHeight);
     ~Renderer();
     void setDrawColor(Color color);
     void setBackgroundColor(Color color);
+    virtual void clearBox() = 0;
+    virtual void setTextFont(PSF_font* font) = 0;
+    virtual pair<int, int> putString(string& str, int x, int y) = 0;
+    virtual pair<int, int> putString(string&& str, int x, int y) = 0;
+    virtual void print(string& str) = 0;
+    virtual void print(string&& str) = 0;
+    virtual void printChar(char chr) = 0;
+    virtual void backspace() = 0;
 };
 
 class TuiTextRenderer : public Renderer {
+  private:
+    void updateCursor();
+
   public:
+    const static int screenMemory = 0xb8000;
+    const static int screenWidth = 80;
+    const static int screenHeight = 25;
+
     using Renderer::Renderer;
     void clearBox();
     pair<int, int> putChar(int chr, int x, int y);
-    pair<int, int> putString(string str, int x, int y);
-    void print(string str);
+    pair<int, int> putString(string& str, int x, int y);
+    pair<int, int> putString(string&& str, int x, int y);
+
+    void print(string& str);
+    void print(string&& str);
     void printChar(char chr);
     void backspace();
-    /**
-     * @brief moves the cursor to the position specified by cursorX and cursorY.
-     *
-     */
-    void updateCursor();
+    void setTextFont(PSF_font* font);
 };
 
 class GuiTextRenderer : public Renderer {
@@ -81,6 +94,9 @@ class GuiTextRenderer : public Renderer {
     PSF_font* currentFont;
 
   public:
+    const static int screenMemory = 0xA0000;
+    const static int screenWidth = 320;
+    const static int screenHeight = 200;
     using Renderer::Renderer;
 
     /**
@@ -136,6 +152,8 @@ class GuiTextRenderer : public Renderer {
      * @param chr Character to be printed.
      */
     void printChar(char chr);
+
+    void backspace();
 };
 
 void newGuiTest();
@@ -143,13 +161,4 @@ void newTuiTest();
 
 void putRect(int x, int y, int width, int height, Color color);
 void putLine(int x, int y, int length, bool vertical, Color color);
-void ClearScreen();
-
-// Polymorphism doesnt work yet in this environment
-#ifdef TEXT_MODE
-const int screenMemory = 0xb8000;
-typedef TuiTextRenderer GenericRenderer;
-#else
-const int screenMemory = 0xA0000;
-typedef GuiTextRenderer GenericRenderer;
-#endif
+void ClearScreenGUI();
