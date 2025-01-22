@@ -49,14 +49,22 @@ class Renderer {
     uint16_t cursorY;  // The cursor y position in either characters or pixels
 
   public:
+    static const int screenMemory;
     static const int screenWidth;
     static const int screenHeight;
+    virtual int getScreenMemory() = 0;
+    virtual int getScreenWidth() = 0;
+    virtual int getScreenHeight() = 0;
 
     Renderer();
     Renderer(int boxStartX, int boxStartY, int boxWidth, int boxHeight);
     ~Renderer();
     void setDrawColor(Color color);
     void setBackgroundColor(Color color);
+
+    char* saveState();
+    void restoreState(char* state);
+
     virtual void clearBox() = 0;
     virtual void setTextFont(PSF_font* font) = 0;
     virtual pair<int, int> putString(string& str, int x, int y) = 0;
@@ -75,6 +83,9 @@ class TuiTextRenderer : public Renderer {
     const static int screenMemory = 0xb8000;
     const static int screenWidth = 80;
     const static int screenHeight = 25;
+    int getScreenMemory();
+    int getScreenWidth();
+    int getScreenHeight();
 
     using Renderer::Renderer;
     void clearBox();
@@ -97,6 +108,10 @@ class GuiTextRenderer : public Renderer {
     const static int screenMemory = 0xA0000;
     const static int screenWidth = 320;
     const static int screenHeight = 200;
+    int getScreenMemory();
+    int getScreenWidth();
+    int getScreenHeight();
+    
     using Renderer::Renderer;
 
     /**

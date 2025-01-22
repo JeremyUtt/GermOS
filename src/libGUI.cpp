@@ -3,6 +3,7 @@
 #include <libIO.hpp>
 #include <libTimer.hpp>
 #include <utils.hpp>
+#include <memory.hpp>
 
 
 void putRect(int x, int y, int width, int height, uint8_t color) {
@@ -82,9 +83,41 @@ void Renderer::setBackgroundColor(Color color) {
     this->bgColor = color;
 }
 
+
+char* Renderer::saveState(){
+    int size = getScreenWidth() * getScreenHeight() * 2; // times 2 for text mode: 1 byte for color, 1 byte for character
+    
+    char* bufferCache = (char*)malloc(size);
+
+    for (int i = 0; i < size; i++) {
+        bufferCache[i] = ((uint8_t*)getScreenMemory())[i];
+    }
+
+    return bufferCache;
+}
+
+void Renderer::restoreState(char* state){
+
+    for (int i = 0; i < getScreenWidth() * getScreenHeight() * 2; i++) {
+        ((uint8_t*)getScreenMemory())[i] = state[i];
+    }
+    free(state);
+}
+
 // ===============================================
 // ========= TUI Text Renderer Functions =========
 // ===============================================
+
+int TuiTextRenderer::getScreenMemory(){
+    return screenMemory;
+}
+int TuiTextRenderer::getScreenWidth(){
+    return screenWidth;
+}
+int TuiTextRenderer::getScreenHeight(){
+    return screenHeight;
+}
+
 
 void TuiTextRenderer::clearBox() {
     for (uint16_t i = boxStartX; i < boxStartX + boxWidth; i++) {
@@ -200,6 +233,16 @@ void TuiTextRenderer::setTextFont(PSF_font* font) {
 // ===============================================
 // ============ GUI Renderer Functions ===========
 // ===============================================
+
+int GuiTextRenderer::getScreenMemory(){
+    return screenMemory;
+}
+int GuiTextRenderer::getScreenWidth(){
+    return screenWidth;
+}
+int GuiTextRenderer::getScreenHeight(){
+    return screenHeight;
+}
 
 void GuiTextRenderer::setTextFont(PSF_font* font) {
     currentFont = font;

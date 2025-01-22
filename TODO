@@ -1,0 +1,3 @@
+- add saveState and loadState to renderer
+- fix 64 color palette to 256
+

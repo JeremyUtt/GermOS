@@ -197,17 +197,21 @@ void cmdPong() {
 }
 
 void cmdGoop() {
-    char bufferCache[80 * 25 * 2];
-    for (int i = 0; i < 80 * 25 * 2; i++) {
-        bufferCache[i] = ((uint8_t*)TuiTextRenderer::screenMemory)[i];
-    }
+    // char bufferCache[80 * 25 * 2];
+    // for (int i = 0; i < 80 * 25 * 2; i++) {
+    //     bufferCache[i] = ((uint8_t*)TuiTextRenderer::screenMemory)[i];
+    // }
+
+    char* bufferCache = textBox->saveState();
 
     Process cmd("goop", (uint32_t)GOOPImage::drawGoop, GRAPHICS);
     cmd.start();
-    
-    for (int i = 0; i < 320 * 200; i++) {
-        ((uint8_t*)TuiTextRenderer::screenMemory)[i] = bufferCache[i];
-    }
+
+    textBox->restoreState(bufferCache);
+
+    // for (int i = 0; i < 320 * 200; i++) {
+    //     ((uint8_t*)TuiTextRenderer::screenMemory)[i] = bufferCache[i];
+    // }
 }
 
 
