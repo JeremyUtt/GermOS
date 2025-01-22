@@ -61,7 +61,7 @@ extern "C" void main() {
     startUI();
 
     // Runs once everything else is done
-    ClearScreenGUI();
+    renderer.clearBox();
     updateStdout(renderer);
     renderer.clearBox();
     printf("All Programs Finished\n");
@@ -125,7 +125,6 @@ void initKernel(Renderer& renderer) {
 
     KB::waitForKeyboard();
     KB::popKeyBuffer();
-    ClearScreenGUI();  // clears area around box
     renderer.clearBox();
 }
 

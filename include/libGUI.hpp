@@ -3,8 +3,10 @@
 #include <string.hpp>
 #include <utils.hpp>
 
+
+
 #define putPixelM_new(x, y, color)                                                                \
-    *((unsigned char*)GuiTextRenderer::screenMemory + GuiTextRenderer::screenWidth * (y) + (x)) = \
+    *((unsigned char*)0xa0000 + 320 * (y) + (x)) = \
         color;
 
 const int tabSize = 4;
@@ -28,11 +30,6 @@ enum Color {
     WHITE = 0x0F
 };
 
-// Graphics Mode functions
-void putRect(int x, int y, int width, int height, uint8_t color);
-void putLine(int x, int y, int length, bool vertical, uint8_t color);
-void putLine(int x, int y, int length, bool vertical, Color color);
-void putRect(int x, int y, int width, int height, Color color);
 
 // Text Mode functions
 
@@ -49,13 +46,9 @@ class Renderer {
     uint16_t cursorY;  // The cursor y position in either characters or pixels
 
   public:
-    static const int screenMemory;
-    static const int screenWidth;
-    static const int screenHeight;
-    virtual int getScreenMemory() = 0;
-    virtual int getScreenWidth() = 0;
-    virtual int getScreenHeight() = 0;
-
+    int screenMemory;
+    int screenWidth;
+    int screenHeight;
     Renderer();
     Renderer(int boxStartX, int boxStartY, int boxWidth, int boxHeight);
     ~Renderer();
@@ -80,14 +73,9 @@ class TuiTextRenderer : public Renderer {
     void updateCursor();
 
   public:
-    const static int screenMemory = 0xb8000;
-    const static int screenWidth = 80;
-    const static int screenHeight = 25;
-    int getScreenMemory();
-    int getScreenWidth();
-    int getScreenHeight();
-
-    using Renderer::Renderer;
+    TuiTextRenderer();
+    TuiTextRenderer(int boxStartX, int boxStartY, int boxWidth, int boxHeight);
+    
     void clearBox();
     pair<int, int> putChar(int chr, int x, int y);
     pair<int, int> putString(string& str, int x, int y);
@@ -105,14 +93,10 @@ class GuiTextRenderer : public Renderer {
     PSF_font* currentFont;
 
   public:
-    const static int screenMemory = 0xA0000;
-    const static int screenWidth = 320;
-    const static int screenHeight = 200;
-    int getScreenMemory();
-    int getScreenWidth();
-    int getScreenHeight();
-    
-    using Renderer::Renderer;
+    GuiTextRenderer();
+    GuiTextRenderer(int boxStartX, int boxStartY, int boxWidth, int boxHeight);
+
+    // using Renderer::Renderer;
 
     /**
      * @brief Set the Text Font object
@@ -169,11 +153,15 @@ class GuiTextRenderer : public Renderer {
     void printChar(char chr);
 
     void backspace();
+
+    // Graphics Mode functions
+    void putRect(int x, int y, int width, int height, uint8_t color);
+    void putLine(int x, int y, int length, bool vertical, uint8_t color);
+    void putLine(int x, int y, int length, bool vertical, Color color);
+    void putRect(int x, int y, int width, int height, Color color);
+
 };
 
 void newGuiTest();
 void newTuiTest();
 
-void putRect(int x, int y, int width, int height, Color color);
-void putLine(int x, int y, int length, bool vertical, Color color);
-void ClearScreenGUI();

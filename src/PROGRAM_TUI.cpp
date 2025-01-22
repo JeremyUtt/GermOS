@@ -35,33 +35,33 @@ int cmdIndex = 0;
 TuiTextRenderer* textBox;
 
 void main() {
-    TuiTextRenderer border(0, 0, TuiTextRenderer::screenWidth, TuiTextRenderer::screenHeight);
+    TuiTextRenderer border;
     border.setDrawColor(BLACK);
     border.setBackgroundColor(LIGHT_GRAY);
 
-    TuiTextRenderer temp(1, 1, TuiTextRenderer::screenWidth - 2, TuiTextRenderer::screenHeight - 2);
+    TuiTextRenderer temp(1, 1, border.screenWidth - 2, border.screenHeight - 2);
     textBox = &temp;
     textBox->setDrawColor(BLACK);
     textBox->setBackgroundColor(LIGHT_GRAY);
     updateStdout(*textBox);
 
-    for (int j = 0; j < TuiTextRenderer::screenHeight; j++) {
-        for (int i = 0; i < TuiTextRenderer::screenWidth; i++) {
+    for (int j = 0; j < border.screenHeight; j++) {
+        for (int i = 0; i < border.screenWidth; i++) {
             border.putChar(' ', i, j);
         }
         border.putChar(186, 0, j);
-        border.putChar(186, TuiTextRenderer::screenWidth - 1, j);
+        border.putChar(186, border.screenWidth - 1, j);
     }
 
-    for (int i = 0; i < TuiTextRenderer::screenWidth; i++) {
+    for (int i = 0; i < border.screenWidth; i++) {
         border.putChar(205, i, 0);
-        border.putChar(205, i, TuiTextRenderer::screenHeight - 1);
+        border.putChar(205, i, border.screenHeight - 1);
     }
 
     border.putChar(201, 0, 0);
-    border.putChar(200, 0, TuiTextRenderer::screenHeight - 1);
-    border.putChar(187, TuiTextRenderer::screenWidth - 1, 0);
-    border.putChar(188, TuiTextRenderer::screenWidth - 1, TuiTextRenderer::screenHeight - 1);
+    border.putChar(200, 0, border.screenHeight - 1);
+    border.putChar(187, border.screenWidth - 1, 0);
+    border.putChar(188, border.screenWidth - 1, border.screenHeight - 1);
 
     border.putString("Welcome To GoopOS", 31, 0);
 
@@ -74,24 +74,24 @@ void main() {
 }
 
 void redrawBorder() {
-    TuiTextRenderer border(0, 0, TuiTextRenderer::screenWidth, TuiTextRenderer::screenHeight);
+    TuiTextRenderer border;
     border.setDrawColor(BLACK);
     border.setBackgroundColor(LIGHT_GRAY);
 
-    for (int j = 0; j < TuiTextRenderer::screenHeight; j++) {
+    for (int j = 0; j < border.screenHeight; j++) {
         border.putChar(186, 0, j);
-        border.putChar(186, TuiTextRenderer::screenWidth - 1, j);
+        border.putChar(186, border.screenWidth - 1, j);
     }
 
-    for (int i = 0; i < TuiTextRenderer::screenWidth; i++) {
+    for (int i = 0; i < border.screenWidth; i++) {
         border.putChar(205, i, 0);
-        border.putChar(205, i, TuiTextRenderer::screenHeight - 1);
+        border.putChar(205, i, border.screenHeight - 1);
     }
 
     border.putChar(201, 0, 0);
-    border.putChar(200, 0, TuiTextRenderer::screenHeight - 1);
-    border.putChar(187, TuiTextRenderer::screenWidth - 1, 0);
-    border.putChar(188, TuiTextRenderer::screenWidth - 1, TuiTextRenderer::screenHeight - 1);
+    border.putChar(200, 0, border.screenHeight - 1);
+    border.putChar(187, border.screenWidth - 1, 0);
+    border.putChar(188, border.screenWidth - 1, border.screenHeight - 1);
 
     border.putString("Welcome To GoopOS", 31, 0);
 }
@@ -182,54 +182,54 @@ void cmdShutdown() {
 
 
 void cmdPong() {
-    char bufferCache[80 * 25 * 2];
-    for (int i = 0; i < 80 * 25 * 2; i++) {
-        bufferCache[i] = ((uint8_t*)TuiTextRenderer::screenMemory)[i];
-    }
+    char* bufferCache = textBox->saveState();
 
     Process cmd("cmd", (uint32_t)PONG::main, GRAPHICS);
     cmd.start();
 
+    textBox->restoreState(bufferCache);
     updateStdout(*textBox);
-    for (int i = 0; i < 320 * 200; i++) {
-        ((uint8_t*)TuiTextRenderer::screenMemory)[i] = bufferCache[i];
-    }
 }
 
 void cmdGoop() {
-    // char bufferCache[80 * 25 * 2];
-    // for (int i = 0; i < 80 * 25 * 2; i++) {
-    //     bufferCache[i] = ((uint8_t*)TuiTextRenderer::screenMemory)[i];
-    // }
-
     char* bufferCache = textBox->saveState();
 
     Process cmd("goop", (uint32_t)GOOPImage::drawGoop, GRAPHICS);
     cmd.start();
 
     textBox->restoreState(bufferCache);
-
-    // for (int i = 0; i < 320 * 200; i++) {
-    //     ((uint8_t*)TuiTextRenderer::screenMemory)[i] = bufferCache[i];
-    // }
 }
 
 
 void cmdVgatest(){
-    main2(0, nullptr);
+    char* bufferCache = textBox->saveState();
+    
+    // main2(0, nullptr);
 
     setUiMode(GRAPHICS);
     GuiTextRenderer renderer;
     renderer.clearBox();
+
+    printColorPallet();
     renderer.setDrawColor(RED);
     renderer.setTextFont(&Uni2Terminus12x6psf);
+    renderer.putString("Press button", 150, 100);
+
+    KB::waitForKeyboard();
+    KB::popKeyBuffer();
+
+    renderer.clearBox();
     renderer.print("Hello World");
     amogus();
+    renderer.putString("Press button", 180, 50);
 
     KB::waitForKeyboard();
     KB::popKeyBuffer();
 
     setUiMode(TEXT);
+    textBox->restoreState(bufferCache);
+
+    printf("Done!\n");
 }
 
 }  // namespace TUI

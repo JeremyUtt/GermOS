@@ -10,6 +10,9 @@ void amogus() {
     int height = 20;
     int startx = 1050;
     int starty = 0;
+    
+    GuiTextRenderer renderer;
+    
     // NewGuiRenderer::putRect(startx, starty, width*3, height*4, 0xaa);
     // NewGuiRenderer::putRect(startx+width, starty+height, width*2, height,
     // 0x55); NewGuiRenderer::putRect(startx, starty+height*4, width, height,
@@ -22,11 +25,11 @@ void amogus() {
     int color1 = 5;
     int color2 = 6;
 
-    putRect(startx, starty, width * 3, height * 4, color1);
-    putRect(startx + width, starty + height, width * 2, height, color2);
-    putRect(startx, starty + height * 4, width, height, color1);
-    putRect(startx + width * 2, starty + height * 4, width, height, color1);
-    putRect(startx - width, starty + height, width, height * 3, color1);
+    renderer.putRect(startx, starty, width * 3, height * 4, color1);
+    renderer.putRect(startx + width, starty + height, width * 2, height, color2);
+    renderer.putRect(startx, starty + height * 4, width, height, color1);
+    renderer.putRect(startx + width * 2, starty + height * 4, width, height, color1);
+    renderer.putRect(startx - width, starty + height, width, height * 3, color1);
 }
 
 void printColorPallet() {
@@ -37,12 +40,12 @@ void printColorPallet() {
     int x = 0;
     int y = 0;
     for (int i = 0; i < 2048; i++) {
-        putRect(x, y, size, size, i % 64);
+        renderer.putRect(x, y, size, size, i % 64);
         string str = intToStr(i, 10);
-        renderer.putString(str, x, y);
+        // renderer.putString(str, x, y);
         // sleep(10);
         x += size;
-        if (x >= GuiTextRenderer::screenWidth - size) {
+        if (x >= renderer.screenWidth - size) {
             y += size;
             x = 0;
         }

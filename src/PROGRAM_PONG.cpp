@@ -14,10 +14,10 @@
 
 namespace PONG {
 
-int leftPos = (GuiTextRenderer::screenHeight / 2) + (PADDLE_HEIGHT / 2);
-int rightPos = (GuiTextRenderer::screenHeight / 2) - (PADDLE_HEIGHT / 2);
-int ballX = GuiTextRenderer::screenWidth / 2;
-int ballY = GuiTextRenderer::screenHeight / 2;
+int leftPos; //defined later
+int rightPos; //defined later
+int ballX; //defined later
+int ballY; //defined later
 int ballDX = 1;
 int ballDY = 1;
 int timer = 0;
@@ -29,18 +29,23 @@ string* score = nullptr;
 #define printScore()                                                     \
     renderer->putString(*score, 5, 0);                                   \
     renderer->putString(intToStr(leftScore, 10), 45, 0);                 \
-    renderer->putString(*score, GuiTextRenderer::screenWidth - PADDLE_PADDING - 40, 0); \
-    renderer->putString(intToStr(rightScore, 10), GuiTextRenderer::screenWidth - PADDLE_PADDING, 0);
+    renderer->putString(*score, renderer->screenWidth - PADDLE_PADDING - 40, 0); \
+    renderer->putString(intToStr(rightScore, 10), renderer->screenWidth - PADDLE_PADDING, 0);
 
 bool loop();
 
 void main() {
-    GuiTextRenderer temp(0, 0, GuiTextRenderer::screenWidth, GuiTextRenderer::screenHeight);
+    GuiTextRenderer temp;
     renderer = &temp;
     renderer->setDrawColor(WHITE);
     renderer->setTextFont(&Uni2Terminus12x6psf);
     renderer->clearBox();
     updateStdout(*renderer);
+
+    leftPos = (renderer->screenHeight / 2) + (PADDLE_HEIGHT / 2);
+    rightPos = (renderer->screenHeight / 2) - (PADDLE_HEIGHT / 2);
+    ballX = renderer->screenWidth / 2;
+    ballY = renderer->screenHeight / 2;
 
     string tmp = "Score: ";
     score = &tmp;
@@ -52,15 +57,14 @@ void main() {
         sleep(5);
 
         if (loop()) {
-            ClearScreenGUI();
             renderer->clearBox();
             printf("Game Over\n");
             printf("Press Escape to exit\n");
             printf("Press any other button to play again\n");
-            leftPos = (GuiTextRenderer::screenHeight / 2) + (PADDLE_HEIGHT / 2);
-            rightPos = (GuiTextRenderer::screenHeight / 2) - (PADDLE_HEIGHT / 2);
-            ballX = GuiTextRenderer::screenWidth / 2;
-            ballY = GuiTextRenderer::screenHeight / 2;
+            leftPos = (renderer->screenHeight / 2) + (PADDLE_HEIGHT / 2);
+            rightPos = (renderer->screenHeight / 2) - (PADDLE_HEIGHT / 2);
+            ballX = renderer->screenWidth / 2;
+            ballY = renderer->screenHeight / 2;
             timer = 0;
 
             sleep(500);
@@ -73,7 +77,6 @@ void main() {
                     return;
                 }
             }
-            ClearScreenGUI();
             renderer->clearBox();
 
             // update score
@@ -84,9 +87,9 @@ void main() {
 
 bool loop() {
     // Draw everything as black
-    putRect(ballX, ballY, 4, 4, BLACK);
-    putLine(PADDLE_PADDING, leftPos, PADDLE_HEIGHT, true, BLACK);
-    putLine(GuiTextRenderer::screenWidth - PADDLE_PADDING, rightPos, PADDLE_HEIGHT, true, BLACK);
+    renderer->putRect(ballX, ballY, 4, 4, BLACK);
+    renderer->putLine(PADDLE_PADDING, leftPos, PADDLE_HEIGHT, true, BLACK);
+    renderer->putLine(renderer->screenWidth - PADDLE_PADDING, rightPos, PADDLE_HEIGHT, true, BLACK);
 
     if (KB::getKeyBufferIndex() > 0) {
         char character = KB::popKeyBuffer();
@@ -100,8 +103,8 @@ bool loop() {
                 break;
             case 's':
                 leftPos += PADDLE_SPEED;
-                if (leftPos + PADDLE_HEIGHT > GuiTextRenderer::screenHeight) {
-                    leftPos = GuiTextRenderer::screenHeight - PADDLE_HEIGHT;
+                if (leftPos + PADDLE_HEIGHT > renderer->screenHeight) {
+                    leftPos = renderer->screenHeight - PADDLE_HEIGHT;
                 }
                 break;
             case 'i':
@@ -112,8 +115,8 @@ bool loop() {
                 break;
             case 'k':
                 rightPos += PADDLE_SPEED;
-                if (rightPos + PADDLE_HEIGHT > GuiTextRenderer::screenHeight) {
-                    rightPos = GuiTextRenderer::screenHeight - PADDLE_HEIGHT;
+                if (rightPos + PADDLE_HEIGHT > renderer->screenHeight) {
+                    rightPos = renderer->screenHeight - PADDLE_HEIGHT;
                 }
                 break;
             default:
@@ -121,13 +124,13 @@ bool loop() {
         }
     }
 
-    if (ballY <= 0 || ballY + BALL_SIZE >= GuiTextRenderer::screenHeight) {
+    if (ballY <= 0 || ballY + BALL_SIZE >= renderer->screenHeight) {
         ballDY *= -1;
     }
 
 #define BALL_L_X_Intersect (ballX <= PADDLE_PADDING && ballX + BALL_SIZE >= PADDLE_PADDING)
 #define BALL_R_X_INTERSECT \
-    (ballX <= GuiTextRenderer::screenWidth - PADDLE_PADDING && ballX + BALL_SIZE >= GuiTextRenderer::screenWidth - PADDLE_PADDING)
+    (ballX <= renderer->screenWidth - PADDLE_PADDING && ballX + BALL_SIZE >= renderer->screenWidth - PADDLE_PADDING)
 #define BALL_L_Y_INTERSECT (ballY <= leftPos + PADDLE_HEIGHT && ballY + BALL_SIZE >= leftPos)
 #define BALL_R_Y_INTERSECT (ballY <= rightPos + PADDLE_HEIGHT && ballY + BALL_SIZE >= rightPos)
 
@@ -138,7 +141,7 @@ bool loop() {
     if (ballX <= 0) {
         rightScore++;
         return true;
-    } else if (ballX >= GuiTextRenderer::screenWidth) {
+    } else if (ballX >= renderer->screenWidth) {
         leftScore++;
         return true;
     }
@@ -157,9 +160,9 @@ bool loop() {
 
     // ClearScreenGUI();
 
-    putRect(ballX, ballY, 4, 4, RED);
-    putLine(PADDLE_PADDING, leftPos, PADDLE_HEIGHT, true, MAGENTA);
-    putLine(GuiTextRenderer::screenWidth - PADDLE_PADDING, rightPos, PADDLE_HEIGHT, true, MAGENTA);
+    renderer->putRect(ballX, ballY, 4, 4, RED);
+    renderer->putLine(PADDLE_PADDING, leftPos, PADDLE_HEIGHT, true, MAGENTA);
+    renderer->putLine(renderer->screenWidth - PADDLE_PADDING, rightPos, PADDLE_HEIGHT, true, MAGENTA);
 
     return false;
 }

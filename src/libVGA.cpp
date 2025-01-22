@@ -1678,8 +1678,6 @@ UiMode globalUiMode = TEXT;
 
 void setUiMode(UiMode mode) {
     if (mode == GRAPHICS) {
-        ClearScreenGUI();
-
         write_regs(g_320x200x256);
         globalUiMode = GRAPHICS;
     } else {

@@ -5,48 +5,6 @@
 #include <utils.hpp>
 #include <memory.hpp>
 
-
-void putRect(int x, int y, int width, int height, uint8_t color) {
-    for (int i = 0; i < height; i++) {
-        for (int j = 0; j < width; j++) {
-            putPixelM_new(x + j, y + i, color);
-        }
-    }
-}
-
-void putLine(int x, int y, int length, bool vertical, uint8_t color) {
-    if (vertical) {
-        for (int i = 0; i < length; i++) {
-            putPixelM_new(x, y + i, color);
-        }
-    } else {
-        for (int i = 0; i < length; i++) {
-            putPixelM_new(x + i, y, color);
-        }
-    }
-}
-
-void putRect(int x, int y, int width, int height, Color color){
-    putRect(x, y, width, height, (uint8_t)color);
-}
-
-void putLine(int x, int y, int length, bool vertical, Color color){
-    putLine(x, y, length, vertical, (uint8_t)color);
-}
-
-
-void ClearScreenGUI() {
-    uint8_t* where = (uint8_t*)GuiTextRenderer::screenMemory;
-    uint32_t i, j;
-
-    for (i = 0; i < GuiTextRenderer::screenHeight; i++) {
-        for (j = 0; j < GuiTextRenderer::screenWidth; j++) {
-            where[j] = 0;
-        }
-        where += GuiTextRenderer::screenWidth;
-    }
-}
-
 // ===============================================
 // ============== Renderer Functions =============
 // ===============================================
@@ -56,8 +14,6 @@ Renderer::Renderer() {
     bgColor = BLACK;
     boxStartX = 0;
     boxStartY = 0;
-    boxWidth = GuiTextRenderer::screenWidth;
-    boxHeight = GuiTextRenderer::screenHeight;
     cursorX = 0;
     cursorY = 0;
 }
@@ -85,12 +41,12 @@ void Renderer::setBackgroundColor(Color color) {
 
 
 char* Renderer::saveState(){
-    int size = getScreenWidth() * getScreenHeight() * 2; // times 2 for text mode: 1 byte for color, 1 byte for character
+    int size = screenWidth * screenHeight * 2; // times 2 for text mode: 1 byte for color, 1 byte for character
     
     char* bufferCache = (char*)malloc(size);
 
     for (int i = 0; i < size; i++) {
-        bufferCache[i] = ((uint8_t*)getScreenMemory())[i];
+        bufferCache[i] = ((uint8_t*)screenMemory)[i];
     }
 
     return bufferCache;
@@ -98,8 +54,8 @@ char* Renderer::saveState(){
 
 void Renderer::restoreState(char* state){
 
-    for (int i = 0; i < getScreenWidth() * getScreenHeight() * 2; i++) {
-        ((uint8_t*)getScreenMemory())[i] = state[i];
+    for (int i = 0; i < screenWidth * screenHeight * 2; i++) {
+        ((uint8_t*)screenMemory)[i] = state[i];
     }
     free(state);
 }
@@ -108,15 +64,19 @@ void Renderer::restoreState(char* state){
 // ========= TUI Text Renderer Functions =========
 // ===============================================
 
-int TuiTextRenderer::getScreenMemory(){
-    return screenMemory;
-}
-int TuiTextRenderer::getScreenWidth(){
-    return screenWidth;
-}
-int TuiTextRenderer::getScreenHeight(){
-    return screenHeight;
-}
+TuiTextRenderer::TuiTextRenderer() : Renderer() {
+    screenMemory = 0xB8000;
+    screenWidth = 80;
+    screenHeight = 25;
+    boxWidth = screenWidth;
+    boxHeight = screenHeight;
+};
+
+TuiTextRenderer::TuiTextRenderer(int boxStartX, int boxStartY, int boxWidth, int boxHeight) : Renderer(boxStartX, boxStartY, boxWidth, boxHeight) {
+    screenMemory = 0xB8000;
+    screenWidth = 80;
+    screenHeight = 25;
+};
 
 
 void TuiTextRenderer::clearBox() {
@@ -234,15 +194,19 @@ void TuiTextRenderer::setTextFont(PSF_font* font) {
 // ============ GUI Renderer Functions ===========
 // ===============================================
 
-int GuiTextRenderer::getScreenMemory(){
-    return screenMemory;
-}
-int GuiTextRenderer::getScreenWidth(){
-    return screenWidth;
-}
-int GuiTextRenderer::getScreenHeight(){
-    return screenHeight;
-}
+GuiTextRenderer::GuiTextRenderer() : Renderer() {
+    screenMemory = 0xA0000;
+    screenWidth = 320;
+    screenHeight = 200;
+    boxWidth = screenWidth;
+    boxHeight = screenHeight;
+};
+
+GuiTextRenderer::GuiTextRenderer(int boxStartX, int boxStartY, int boxWidth, int boxHeight) : Renderer(boxStartX, boxStartY, boxWidth, boxHeight) {
+    screenMemory = 0xA0000;
+    screenWidth = 320;
+    screenHeight = 200;
+};
 
 void GuiTextRenderer::setTextFont(PSF_font* font) {
     currentFont = font;
@@ -338,6 +302,34 @@ void GuiTextRenderer::backspace() {
     putChar(' ', cursorX, cursorY);
 }
 
+void GuiTextRenderer::putRect(int x, int y, int width, int height, uint8_t color) {
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            putPixelM_new(x + j, y + i, color);
+        }
+    }
+}
+
+void GuiTextRenderer::putLine(int x, int y, int length, bool vertical, uint8_t color) {
+    if (vertical) {
+        for (int i = 0; i < length; i++) {
+            putPixelM_new(x, y + i, color);
+        }
+    } else {
+        for (int i = 0; i < length; i++) {
+            putPixelM_new(x + i, y, color);
+        }
+    }
+}
+
+void GuiTextRenderer::putRect(int x, int y, int width, int height, Color color){
+    putRect(x, y, width, height, (uint8_t)color);
+}
+
+void GuiTextRenderer::putLine(int x, int y, int length, bool vertical, Color color){
+    putLine(x, y, length, vertical, (uint8_t)color);
+}
+
 void newGuiTest() {
     GuiTextRenderer pog(0, 0, 320, 200);
 
@@ -357,7 +349,7 @@ void newGuiTest() {
     sleep(1000);
 
     GuiTextRenderer pog2(50, 50, 320 - 100, 200 - 100);
-    putRect(50, 50, 320 - 100, 200 - 100, (int)BLUE);
+    pog2.putRect(50, 50, 320 - 100, 200 - 100, (int)BLUE);
     pog2.setTextFont(&Uni2Terminus12x6psf);
     pog2.setDrawColor(LIGHT_GRAY);
     pog2.print("Hello World!\n");
