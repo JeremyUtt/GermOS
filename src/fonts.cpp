@@ -2,14 +2,7 @@
 
 #include <fonts.hpp>
 #include <libSerial.hpp>
-#include <tests.hpp>
 #include <utils.hpp>
-
-void psfInit() {
-    // NewGuiRenderer::setDrawColor(0x55);
-
-    // NewGuiRenderer::setTextFont(&_binary_files_zap_light20_psf_start);
-}
 
 void printHeader(PSF_font *mainFont) {
     serialWriteStr("\r\nMagic: ");

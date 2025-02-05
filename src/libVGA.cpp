@@ -1640,9 +1640,13 @@ void set_text_mode(int hi_res) {
 }
 
 // mode initially set in the bootloader
-UiMode globalUiMode = TEXT;
+UiMode globalUiMode = GRAPHICS;
 
 void setUiMode(UiMode mode) {
+    if (mode == globalUiMode) {
+        return;
+    }
+    
     if (mode == GRAPHICS) {
         write_regs(VgaModes::g_320x200x256);
         globalUiMode = GRAPHICS;

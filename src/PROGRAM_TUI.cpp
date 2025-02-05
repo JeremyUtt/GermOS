@@ -151,8 +151,6 @@ void processCommand(char cmd[]) {
         cmdVgatest();
     else if (strcmp(cmd, (char*)"goop"))
         cmdGoop();
-    else if (strcmp(cmd, (char*)"dump_state"))
-        dump_state();
     else
         printf("Unknown Command. Try: help\n");
 

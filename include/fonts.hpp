@@ -20,7 +20,4 @@ struct PSF_font {
 extern PSF_font Uni2Terminus12x6psf;
 extern PSF_font zaplight20psf;
 
-void psfInit();
-bool getPX(PSF_font* mainFont, char character, int x, int y);
 void printHeader(PSF_font* mainFont);
-void translateGlyph(PSF_font* font, int character);

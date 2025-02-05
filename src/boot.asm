@@ -11,23 +11,26 @@ _start:
 
 mov [BOOT_DISK], dl               
 
-%ifdef TEXT_MODE
+
 setTtyMode:
 	mov ah, 0x0	; set Video mode 
 	mov al, 0x3 ; 80 x 25	Color text	CGA, EGA, VGA
 	int 0x10	; Video Services
  	; printR "Set Videso Mode to text"
 ;end setTtyMode
-%endif
 
-%ifndef TEXT_MODE
-setMediumGuiMode:
-	mov ah, 0x0	; set Video mode 
-	mov al, 0x13 ; VGA 320x200
-	int 0x10	; Video Services
-	; printR "Set Video Mode to GUI"
-; ;end setMediumGuiMode
 
+
+; %endif
+
+; %ifndef TEXT_MODE
+; setMediumGuiMode:
+; 	mov ah, 0x0	; set Video mode 
+; 	mov al, 0x13 ; VGA 320x200
+; 	int 0x10	; Video Services
+; 	; printR "Set Video Mode to GUI"
+; ; ;end setMediumGuiMode
+; %endif
 
 ; setVesaGuiMode:
 ; 	mov ax, 0x4f01
@@ -46,8 +49,6 @@ setMediumGuiMode:
 	
 	; done:
 	; printR "Set Video Mode to GUI"
-%endif
-
 
 ; printR 0ah
 ; printR 0dh
@@ -137,6 +138,15 @@ switchToProtected:
 	printR "Switching to Protected Mode"
 	printR 0ah
 	printR 0dh
+
+	; Set VGA mode to GUI mode
+	setMediumGuiMode:
+		mov ah, 0x0	; set Video mode 
+		mov al, 0x13 ; VGA 320x200
+		int 0x10	; Video Services
+		; printR "Set Video Mode to GUI"
+	; ;end setMediumGuiMode
+
 
 	; change last bit of cr0 to 1
 	mov eax, cr0

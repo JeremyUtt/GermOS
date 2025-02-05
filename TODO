@@ -1,2 +1,11 @@
 - fix 64 color palette to 256
 
+- make New rendering system
+  - scrolling text boxes
+- create input / output streams
+  - direct keyboard driver to programs
+  - direct UI screen driver to programs
+- create new keyboard functions
+  - waiting for key-press
+  - key-released support
+  - sending special keys to program (arrow keys, shift, ctrl, etc)

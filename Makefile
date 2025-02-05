@@ -42,8 +42,10 @@ OBJS := $(patsubst $(SRC_DIR)/%.asm,$(BUILD_DIR)/%.o,$(ASM_FILES)) \
 
 all: bin/OS.sym bin/OS.bin info
 
-gui:
-	@make MODEFLAGS="" --no-print-directory
+
+# Gui mode, disabed for now
+# gui:
+# @make MODEFLAGS="" --no-print-directory
 
 # ============================================================
 # ===== Start by compiling all source files into Objects =====
