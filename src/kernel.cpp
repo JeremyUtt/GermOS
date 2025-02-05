@@ -27,25 +27,25 @@
 #include <tests.hpp>
 #include <utils.hpp>
 #include <libVGA.hpp>
-#ifdef TEXT_MODE
+// #ifdef TEXT_MODE
 #define startUI() startTUI()
 #define boxHeight 25
 #define boxWidth 80
 #define boxStartY 3
 
-#else
-#define startUI() startGUI()
-#define boxHeight 200
-#define boxWidth 320
-#define boxStartY 0
-#endif
+// #else
+// #define startUI() startGUI()
+// #define boxHeight 200
+// #define boxWidth 320
+// #define boxStartY 0
+// #endif
 
 extern "C" void main() {
-#ifdef TEXT_MODE
+// #ifdef TEXT_MODE
     TuiTextRenderer temp(0, boxStartY, boxWidth, boxHeight);
-#else
-    GuiTextRenderer temp(0, boxStartY, boxWidth, boxHeight);
-#endif
+// #else
+    // GuiTextRenderer temp(0, boxStartY, boxWidth, boxHeight);
+// #endif
 
     Renderer& renderer = temp;
 
@@ -56,6 +56,9 @@ extern "C" void main() {
     // sleep(5000);
     // dump_state();
     // :D
+    dump_state();
+
+    setUiMode(TEXT);
 
     // Run the UI
     startUI();
@@ -146,27 +149,27 @@ char* checkKernelMemory(uint32_t start, uint32_t len, string toFind) {
     return nullptr;
 }
 
-#ifdef TEXT_MODE
+// #ifdef TEXT_MODE
 void startTUI() {
     Process cmd("cmd", (uint32_t)TUI::main, TEXT);
     cmd.start();
 }
-#endif
+// #endif
 
-#ifndef TEXT_MODE
-void startGUI() {
-    extern binaryFile goopergimg;
-    GOOPImage::draw(&goopergimg, 0, 0);
+// #ifndef TEXT_MODE
+// void startGUI() {
+//     extern binaryFile goopergimg;
+//     GOOPImage::draw(&goopergimg, 0, 0);
 
-    GuiTextRenderer renderer(0, 0, 320, 200);
-    renderer.setTextFont(&Uni2Terminus12x6psf);
-    renderer.setDrawColor(WHITE);
-    renderer.putString("Welcome to GoopOS", 100, 10);
-    renderer.setDrawColor(LIGHT_GRAY);
+//     GuiTextRenderer renderer(0, 0, 320, 200);
+//     renderer.setTextFont(&Uni2Terminus12x6psf);
+//     renderer.setDrawColor(WHITE);
+//     renderer.putString("Welcome to GoopOS", 100, 10);
+//     renderer.setDrawColor(LIGHT_GRAY);
 
-    sleep(5000);
+//     sleep(5000);
 
-    Process pong("Pong", (uint32_t)PONG::main, GRAPHICS);
-    pong.start();
-}
-#endif
+//     Process pong("Pong", (uint32_t)PONG::main, GRAPHICS);
+//     pong.start();
+// }
+// #endif

@@ -17,3 +17,15 @@ uint8_t inb(uint16_t port) {
 void io_wait() {
     asm volatile("outb %%al, $0x80" : : "a"(0));
 }
+
+void pokeb(uint32_t address, uint32_t val) {
+    *((volatile uint8_t *)address) = (uint8_t)val;
+}
+
+uint8_t peekb(uint32_t address) {
+    return *((volatile uint8_t *)address);
+}
+
+void pokew(uint32_t address, uint32_t val) {
+    *((volatile uint16_t *)address) = (uint16_t)val;
+}
