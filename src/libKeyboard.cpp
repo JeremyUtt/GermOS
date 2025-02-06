@@ -13,7 +13,7 @@ bool isLeftShiftPressed;
 bool isArrowPressed;
 char kbBuffer[256] = {0};
 uint8_t keyboardBufferIndex = 0;
-const char ASCIITable[] = {0,   Escape_ASCII, '1',
+const char scancodeToASCII[] = {0,   Escape_ASCII, '1',
                            '2', '3',          '4',
                            '5', '6',          '7',
                            '8', '9',          '0',
@@ -123,11 +123,11 @@ char Translate(uint8_t scancode, bool uppercase) {
             return SymbolTable[scancode];
         }
 
-        return ASCIITable[scancode] - 32;
+        return scancodeToASCII[scancode] - 32;
     }
 
     else
-        return ASCIITable[scancode];
+        return scancodeToASCII[scancode];
 }
 
 void waitForKeyboard() {
@@ -138,12 +138,22 @@ void waitForKeyboard() {
 
 }  // namespace KB
 
+#include <printf.hpp>
+void newInterpret(int keycode){
+    if(keycode > 0x80){
+        fprintf(Serial, "Released: 0x%x\n", keycode-0x80);
+    }else {
+        fprintf(Serial, "Pressed: 0x%x\n", keycode);
+    }
+}
+
 INTERRUPT void keyboardHandler(interrupt_frame*) {
     signed int keycode;
     keycode = inb(0x60);
 
     KB::InterpretKeyboard(keycode);
 
+    newInterpret(keycode);
     // End Interrupt
     outb(PIC1_COMMAND, PIC_EOI);
 }
