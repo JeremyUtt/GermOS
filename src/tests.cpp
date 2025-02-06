@@ -39,8 +39,8 @@ void printColorPallet() {
 
     int x = 0;
     int y = 0;
-    for (int i = 0; i < 2048; i++) {
-        renderer.putRect(x, y, size, size, i % 64);
+    for (int i = 0; i < 256; i++) {
+        renderer.putRect(x, y, size, size, i);
         string str = intToStr(i, 10);
         // renderer.putString(str, x, y);
         // sleep(10);
