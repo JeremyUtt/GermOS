@@ -6,6 +6,7 @@
 #include <error.hpp>
 #include <libSerial.hpp>
 #include <utils.hpp>
+#include <printf.hpp>
 
 struct allocEntry {
     bool realEntry;
@@ -57,7 +58,8 @@ void* malloc(uint16_t bytes) {
             }
 
             if (!innerFound) {
-                error("Failed to allocate memory", true);
+                error("Failed to allocate memory", false);
+                error("when splitting free segment, No empty table slots found for remainder", true);
             }
 
             table[i].end = table[i].start + bytes;
@@ -69,7 +71,9 @@ void* malloc(uint16_t bytes) {
     // this part will only run if the above loop doesn't return early
     // --> could not find any memory
 
-    error("Failed to allocate memory", true);
+    error("Failed to allocate memory", false);
+    error("No empty table slots found, or not enough memory", true);
+
     return nullptr;  // Wont ever reach here
 }
 
@@ -125,9 +129,9 @@ void printMem() {
     for (uint16_t i = 0; i < TABLE_SIZE; i++) {
         if (table[i].realEntry) {
             if (table[i].inUse) {
-                // printf("Entry: Start: %d End: %d, in use\r\n", table[i].start, table[i].end);
+                printf("Entry: Start: 0x%x End: 0x%x, Size: 0x%d, in use\n", (int)table[i].start, (int)table[i].end, (int)table[i].end-(int)table[i].start);
             } else {
-                // printf("Entry: Start: %d End: %d, free\r\n", table[i].start, table[i].end);
+                printf("Entry: Start: 0x%x End: 0x%x, Size: 0x%d, free\n", (int)table[i].start, (int)table[i].end, (int)table[i].end-(int)table[i].start);
             }
         }
     }

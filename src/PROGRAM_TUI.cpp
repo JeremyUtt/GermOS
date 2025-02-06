@@ -14,6 +14,7 @@
 #include <fonts.hpp>
 #include <process.hpp>
 #include <photo.hpp>
+#include <memory.hpp>
 
 // using namespace TextRenderer;
 
@@ -151,6 +152,8 @@ void processCommand(char cmd[]) {
         cmdVgatest();
     else if (strcmp(cmd, (char*)"goop"))
         cmdGoop();
+    else if (strcmp(cmd, (char*)"printMem"))
+        printMem();
     else
         printf("Unknown Command. Try: help\n");
 

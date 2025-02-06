@@ -29,7 +29,7 @@
 
 extern "C" void main() {
     setUiMode(TEXT);
-    TuiTextRenderer temp(0, 0, 80, 25);
+    TuiTextRenderer temp;
     Renderer& renderer = temp;
 
     initKernel(renderer);

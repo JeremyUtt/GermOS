@@ -18,6 +18,16 @@ string::~string() {
 }
 
 string::string(string& str) {
+
+    // Make a shallow copy: 
+
+    // this->_content = str._content;
+    // this->_size = str._size;
+    // this->_dynamic = str._dynamic;
+    // return;
+
+    // Make a deep copy:
+
     _size = str.size();
     _content = (char*)malloc(_size + 1);
 

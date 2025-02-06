@@ -2,10 +2,14 @@
 
 - make New rendering system
   - scrolling text boxes
+
 - create input / output streams
   - direct keyboard driver to programs
   - direct UI screen driver to programs
+
 - create new keyboard functions
   - waiting for key-press
   - key-released support
   - sending special keys to program (arrow keys, shift, ctrl, etc)
+
+- Change string class to use Copy On Write
