@@ -10,8 +10,7 @@ uint16_t pciConfigReadWord(uint8_t bus, uint8_t slot, uint8_t func, uint8_t offs
     uint16_t tmp = 0;
 
     // Create configuration address as per Figure 1
-    address = (uint32_t)((lbus << 16) | (lslot << 11) | (lfunc << 8) | (offset & 0xFC) |
-                         ((uint32_t)0x80000000));
+    address = (uint32_t)((lbus << 16) | (lslot << 11) | (lfunc << 8) | (offset & 0xFC) | ((uint32_t)0x80000000));
 
     // Write out the address
     outl(0xCF8, address);
@@ -29,8 +28,7 @@ uint32_t pciConfigRead32(uint8_t bus, uint8_t slot, uint8_t func, uint8_t offset
     uint16_t tmp = 0;
 
     // Create configuration address as per Figure 1
-    address = (uint32_t)((lbus << 16) | (lslot << 11) | (lfunc << 8) | (offset & 0xFC) |
-                         ((uint32_t)0x80000000));
+    address = (uint32_t)((lbus << 16) | (lslot << 11) | (lfunc << 8) | (offset & 0xFC) | ((uint32_t)0x80000000));
 
     // Write out the address
     outl(0xCF8, address);
@@ -39,8 +37,6 @@ uint32_t pciConfigRead32(uint8_t bus, uint8_t slot, uint8_t func, uint8_t offset
     tmp = inl(0xCFC);
     return tmp;
 }
-
-
 
 uint16_t pciCheckVendor(uint8_t bus, uint8_t slot) {
     uint16_t vendor, device;

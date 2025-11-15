@@ -3,33 +3,11 @@
 #include <string.hpp>
 #include <utils.hpp>
 
-
-
-#define putPixelM_new(x, y, color)                                                                \
-    *((unsigned char*)0xa0000 + 320 * (y) + (x)) = \
-        color;
+#define putPixelM_new(x, y, color) *((unsigned char*)0xa0000 + 320 * (y) + (x)) = color;
 
 const int tabSize = 4;
 
-enum Color {
-    BLACK = 0x00,
-    BLUE = 0x01,
-    GREEN = 0x02,
-    CYAN = 0x03,
-    RED = 0x04,
-    MAGENTA = 0x05,
-    BROWN = 0x06,
-    LIGHT_GRAY = 0x07,
-    DARK_GRAY = 0x08,
-    LIGHT_BLUE = 0x09,
-    LIGHT_GREEN = 0x0A,
-    LIGHT_CYAN = 0x0B,
-    LIGHT_RED = 0x0C,
-    LIGHT_MAGENTA = 0x0D,
-    YELLOW = 0x0E,
-    WHITE = 0x0F
-};
-
+enum Color { BLACK = 0x00, BLUE = 0x01, GREEN = 0x02, CYAN = 0x03, RED = 0x04, MAGENTA = 0x05, BROWN = 0x06, LIGHT_GRAY = 0x07, DARK_GRAY = 0x08, LIGHT_BLUE = 0x09, LIGHT_GREEN = 0x0A, LIGHT_CYAN = 0x0B, LIGHT_RED = 0x0C, LIGHT_MAGENTA = 0x0D, YELLOW = 0x0E, WHITE = 0x0F };
 
 // Text Mode functions
 
@@ -75,7 +53,7 @@ class TuiTextRenderer : public Renderer {
   public:
     TuiTextRenderer();
     TuiTextRenderer(int boxStartX, int boxStartY, int boxWidth, int boxHeight);
-    
+
     void clearBox();
     pair<int, int> putChar(int chr, int x, int y);
     pair<int, int> putString(string& str, int x, int y);
@@ -159,9 +137,7 @@ class GuiTextRenderer : public Renderer {
     void putLine(int x, int y, int length, bool vertical, uint8_t color);
     void putLine(int x, int y, int length, bool vertical, Color color);
     void putRect(int x, int y, int width, int height, Color color);
-
 };
 
 void newGuiTest();
 void newTuiTest();
-

@@ -2,8 +2,8 @@
 
 #include <libIO.hpp>
 #include <libTimer.hpp>
-#include <utils.hpp>
 #include <memory.hpp>
+#include <utils.hpp>
 
 // ===============================================
 // ============== Renderer Functions =============
@@ -39,10 +39,9 @@ void Renderer::setBackgroundColor(Color color) {
     this->bgColor = color;
 }
 
+char* Renderer::saveState() {
+    int size = screenWidth * screenHeight * 2;  // times 2 for text mode: 1 byte for color, 1 byte for character
 
-char* Renderer::saveState(){
-    int size = screenWidth * screenHeight * 2; // times 2 for text mode: 1 byte for color, 1 byte for character
-    
     char* bufferCache = (char*)malloc(size);
 
     for (int i = 0; i < size; i++) {
@@ -52,8 +51,7 @@ char* Renderer::saveState(){
     return bufferCache;
 }
 
-void Renderer::restoreState(char* state){
-
+void Renderer::restoreState(char* state) {
     for (int i = 0; i < screenWidth * screenHeight * 2; i++) {
         ((uint8_t*)screenMemory)[i] = state[i];
     }
@@ -77,7 +75,6 @@ TuiTextRenderer::TuiTextRenderer(int boxStartX, int boxStartY, int boxWidth, int
     screenWidth = 80;
     screenHeight = 25;
 };
-
 
 void TuiTextRenderer::clearBox() {
     for (uint16_t i = boxStartX; i < boxStartX + boxWidth; i++) {
@@ -121,8 +118,7 @@ pair<int, int> TuiTextRenderer::putChar(int chr, int x, int y) {
     uint8_t fullColor = (bgColor << 4) | color;
     uint16_t data = (fullColor << 8) | chr;
 
-    uint16_t* location = (uint16_t*)(screenMemory) +
-                         TuiTextRenderer::screenWidth * (y + boxStartY) + (x + boxStartX);
+    uint16_t* location = (uint16_t*)(screenMemory) + TuiTextRenderer::screenWidth * (y + boxStartY) + (x + boxStartX);
     *location = data;
 
     return pos;
@@ -322,11 +318,11 @@ void GuiTextRenderer::putLine(int x, int y, int length, bool vertical, uint8_t c
     }
 }
 
-void GuiTextRenderer::putRect(int x, int y, int width, int height, Color color){
+void GuiTextRenderer::putRect(int x, int y, int width, int height, Color color) {
     putRect(x, y, width, height, (uint8_t)color);
 }
 
-void GuiTextRenderer::putLine(int x, int y, int length, bool vertical, Color color){
+void GuiTextRenderer::putLine(int x, int y, int length, bool vertical, Color color) {
     putLine(x, y, length, vertical, (uint8_t)color);
 }
 

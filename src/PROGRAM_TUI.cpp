@@ -1,20 +1,19 @@
 #include <libGUI.hpp>
 // #include <libGUI_old.hpp>
+#include <fonts.hpp>
 #include <libIO.hpp>
 #include <libKeyboard.hpp>
 #include <libSerial.hpp>
 #include <libTimer.hpp>
 #include <libVGA.hpp>
+#include <memory.hpp>
+#include <photo.hpp>
 #include <printf.hpp>
+#include <process.hpp>
 #include <PROGRAM_PONG.hpp>
 #include <PROGRAM_TUI.hpp>
-#include <utils.hpp>
-#include <libVGA.hpp>
 #include <tests.hpp>
-#include <fonts.hpp>
-#include <process.hpp>
-#include <photo.hpp>
-#include <memory.hpp>
+#include <utils.hpp>
 
 // using namespace TextRenderer;
 
@@ -183,7 +182,6 @@ void cmdShutdown() {
     outw(0x604, 0x2000);
 }
 
-
 void cmdPong() {
     char* bufferCache = textBox->saveState();
 
@@ -203,10 +201,9 @@ void cmdGoop() {
     textBox->restoreState(bufferCache);
 }
 
-
-void cmdVgatest(){
+void cmdVgatest() {
     char* bufferCache = textBox->saveState();
-    
+
     // main2(0, nullptr);
 
     setUiMode(GRAPHICS);

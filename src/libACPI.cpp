@@ -25,10 +25,10 @@ ACPI::RSDP* findRSDP() {
             rsdpPtr = (ACPI::RSDP*)(startAddr + i);
 
             rsdtPtr = &rsdpPtr->rsdtAddress->header;
-            
+
             return rsdpPtr;
         }
-        
+
         i++;
     }
 }
@@ -72,9 +72,7 @@ void printSDT(ACPI::SDT_header* rsdtPointer) {
     serialWriteStr(intToStr(rsdtPointer->creatorRevision, 10));
 }
 
-
 #include <printf.hpp>
-
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Waddress-of-packed-member"

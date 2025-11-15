@@ -28,7 +28,6 @@ struct RSDP {
     RSDT_full* rsdtAddress;
 } __attribute__((packed));
 
-
 }  // namespace ACPI
 
 ACPI::RSDP* findRSDP();

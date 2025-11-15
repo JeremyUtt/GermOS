@@ -1,8 +1,8 @@
 #pragma once
 #include <stdint.h>
 
-#include <string.hpp>
 #include <libVGA.hpp>
+#include <string.hpp>
 enum ProcessState { Initalized, Running, Queued, Paused, Exited };
 
 struct CpuState {

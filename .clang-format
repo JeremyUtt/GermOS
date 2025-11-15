@@ -30,4 +30,4 @@ BreakBeforeBraces: Attach
 AllowAllParametersOfDeclarationOnNextLine: true
 AllowAllArgumentsOnNextLine: true
 BinPackArguments: false
-ColumnLimit: 100
+ColumnLimit: 1000

@@ -5,8 +5,8 @@
 #define TABLE_SIZE 1000
 #include <error.hpp>
 #include <libSerial.hpp>
-#include <utils.hpp>
 #include <printf.hpp>
+#include <utils.hpp>
 
 struct allocEntry {
     bool realEntry;
@@ -129,9 +129,9 @@ void printMem() {
     for (uint16_t i = 0; i < TABLE_SIZE; i++) {
         if (table[i].realEntry) {
             if (table[i].inUse) {
-                printf("Entry: Start: 0x%x End: 0x%x, Size: 0x%d, in use\n", (int)table[i].start, (int)table[i].end, (int)table[i].end-(int)table[i].start);
+                printf("Entry: Start: 0x%x End: 0x%x, Size: 0x%d, in use\n", (int)table[i].start, (int)table[i].end, (int)table[i].end - (int)table[i].start);
             } else {
-                printf("Entry: Start: 0x%x End: 0x%x, Size: 0x%d, free\n", (int)table[i].start, (int)table[i].end, (int)table[i].end-(int)table[i].start);
+                printf("Entry: Start: 0x%x End: 0x%x, Size: 0x%d, free\n", (int)table[i].start, (int)table[i].end, (int)table[i].end - (int)table[i].start);
             }
         }
     }

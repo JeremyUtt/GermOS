@@ -123,8 +123,7 @@ enum Scancodes {
     SC_KEY_F12 = 0x58
 };
 
-const char SymbolTable[] = {
-    0, Escape_ASCII, '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+'};
+const char SymbolTable[] = {0, Escape_ASCII, '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+'};
 
 void init() {
     /* This is a very basic keyboard initialization. The assumption is we have a
@@ -228,10 +227,10 @@ void waitForKeyboard() {
 }  // namespace KB
 
 #include <printf.hpp>
-void newInterpret(int keycode){
-    if(keycode > 0x80){
-        fprintf(Serial, "Released Scancode: 0x%x, ASCII:%c \n", keycode-0x80, KB::Translate(keycode-0x80, false));
-    }else {
+void newInterpret(int keycode) {
+    if (keycode > 0x80) {
+        fprintf(Serial, "Released Scancode: 0x%x, ASCII:%c \n", keycode - 0x80, KB::Translate(keycode - 0x80, false));
+    } else {
         fprintf(Serial, "Pressed: 0x%x, ASCII:%c\n", keycode, KB::Translate(keycode, false));
     }
 }

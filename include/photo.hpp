@@ -11,7 +11,7 @@ void draw(binaryFile* image, int startX, int startY);
 
 void drawGoop();
 
-}
+}  // namespace GOOPImage
 
 // extern binaryFile goop32ppm;
 // extern binaryFile hi32ppm;

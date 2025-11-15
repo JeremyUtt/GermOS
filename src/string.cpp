@@ -18,8 +18,7 @@ string::~string() {
 }
 
 string::string(string& str) {
-
-    // Make a shallow copy: 
+    // Make a shallow copy:
 
     // this->_content = str._content;
     // this->_size = str._size;

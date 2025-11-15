@@ -1,9 +1,6 @@
 #pragma once
 
-
-enum UiMode {
-    GRAPHICS,TEXT
-};
+enum UiMode { GRAPHICS, TEXT };
 
 void setUiMode(UiMode mode);
 UiMode getUiMode();

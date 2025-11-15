@@ -4,7 +4,7 @@
 #include <libSerial.hpp>
 #include <utils.hpp>
 
-void printHeader(PSF_font *mainFont) {
+void printHeader(PSF_font* mainFont) {
     serialWriteStr("\r\nMagic: ");
     serialWriteStr(intToStr(mainFont->magic, 10));
     serialWriteStr("\r\nVersion:");

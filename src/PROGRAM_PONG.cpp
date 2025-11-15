@@ -14,10 +14,10 @@
 
 namespace PONG {
 
-int leftPos; //defined later
-int rightPos; //defined later
-int ballX; //defined later
-int ballY; //defined later
+int leftPos;   // defined later
+int rightPos;  // defined later
+int ballX;     // defined later
+int ballY;     // defined later
 int ballDX = 1;
 int ballDY = 1;
 int timer = 0;
@@ -26,9 +26,9 @@ bool lastScored = false;
 GuiTextRenderer* renderer = nullptr;
 string* score = nullptr;
 
-#define printScore()                                                     \
-    renderer->putString(*score, 5, 0);                                   \
-    renderer->putString(intToStr(leftScore, 10), 45, 0);                 \
+#define printScore()                                                             \
+    renderer->putString(*score, 5, 0);                                           \
+    renderer->putString(intToStr(leftScore, 10), 45, 0);                         \
     renderer->putString(*score, renderer->screenWidth - PADDLE_PADDING - 40, 0); \
     renderer->putString(intToStr(rightScore, 10), renderer->screenWidth - PADDLE_PADDING, 0);
 
@@ -129,8 +129,7 @@ bool loop() {
     }
 
 #define BALL_L_X_Intersect (ballX <= PADDLE_PADDING && ballX + BALL_SIZE >= PADDLE_PADDING)
-#define BALL_R_X_INTERSECT \
-    (ballX <= renderer->screenWidth - PADDLE_PADDING && ballX + BALL_SIZE >= renderer->screenWidth - PADDLE_PADDING)
+#define BALL_R_X_INTERSECT (ballX <= renderer->screenWidth - PADDLE_PADDING && ballX + BALL_SIZE >= renderer->screenWidth - PADDLE_PADDING)
 #define BALL_L_Y_INTERSECT (ballY <= leftPos + PADDLE_HEIGHT && ballY + BALL_SIZE >= leftPos)
 #define BALL_R_Y_INTERSECT (ballY <= rightPos + PADDLE_HEIGHT && ballY + BALL_SIZE >= rightPos)
 
