@@ -2,7 +2,7 @@
 #include <process.hpp>
 
 Process::Process(string name, uint32_t entrypoint, UiMode uiMode) {
-    _cState = {0};
+    // _cState;
     _name = name;
     _pState = Initalized;
     _entrypoint = entrypoint;

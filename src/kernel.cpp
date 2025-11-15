@@ -34,13 +34,17 @@ extern "C" void main() {
 
     initKernel(renderer);
 
-    // Run Testing Code Here
-    // testStuff();
-    // sleep(5000);
-    // dump_state();
-    // :D
-    // dump_state();
 
+    decode();
+    // char* addr = checkKernelMemory((uint32_t)rsdp, 60000, "MCFG");
+    // if(addr != nullptr){
+    //     printf("%c", addr);
+    // } else{
+    //     printf("value is nullpointer\n");
+    // }
+    printf("waiting\n");
+
+    sleep(5000);
 
     // Run the UI
     startTUI();

@@ -1,9 +1,8 @@
 #include <libACPI.hpp>
 #include <libSerial.hpp>
 #include <utils.hpp>
-
-rsdpDescriptor* rsdpPtr;
-rsdtDescriptor* rsdtPtr;
+ACPI::RSDP* rsdpPtr;
+ACPI::SDT_header* rsdtPtr;
 
 bool check(char str[], int address) {
     for (uint32_t i = 0; i < getStrLen(str); i++) {
@@ -14,24 +13,28 @@ bool check(char str[], int address) {
     return true;
 }
 
-rsdpDescriptor* findRSDP() {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Waddress-of-packed-member"
+ACPI::RSDP* findRSDP() {
     char str[] = "RSD PTR ";
     int startAddr = 0x000E0000;
     int i = 0;
     // int finds = 0;
     while (true) {
         if (check(str, startAddr + i)) {
-            rsdpPtr = (rsdpDescriptor*)(startAddr + i);
-            return (rsdpDescriptor*)(startAddr + i);
-        }
+            rsdpPtr = (ACPI::RSDP*)(startAddr + i);
 
+            rsdtPtr = &rsdpPtr->rsdtAddress->header;
+            
+            return rsdpPtr;
+        }
+        
         i++;
     }
 }
+#pragma GCC diagnostic pop
 
-void decodeRSDP(rsdpDescriptor* rsdpPointer) {
-    rsdtPtr = rsdpPointer->rsdtAddress;
-
+void decodeRSDP(ACPI::RSDP* rsdpPointer) {
     serialWriteStr("\r\nRSDP Header: ");
 
     serialWriteStr("\r\n\tsignature: ");
@@ -46,11 +49,11 @@ void decodeRSDP(rsdpDescriptor* rsdpPointer) {
     serialWriteStr(intToStr((int)rsdpPointer->rsdtAddress, 16));
 }
 
-void decodeRSDT(rsdtDescriptor* rsdtPointer) {
+void printSDT(ACPI::SDT_header* rsdtPointer) {
     serialWriteStr("\r\nRSDT Header: ");
 
     serialWriteStr("\r\n\tSignature: ");
-    serialWriteStr(string(rsdtPointer->signature, 8));
+    serialWriteStr(string(rsdtPointer->signature, 4));
     serialWriteStr("\r\n\tLength: ");
     serialWriteStr(intToStr(rsdtPointer->length, 10));
     serialWriteStr("\r\n\tRevision: ");
@@ -68,3 +71,28 @@ void decodeRSDT(rsdtDescriptor* rsdtPointer) {
     serialWriteStr("\r\n\tCreatorRevision: ");
     serialWriteStr(intToStr(rsdtPointer->creatorRevision, 10));
 }
+
+#define size_t uint32_t
+
+#include <printf.hpp>
+
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Waddress-of-packed-member"
+void decode() {
+    // Root pointer to Root System Descriptor table
+    printf("Finding RDSP\n");
+    ACPI::RSDP* rsdp = findRSDP();
+    decodeRSDP(rsdp);
+
+    // Root System Descriptor Table
+    ACPI::RSDT_full* rsdt = rsdp->rsdtAddress;
+    printSDT(&rsdt->header);
+
+    size_t size = (rsdt->header.length - sizeof(rsdt->header)) / 4;
+
+    for (size_t i = 0; i < size; i++) {
+        printSDT(rsdt->tables[i]);
+    }
+}
+#pragma GCC diagnostic pop

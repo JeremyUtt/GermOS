@@ -242,7 +242,7 @@ INTERRUPT void keyboardHandler(interrupt_frame*) {
 
     KB::InterpretKeyboard(keycode);
 
-    newInterpret(keycode);
+    // newInterpret(keycode);
     // End Interrupt
     outb(PIC1_COMMAND, PIC_EOI);
 }

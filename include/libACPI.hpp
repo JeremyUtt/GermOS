@@ -1,7 +1,9 @@
 #pragma once
 #include <stdint.h>
 
-struct rsdtDescriptor {
+namespace ACPI {
+
+struct SDT_header {
     char signature[4];
     uint32_t length;
     uint8_t revision;
@@ -12,25 +14,27 @@ struct rsdtDescriptor {
     uint32_t creatorID;
     uint32_t creatorRevision;
 };
-struct rsdpDescriptor {
+
+struct RSDT_full {
+    SDT_header header;
+    SDT_header* tables[4];
+} __attribute__((packed));
+
+struct RSDP {
     char signature[8];
     uint8_t checksum;
     char oemId[6];
     uint8_t revision;
-    rsdtDescriptor* rsdtAddress;
+    RSDT_full* rsdtAddress;
 } __attribute__((packed));
 
-struct rsdpDescriptor20 {
-    rsdpDescriptor firstPart;
-    uint32_t length;
-    uint64_t xsdtAddress;
-    uint8_t extendedChecksum;
-    uint8_t reserved[3];
-} __attribute__((packed));
 
-rsdpDescriptor* findRSDP();
-void decodeRSDP(rsdpDescriptor* ptr);
-void decodeRSDT(rsdtDescriptor* ptr);
+}  // namespace ACPI
 
-extern rsdpDescriptor* rsdpPtr;
-extern rsdtDescriptor* rsdtPtr;
+ACPI::RSDP* findRSDP();
+void decodeRSDP(ACPI::RSDP* ptr);
+void printSDT(ACPI::SDT_header* ptr);
+void decode();
+
+extern ACPI::RSDP* rsdpPtr;
+extern ACPI::SDT_header* rsdtPtr;

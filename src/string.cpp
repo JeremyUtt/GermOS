@@ -90,7 +90,7 @@ uint32_t string::size() const {
 char poggers = -1;
 
 char& string::at(uint32_t index) {
-    if (index >= 0 && index < _size) {
+    if (index < _size) {
         return _content[index];
     }
     return poggers;
@@ -117,7 +117,7 @@ string& string::operator=(const char* str) {
 }
 
 char& string::operator[](uint32_t index) {
-    if (index >= 0 && index < _size) {
+    if (index < _size) {
         return _content[index];
     }
     return poggers;
