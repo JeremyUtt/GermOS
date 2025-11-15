@@ -72,7 +72,6 @@ void printSDT(ACPI::SDT_header* rsdtPointer) {
     serialWriteStr(intToStr(rsdtPointer->creatorRevision, 10));
 }
 
-#define size_t uint32_t
 
 #include <printf.hpp>
 

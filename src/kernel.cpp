@@ -3,18 +3,19 @@
 
 #include <stdint.h>
 
+#include <classTest.hpp>
 #include <error.hpp>
 #include <fonts.hpp>
 #include <kernel.hpp>
 #include <libACPI.hpp>
 #include <libGUI.hpp>
-#include <classTest.hpp>
 #include <libIDT.hpp>
 #include <libIO.hpp>
 #include <libKeyboard.hpp>
 #include <libPCI.hpp>
 #include <libSerial.hpp>
 #include <libTimer.hpp>
+#include <libVGA.hpp>
 #include <memory.hpp>
 #include <photo.hpp>
 #include <printf.hpp>
@@ -25,7 +26,6 @@
 #include <system.hpp>
 #include <tests.hpp>
 #include <utils.hpp>
-#include <libVGA.hpp>
 
 extern "C" void main() {
     setUiMode(TEXT);
@@ -34,15 +34,21 @@ extern "C" void main() {
 
     initKernel(renderer);
 
-
-    decode();
+    // decode();
     // char* addr = checkKernelMemory((uint32_t)rsdp, 60000, "MCFG");
     // if(addr != nullptr){
     //     printf("%c", addr);
     // } else{
     //     printf("value is nullpointer\n");
     // }
-    printf("waiting\n");
+
+    for (uint16_t i = 0; i < 6; i++) {
+        for (uint16_t j = 0; j < 6; j++) {
+            uint16_t word = pciConfigRead32(i, j, 0, 0);
+            // fprintf(Serial, "word is: 0x%x %x\n", word<<16, word & 0xffff);
+            fprintf(Serial, "word is: 0x%x \n", word);
+        }
+    }
 
     sleep(5000);
 
