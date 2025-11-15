@@ -23,7 +23,6 @@ int printValue(stream serial, char c, int unused);
 int printValue(stream serial, string& s, int unused);
 int printValue(stream serial, const char* s, int unused);
 int printValue(stream serial, int i, int base);
-int printValue(stream serial, uint32_t i, int base);
 
 template <typename T, typename... Args>
 int fprintf(stream serial, string format, T value, Args... args) {

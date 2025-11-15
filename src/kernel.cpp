@@ -50,8 +50,6 @@ extern "C" void main() {
         }
     }
 
-    sleep(5000);
-
     // Run the UI
     startTUI();
 

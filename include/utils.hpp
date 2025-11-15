@@ -3,7 +3,7 @@
 #define size_t uint32_t
 
 #include <string.hpp>
-string intToStr(int16_t value, int16_t base);
+string intToStr(int value, int base);
 uint32_t strToInt(string value);
 uint32_t getStrLen(char String[]);
 uint32_t getStrLen(const char String[]);

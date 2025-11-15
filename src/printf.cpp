@@ -63,17 +63,3 @@ int printValue(stream serial, int i, int base) {
 
     return intToStr(i, 10).size();
 }
-
-int printValue(stream serial, uint32_t i, int base){
-    if (base == NULL) {
-        base = 10;
-    }
-
-    if (serial == Screen) {
-        output->print(intToStr(i, base));
-    } else {
-        serialWriteStr(intToStr(i, base));
-    }
-
-    return intToStr(i, 10).size();
-}

@@ -1,6 +1,6 @@
 #include <utils.hpp>
 char strBuf[330];
-string intToStr(int16_t value, int16_t base) {
+string intToStr(int value, int base) {
     char* rc;
     char* ptr;
     char* low;
