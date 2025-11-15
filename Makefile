@@ -7,8 +7,8 @@ SRC_DIR := src
 BUILD_DIR := build
 BLOBS_DIR := files
 INCLUDE_DIR := include
-# CC_DIR := /opt/i386elfgcc/bin
-CC_DIR := /usr/sbin
+CC_DIR := /opt/i386elfgcc/bin
+# CC_DIR := /usr/sbin
 
 # Programs
 NASM := /usr/bin/nasm
