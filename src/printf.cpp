@@ -50,16 +50,16 @@ int printValue(stream serial, const char* s, int unused) {
     return getStrLen(s);
 }
 
-int printValue(stream serial, int i, int base) {
-    if (base == NULL) {
-        base = 10;
-    }
+// int printValue(stream serial, int i, int base) {
+//     if (base == NULL) {
+//         base = 10;
+//     }
 
-    if (serial == Screen) {
-        output->print(intToStr(i, base));
-    } else {
-        serialWriteStr(intToStr(i, base));
-    }
+//     if (serial == Screen) {
+//         output->print(intToStr(i, base));
+//     } else {
+//         serialWriteStr(intToStr(i, base));
+//     }
 
-    return intToStr(i, 10).size();
-}
+//     return intToStr(i, 10).size();
+// }

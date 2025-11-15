@@ -6,6 +6,8 @@
 #ifndef NULL
 #define NULL 0
 #endif
+extern Renderer* output;
+
 /**
  * @brief Updates where printf will print to
  *
@@ -22,7 +24,21 @@ int fprintf(stream serial, string format);
 int printValue(stream serial, char c, int unused);
 int printValue(stream serial, string& s, int unused);
 int printValue(stream serial, const char* s, int unused);
-int printValue(stream serial, int i, int base);
+
+template <typename T>
+int printValue(stream serial, T i, int base) {
+    if (base == NULL) {
+        base = 10;
+    }
+
+    if (serial == Screen) {
+        output->print(intToStr(i, base));
+    } else {
+        serialWriteStr(intToStr(i, base));
+    }
+
+    return intToStr(i, 10).size();
+}
 
 template <typename T, typename... Args>
 int fprintf(stream serial, string format, T value, Args... args) {
