@@ -38,6 +38,25 @@ uint32_t pciConfigRead32(uint8_t bus, uint8_t slot, uint8_t func, uint8_t offset
     return tmp;
 }
 
+void pciGetConfigSpace(PCI::configSpace* config, uint8_t bus, uint8_t slot, uint8_t func) {
+    uint32_t array[64];
+
+    for (size_t i = 0; i < 64; i++) {
+        uint32_t word = pciConfigRead32(bus, slot, func, i);
+        array[i] = word;
+    }
+
+    config->deviceID = (uint16_t)((array[0] >> ((0 & 2) * 8)) & 0xFFFF);
+    config->vendorID = (uint16_t)((array[0] >> ((1 & 2) * 8)) & 0xFFFF);
+    
+    uint16_t tmp = (uint16_t)((array[1] >> ((0 & 2) * 8)) & 0xFFFF);
+    memcpy(&tmp, &(config->status), sizeof(tmp));
+    
+    tmp = (uint16_t)((array[2] >> ((1 & 2) * 8)) & 0xFFFF);
+    memcpy(&tmp, &(config->command), sizeof(tmp));
+    
+}
+
 uint16_t pciCheckVendor(uint8_t bus, uint8_t slot) {
     uint16_t vendor, device;
     /* Try and read the first configuration register. Since there are no

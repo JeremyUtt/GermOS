@@ -45,8 +45,14 @@ extern "C" void main() {
     for (uint16_t i = 0; i < 6; i++) {
         for (uint16_t j = 0; j < 6; j++) {
             uint32_t word = pciConfigRead32(i, j, 0, 0);
-            // fprintf(Serial, "word is: 0x%x %x\n", word<<16, word & 0xffff);
+            // // fprintf(Serial, "word is: 0x%x %x\n", word<<16, word & 0xffff);
             fprintf(Serial, "word is: 0x%x \n", word);
+
+            PCI::configSpace space;
+            pciGetConfigSpace(&space,i,j,0);
+
+            fprintf(Serial, "deviceID: 0x%x\n", space.deviceID);
+            fprintf(Serial, "vendorID: 0x%x\n", space.vendorID);
         }
     }
 

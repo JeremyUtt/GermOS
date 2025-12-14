@@ -89,3 +89,12 @@ uint32_t pow(uint32_t a, uint32_t b) {
     }
     return result;
 }
+
+void memcpy(void* src, void* dst, size_t size) {
+    char* srcC = (char*)src;
+    char* dstC =(char*)dst;
+
+    for (size_t i = 0; i < size; i++) {
+        dstC[i] = srcC[i];
+    }
+}
