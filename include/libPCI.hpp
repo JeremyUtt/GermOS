@@ -63,19 +63,19 @@ struct commandRegister {
 };
 
 struct configSpace {
-    uint16_t deviceID;
     uint16_t vendorID;
-    statusRegister status;
+    uint16_t deviceID;
     commandRegister command;
-    uint8_t classCode;
-    uint8_t subclass;
-    uint8_t progIF;
+    statusRegister status;
     uint8_t revisionID;
-    uint8_t BIST;
-    bool multiFunction;
-    HeaderType headerType;
-    uint8_t latencyTimer;
+    uint8_t progIF;
+    uint8_t subclass;
+    uint8_t classCode;
     uint8_t cacheLineSize;
+    uint8_t latencyTimer;
+    bool multiFunction : 1;
+    HeaderType headerType;
+    uint8_t BIST;
 };
 
 }  // namespace PCI

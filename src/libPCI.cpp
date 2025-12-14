@@ -38,6 +38,15 @@ uint32_t pciConfigRead32(uint8_t bus, uint8_t slot, uint8_t func, uint8_t offset
     return tmp;
 }
 
+inline uint16_t lower16(uint32_t x){
+    return (uint16_t)(x >> ((0 & 2) * 8)) & 0xFFFF;
+}
+
+inline uint16_t upper16(uint32_t x){
+    return (uint16_t)(x >> ((1 & 2) * 8)) & 0xFFFF;
+}
+
+
 void pciGetConfigSpace(PCI::configSpace* config, uint8_t bus, uint8_t slot, uint8_t func) {
     uint32_t array[64];
 
@@ -46,23 +55,24 @@ void pciGetConfigSpace(PCI::configSpace* config, uint8_t bus, uint8_t slot, uint
         array[i] = word;
     }
 
-    config->deviceID = (uint16_t)((array[0] >> ((0 & 2) * 8)) & 0xFFFF);
-    config->vendorID = (uint16_t)((array[0] >> ((1 & 2) * 8)) & 0xFFFF);
+    config->vendorID = lower16(array[0]);
+    config->deviceID = upper16(array[0]);
     
-    uint16_t tmp = (uint16_t)((array[1] >> ((0 & 2) * 8)) & 0xFFFF);
-    memcpy(&tmp, &(config->status), sizeof(tmp));
-    
-    tmp = (uint16_t)((array[2] >> ((1 & 2) * 8)) & 0xFFFF);
+  
+    uint16_t tmp = lower16(array[1]);
     memcpy(&tmp, &(config->command), sizeof(tmp));
+    
+    tmp = upper16(array[1]);
+    memcpy(&tmp, &(config->status), sizeof(tmp));
     
 }
 
-uint16_t pciCheckVendor(uint8_t bus, uint8_t slot) {
-    uint16_t vendor, device;
-    /* Try and read the first configuration register. Since there are no
-     * vendors that == 0xFFFF, it must be a non-existent device. */
-    if ((vendor = pciConfigReadWord(bus, slot, 0, 0)) != 0xFFFF) {
-        device = pciConfigReadWord(bus, slot, 0, 2);
-    }
-    return (vendor);
-}
+// uint16_t pciCheckVendor(uint8_t bus, uint8_t slot) {
+//     uint16_t vendor, device;
+//     /* Try and read the first configuration register. Since there are no
+//      * vendors that == 0xFFFF, it must be a non-existent device. */
+//     if ((vendor = pciConfigReadWord(bus, slot, 0, 0)) != 0xFFFF) {
+//         device = pciConfigReadWord(bus, slot, 0, 2);
+//     }
+//     return (vendor);
+// }

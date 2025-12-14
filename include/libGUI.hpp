@@ -12,6 +12,7 @@ enum Color { BLACK = 0x00, BLUE = 0x01, GREEN = 0x02, CYAN = 0x03, RED = 0x04, M
 // Text Mode functions
 
 // Note: Polymorphism doesn't work yet in this environment
+// ^^ outdated. i think it works now idk
 class Renderer {
   protected:
     Color color;
