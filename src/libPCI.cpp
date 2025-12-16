@@ -107,6 +107,7 @@ bool pciGetConfigSpace(PCI::configSpace* config, uint8_t bus, uint8_t slot, uint
         return false;
     }
     memcpy(array, config, sizeof(*config));
+
     return true;
 }
 

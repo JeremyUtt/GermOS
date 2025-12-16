@@ -49,8 +49,6 @@ extern "C" void main() {
                 PCI::configSpace space2;
 
                 bool result = pciGetConfigSpace(&space, bus, slot, function);
-                bool result2 = pciGetConfigSpace_2(&space2, bus, slot, function);
-
                 if (function == 0 && !result) {
                     // fprintf(Serial, "Bus %d, Slot %d is Empty\n", bus, slot);
                     break;
@@ -59,7 +57,6 @@ extern "C" void main() {
                 if (result) {
                     fprintf(Serial, "Bus %d, Slot %d is has function %d\n", bus, slot, function);
                     fprintf(Serial, "   Vendor: 0x%x, Device: 0x%x\n", space.vendorID, space.deviceID);
-                    fprintf(Serial, "  Vendor2: 0x%x,Device2: 0x%x\n", space2.vendorID, space2.deviceID);
 
                     // pciPrintConfigSpace(&space);
                 }

@@ -80,8 +80,8 @@ struct configSpace {
     uint8_t classCode;
     uint8_t cacheLineSize;
     uint8_t latencyTimer;
+    HeaderType headerType : 7;
     bool multiFunction : 1;
-    HeaderType headerType;
     BISTRegister BIST;
 };
 
