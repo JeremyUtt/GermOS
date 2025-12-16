@@ -42,17 +42,22 @@ extern "C" void main() {
     //     printf("value is nullpointer\n");
     // }
 
-    for (uint16_t i = 0; i < 6; i++) {
-        for (uint16_t j = 0; j < 6; j++) {
-            // uint32_t word = pciConfigRead32(i, j, 0, 0);
-            // // // fprintf(Serial, "word is: 0x%x %x\n", word<<16, word & 0xffff);
-            // fprintf(Serial, "word is: 0x%x \n", word);
+    for (uint16_t bus = 0; bus < 2; bus++) {
+        for (uint16_t slot = 0; slot < 32; slot++) {
+            for (uint8_t function = 0; function < 8; function++) {
+                PCI::configSpace space;
+                bool result = pciGetConfigSpace(&space, bus, slot, function);
+                if (function == 0 && !result) {
+                    // fprintf(Serial, "Bus %d, Slot %d is Empty\n", bus, slot);
+                    break;
+                }
 
-            PCI::configSpace space;
-            pciGetConfigSpace(&space,i,j,0);
+                if (result) {
+                    fprintf(Serial, "Bus %d, Slot %d is has function %d\n", bus, slot, function);
 
-            fprintf(Serial, "bus: %d, slot: %d, deviceID: 0x%x\n", i, j, space.deviceID);
-            fprintf(Serial, "bus: %d, slot: %d, vendorID: 0x%x\n", i, j, space.vendorID);
+                    pciPrintConfigSpace(&space);
+                }
+            }
         }
     }
 

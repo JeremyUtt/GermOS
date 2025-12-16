@@ -62,6 +62,14 @@ struct commandRegister {
     uint8_t reserved2 : 5;
 };
 
+
+struct BISTRegister {
+    uint8_t completionCode: 4;
+    uint8_t reserved: 2;
+    bool startBIST: 1;
+    bool bistCapable: 1;
+};
+
 struct configSpace {
     uint16_t vendorID;
     uint16_t deviceID;
@@ -75,9 +83,10 @@ struct configSpace {
     uint8_t latencyTimer;
     bool multiFunction : 1;
     HeaderType headerType;
-    uint8_t BIST;
+    BISTRegister BIST;
 };
 
 }  // namespace PCI
 
-void pciGetConfigSpace(PCI::configSpace* config, uint8_t bus, uint8_t slot, uint8_t func);
+bool pciGetConfigSpace(PCI::configSpace* config, uint8_t bus, uint8_t slot, uint8_t func);
+void pciPrintConfigSpace(const PCI::configSpace* cfg);
