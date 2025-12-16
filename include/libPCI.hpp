@@ -62,12 +62,11 @@ struct commandRegister {
     uint8_t reserved2 : 5;
 };
 
-
 struct BISTRegister {
-    uint8_t completionCode: 4;
-    uint8_t reserved: 2;
-    bool startBIST: 1;
-    bool bistCapable: 1;
+    uint8_t completionCode : 4;
+    uint8_t reserved : 2;
+    bool startBIST : 1;
+    bool bistCapable : 1;
 };
 
 struct configSpace {
@@ -89,4 +88,5 @@ struct configSpace {
 }  // namespace PCI
 
 bool pciGetConfigSpace(PCI::configSpace* config, uint8_t bus, uint8_t slot, uint8_t func);
+bool pciGetConfigSpace_2(PCI::configSpace* config, uint8_t bus, uint8_t slot, uint8_t func);
 void pciPrintConfigSpace(const PCI::configSpace* cfg);
