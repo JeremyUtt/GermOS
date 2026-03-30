@@ -34,36 +34,21 @@ extern "C" void main() {
 
     initKernel(renderer);
 
-    // decode();
-    // char* addr = checkKernelMemory((uint32_t)rsdp, 60000, "MCFG");
-    // if(addr != nullptr){
-    //     printf("%c", addr);
-    // } else{
-    //     printf("value is nullpointer\n");
-    // }
+    // pciPrintAllDevices(Serial, 3);
 
-    for (uint16_t bus = 0; bus < 2; bus++) {
-        for (uint16_t slot = 0; slot < 32; slot++) {
-            for (uint8_t function = 0; function < 8; function++) {
-                PCI::configSpace space;
-                PCI::configSpace space2;
+    // ScrollBox scrollBox(10, 10, 300, 200, temp);
 
-                bool result = pciGetConfigSpace(&space, bus, slot, function);
-                if (function == 0 && !result) {
-                    // fprintf(Serial, "Bus %d, Slot %d is Empty\n", bus, slot);
-                    break;
-                }
+    // string content = "Line 1\nLine 2\nLine 3\nLine 4\nLine 5\nLine 6\nLine 7\nLine 8\nLine 9\nLine 10\nLine 11\nLine 12\nLine 13\nLine 14\nLine 15\nLine 16\nLine 17\nLine 18\nLine 19\nLine 20";
+    // scrollBox.addContent(content);
 
-                if (result) {
-                    fprintf(Serial, "Bus %d, Slot %d is has function %d\n", bus, slot, function);
-                    fprintf(Serial, "   Vendor: 0x%x, Device: 0x%x\n", space.vendorID, space.deviceID);
-
-                    // pciPrintConfigSpace(&space);
-                }
-            }
-        }
-    }
-
+    // scrollBox.render();
+    // sleep(2000);
+    // scrollBox.scrollDown(5);
+    // sleep(2000);
+    // scrollBox.scrollUp(3);
+    // sleep(2000);
+    
+    
     // Run the UI
     startTUI();
 
@@ -83,7 +68,7 @@ void initKernel(Renderer& renderer) {
     renderer.setDrawColor(LIGHT_GRAY);
 
     renderer.setTextFont(&Uni2Terminus12x6psf);
-
+ 
     initMem();
     printf("Successfully Switched to Protected Mode\n");
     printf("Setting up Kernel Stack\n");

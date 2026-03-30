@@ -7,28 +7,29 @@ enum ProcessState { Initalized, Running, Queued, Paused, Exited };
 
 struct CpuState {
     int eax;
-    int ebx;
     int ecx;
+    int ebx;
     int edx;
-
+  
+    int esp;  // Stack Pointer
+    int ebp;  // Stack Base Pointer
+    
     int esi;  // Source Index register      (??)
     int edi;  // Destination Index register (??)
 
     int eip;  // Program Counter
-
-    int ebp;  // Stack Base Pointer
-    int esp;  // Stack Pointer
-    int ss;   // Stack segment selector
+    int eflags;
 
     int cs;  // Code segment selector
+    int ss;   // Stack segment selector
     int ds;  // Data segment selector
-
-    int gs;  // Extra segment selector
-    int fs;  // Extra segment selector
     int es;  // Extra segment selector
+    int fs;  // Extra segment selector
+    int gs;  // Extra segment selector
 
-    int eflags;
 };
+
+extern "C" uint8_t storeState(CpuState* address);
 
 class Process {
   private:

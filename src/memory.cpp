@@ -1,7 +1,7 @@
 // All of this could be much more optimized with hashtables
 // oh well... womp womp
 #include "memory.hpp"
-#define HEAP_SIZE 32768
+#define HEAP_SIZE 65535
 #define TABLE_SIZE 1000
 #include <error.hpp>
 #include <libSerial.hpp>
@@ -129,10 +129,35 @@ void printMem() {
     for (uint16_t i = 0; i < TABLE_SIZE; i++) {
         if (table[i].realEntry) {
             if (table[i].inUse) {
-                printf("Entry: Start: 0x%x End: 0x%x, Size: 0x%d, in use\n", (int)table[i].start, (int)table[i].end, (int)table[i].end - (int)table[i].start);
+                printf("Entry %d: Start: 0x%x End: 0x%x, Size: 0x%d, Status: in use\n", i, (int)table[i].start, (int)table[i].end, (int)table[i].end - (int)table[i].start);
             } else {
-                printf("Entry: Start: 0x%x End: 0x%x, Size: 0x%d, free\n", (int)table[i].start, (int)table[i].end, (int)table[i].end - (int)table[i].start);
+                printf("Entry %d: Start: 0x%x End: 0x%x, Size: 0x%d, Status: free\n", i, (int)table[i].start, (int)table[i].end, (int)table[i].end - (int)table[i].start);
             }
         }
     }
+}
+
+
+void getMemInfo() {
+    uint16_t totalFree = 0;
+    uint16_t totalUsed = 0;
+    uint16_t largestFree = 0;
+
+    for (uint16_t i = 0; i < TABLE_SIZE; i++) {
+        if (table[i].realEntry) {
+            uint16_t size = table[i].end - table[i].start;
+            if (table[i].inUse) {
+                totalUsed += size;
+            } else {
+                totalFree += size;
+                if (size > largestFree) {
+                    largestFree = size;
+                }
+            }
+        }
+    }
+
+    printf("Total Free Memory: %d bytes\n", totalFree);
+    printf("Total Used Memory: %d bytes\n", totalUsed);
+    printf("Largest Free Block: %d bytes\n", largestFree);
 }

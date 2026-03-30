@@ -153,6 +153,8 @@ void processCommand(char cmd[]) {
         cmdGoop();
     else if (strcmp(cmd, (char*)"printMem"))
         printMem();
+    else if (strcmp(cmd, (char*)"memInfo"))
+        getMemInfo();
     else
         printf("Unknown Command. Try: help\n");
 
@@ -168,6 +170,8 @@ void cmdHelp() {
     printf("\t-vga: tests\n");
     printf("\t-goop: draw goop\n");
     printf("\t-exit: Shuts Down the Machine\n");
+    printf("\t-printMem: Prints the state of the memory allocator\n");
+    printf("\t-memInfo: Prints the total and free memory\n");
 }
 
 void cmdPrint() {

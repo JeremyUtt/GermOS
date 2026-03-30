@@ -1,6 +1,5 @@
 
 #include <process.hpp>
-
 Process::Process(string name, uint32_t entrypoint, UiMode uiMode) {
     // _cState;
     _name = name;
@@ -9,27 +8,25 @@ Process::Process(string name, uint32_t entrypoint, UiMode uiMode) {
     _uiMode = uiMode;
 
     _cState.eax = 0;
-    _cState.ebx = 0;
     _cState.ecx = 0;
     _cState.edx = 0;
+    _cState.ebx = 0;
+    
+    _cState.esp= 0;
+    _cState.ebp= 0;
 
-    // _cState.esi;  // TODO
-    // _cState.edi;  // TODO
+    _cState.esi= 0;
+    _cState.edi= 0;
 
-    // _cState.eip;  // TODO
-
-    // _cState.ebp;  // TODO
-    // _cState.esp;  // TODO
-    _cState.ss = 0;
+    _cState.eip= 0;
+    _cState.eflags= 0;
 
     _cState.cs = 0x8;
+    _cState.ss = 0;
     _cState.ds = 0;
-
     _cState.es = 0;
-    _cState.gs = 0;
     _cState.fs = 0;
-
-    // _cState.eflags;  // TODO
+    _cState.gs = 0;
 }
 
 void Process::start() {
@@ -38,6 +35,8 @@ void Process::start() {
         setUiMode(_uiMode);
         needToChangeMode = true;
     }
+
+    // storeState(&this->_cState);
 
     _pState = Running;
 
