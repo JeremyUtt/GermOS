@@ -29,25 +29,20 @@
 
 extern "C" uint8_t createFrame();
 
-void stackTest2(int one, int two, int three){
-    int local1 = 16*4;
-    int local2 = 16*5;
-    int local3 = 16*6;
-
-    
+void stackTest2(int one, int two, int three) {
+    int local1 = 16 * 4;
+    int local2 = 16 * 5;
+    int local3 = 16 * 6;
 
     createFrame();
 }
-void stackTest(int one, int two, int three){
+void stackTest(int one, int two, int three) {
     int local1 = 16;
-    int local2 = 16*2;
-    int local3 = 16*3;
+    int local2 = 16 * 2;
+    int local3 = 16 * 3;
 
-    
     stackTest2(4, 5, 6);
-
 }
-
 
 extern "C" void main() {
     setUiMode(TEXT);
@@ -56,6 +51,9 @@ extern "C" void main() {
 
     initKernel(renderer);
 
+    while (true) {
+        halt();
+    }
 
     // stackTest(1, 2, 3);
     // pciPrintAllDevices(Serial, 3);
@@ -71,8 +69,7 @@ extern "C" void main() {
     // sleep(2000);
     // scrollBox.scrollUp(3);
     // sleep(2000);
-    
-    
+
     // Run the UI
     startTUI();
 
@@ -87,22 +84,18 @@ extern "C" void main() {
     halt();
 }
 
-extern "C" void trampolineFunction(){
-    while (true)
-    {
+extern "C" void trampolineFunction() {
+    while (true) {
         fprintf(Serial, "Hello World");
     }
-    
-    
 }
-
 
 void initKernel(Renderer& renderer) {
     updateStdout(renderer);
     renderer.setDrawColor(LIGHT_GRAY);
 
     renderer.setTextFont(&Uni2Terminus12x6psf);
- 
+
     initMem();
     printf("Successfully Switched to Protected Mode\n");
     printf("Setting up Kernel Stack\n");
@@ -176,5 +169,3 @@ void startTUI() {
     Process cmd("cmd", (uint32_t)TUI::main, TEXT);
     cmd.start();
 }
-
-

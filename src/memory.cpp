@@ -137,7 +137,6 @@ void printMem() {
     }
 }
 
-
 void getMemInfo() {
     uint16_t totalFree = 0;
     uint16_t totalUsed = 0;

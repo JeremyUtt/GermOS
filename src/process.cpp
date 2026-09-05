@@ -11,15 +11,15 @@ Process::Process(string name, uint32_t entrypoint, UiMode uiMode) {
     _cState.ecx = 0;
     _cState.edx = 0;
     _cState.ebx = 0;
-    
-    _cState.esp= 0;
-    _cState.ebp= 0;
 
-    _cState.esi= 0;
-    _cState.edi= 0;
+    _cState.esp = 0;
+    _cState.ebp = 0;
 
-    _cState.eip= 0;
-    _cState.eflags= 0;
+    _cState.esi = 0;
+    _cState.edi = 0;
+
+    _cState.eip = 0;
+    _cState.eflags = 0;
 
     _cState.cs = 0x8;
     _cState.ss = 0;
@@ -147,4 +147,3 @@ void Process::resume() {
 
     asm volatile("mov %%eip, %0" : : "r"(_cState.eip));
 }
-

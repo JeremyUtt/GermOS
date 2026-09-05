@@ -120,31 +120,25 @@ struct pciPciBridgeDevice {
     /* data */
 };
 
-struct pciCardBusDevice
-{
+struct pciCardBusDevice {
     /* data */
 };
 
-
-union ExtendedConfigSpace
-{
+union ExtendedConfigSpace {
     generalDevice general;
     pciPciBridgeDevice pciPciBridge;
     pciCardBusDevice pciCardBus;
 };
 
-struct FullConfigSpace
-{
+struct FullConfigSpace {
     ConfigSpaceHeader header;
     ExtendedConfigSpace device;
 };
-
 
 }  // namespace PCI
 
 bool pciGetConfigSpace(PCI::ConfigSpaceHeader* config, uint8_t bus, uint8_t slot, uint8_t func);
 bool pciGetFullConfigSpace(PCI::FullConfigSpace* space, uint8_t bus, uint8_t slot, uint8_t func);
-
 
 void pciPrintConfigSpace(const PCI::ConfigSpaceHeader* cfg, stream output);
 void pciPrintFullConfigSpace(const PCI::FullConfigSpace* space, stream output);
