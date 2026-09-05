@@ -36,7 +36,7 @@ void Process::start() {
         needToChangeMode = true;
     }
 
-    // storeState(&this->_cState);
+    storeState(&this->_cState);
 
     _pState = Running;
 
@@ -147,3 +147,4 @@ void Process::resume() {
 
     asm volatile("mov %%eip, %0" : : "r"(_cState.eip));
 }
+

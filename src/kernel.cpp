@@ -27,6 +27,28 @@
 #include <tests.hpp>
 #include <utils.hpp>
 
+extern "C" uint8_t createFrame();
+
+void stackTest2(int one, int two, int three){
+    int local1 = 16*4;
+    int local2 = 16*5;
+    int local3 = 16*6;
+
+    
+
+    createFrame();
+}
+void stackTest(int one, int two, int three){
+    int local1 = 16;
+    int local2 = 16*2;
+    int local3 = 16*3;
+
+    
+    stackTest2(4, 5, 6);
+
+}
+
+
 extern "C" void main() {
     setUiMode(TEXT);
     TuiTextRenderer temp;
@@ -34,6 +56,8 @@ extern "C" void main() {
 
     initKernel(renderer);
 
+
+    // stackTest(1, 2, 3);
     // pciPrintAllDevices(Serial, 3);
 
     // ScrollBox scrollBox(10, 10, 300, 200, temp);
@@ -62,6 +86,16 @@ extern "C" void main() {
     disableInterrupts();
     halt();
 }
+
+extern "C" void trampolineFunction(){
+    while (true)
+    {
+        fprintf(Serial, "Hello World");
+    }
+    
+    
+}
+
 
 void initKernel(Renderer& renderer) {
     updateStdout(renderer);
@@ -142,3 +176,5 @@ void startTUI() {
     Process cmd("cmd", (uint32_t)TUI::main, TEXT);
     cmd.start();
 }
+
+

@@ -17,7 +17,7 @@ NASM := /usr/bin/nasm
 CFLAGS := -ffreestanding -m32 -g -c -mgeneral-regs-only \
 	      -mno-red-zone -I ./$(INCLUDE_DIR) \
 		  -fno-exceptions -O0 -fno-rtti \
-		  -Wall -Wextra -Wno-unused-parameter
+		  -Wall -Wextra -Wno-unused-parameter -fno-omit-frame-pointer
 LDFLAGS := -T linker.ld --no-warn-rwx-segments
 
 # ===============================================
