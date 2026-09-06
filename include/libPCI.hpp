@@ -8,6 +8,46 @@ uint32_t pciConfigRead32(uint8_t bus, uint8_t slot, uint8_t func, uint8_t offset
 namespace PCI {
 enum HeaderType { GENERAL, PCI_PCI_BRIDGE, PCI_CARDBUS_BRIDGE };
 
+enum BaseAddrType { MEMORY_SPACE, IO_SPACE };
+
+// enum ClassCode {
+//     Unclassified,
+//     MassStorageController,
+//     NetworkController,
+//     DisplayController,
+//     MultiMediaController,
+//     MemoryController,
+//     Bridge,
+//     SimpleCommunicationController,
+//     BaseSystemPeripheral,
+//     InputDeviceController, 
+//     DockingStation,
+//     Processor,
+//     SerialBusController,
+//     WirelessController,
+//     IntelligentController,
+//     SatelliteCommunicationController,
+//     EncryptionController,
+//     SignalProcessingController,
+//     ProcessingAccelerator,
+//     NonEssentialInstrumentation,
+//     CoProcessor = 0x40,
+//     UnassignedClass = 0xff
+// }
+
+// https://wiki.osdev.org/PCI
+// If it has a value of 0x0 then the base register is 32-bits wide and can be mapped anywhere in the 32-bit Memory Space.
+// A value of 0x2 means the base register is 64-bits wide and can be mapped anywhere in the 64-bit Memory Space
+// (A 64-bit base address register consumes 2 of the base address registers available).
+// A value of 0x1 is reserved as of revision 3.0 of the PCI Local Bus Specification.
+// In earlier versions it was used to support memory space below 1MB
+// (16-bit wide base register that can be mapped anywhere in the 16-bit Memory Space).
+enum MemoryAddrType {
+    BIT32,
+    RESERVED,
+    BIT64
+};
+
 // https://wiki.osdev.org/PCI
 // Detected Parity Error - This bit will be set to 1 whenever the device detects a parity error, even if parity error handling is disabled.
 // Signalled System Error - This bit will be set to 1 whenever the device asserts SERR#.
@@ -95,7 +135,7 @@ struct ConfigSpaceHeader {
 // Min Grant: A read-only register that specifies the burst period length, in 1/4 microsecond units, that the device needs (assuming a 33 MHz clock rate).
 // Capabilities Pointer: Points (i.e. an offset into this function's configuration space) to a linked list of new capabilities implemented by the device. Used if bit 4 of the status register (Capabilities List bit) is set to 1. The bottom two bits are reserved and should be masked before the Pointer is used to access the Configuration Space.
 struct generalDevice {
-    ConfigSpaceHeader config;
+    // ConfigSpaceHeader config;
     uint32_t baseAddr0;
     uint32_t baseAddr1;
     uint32_t baseAddr2;
@@ -144,3 +184,5 @@ void pciPrintConfigSpace(const PCI::ConfigSpaceHeader* cfg, stream output);
 void pciPrintFullConfigSpace(const PCI::FullConfigSpace* space, stream output);
 
 void pciPrintAllDevices(stream output, int level);
+void decodeBaseAddressRegister(uint32_t address);
+void decodeDeviceTypesFunctions(uint8_t classCode, uint8_t subclass, uint8_t progif);

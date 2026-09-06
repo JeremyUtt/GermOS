@@ -29,20 +29,20 @@
 
 extern "C" uint8_t createFrame();
 
-void stackTest2(int one, int two, int three) {
-    int local1 = 16 * 4;
-    int local2 = 16 * 5;
-    int local3 = 16 * 6;
+// void stackTest2(int one, int two, int three) {
+//     int local1 = 16 * 4;
+//     int local2 = 16 * 5;
+//     int local3 = 16 * 6;
 
-    createFrame();
-}
-void stackTest(int one, int two, int three) {
-    int local1 = 16;
-    int local2 = 16 * 2;
-    int local3 = 16 * 3;
+//     createFrame();
+// }
+// void stackTest(int one, int two, int three) {
+//     int local1 = 16;
+//     int local2 = 16 * 2;
+//     int local3 = 16 * 3;
 
-    stackTest2(4, 5, 6);
-}
+//     stackTest2(4, 5, 6);
+// }
 
 extern "C" void main() {
     setUiMode(TEXT);
@@ -50,13 +50,12 @@ extern "C" void main() {
     Renderer& renderer = temp;
 
     initKernel(renderer);
-
-    while (true) {
-        halt();
-    }
+    // while (true) {
+    //     halt();
+    // }
 
     // stackTest(1, 2, 3);
-    // pciPrintAllDevices(Serial, 3);
+    pciPrintAllDevices(Serial, 3);
 
     // ScrollBox scrollBox(10, 10, 300, 200, temp);
 
@@ -100,9 +99,9 @@ void initKernel(Renderer& renderer) {
     printf("Successfully Switched to Protected Mode\n");
     printf("Setting up Kernel Stack\n");
     printf("Initializing and Loading Graphics Mode Fonts\n");
-    printf("Initializing Dynamic Memory Allocator\n");
-    printf("Finding Kernel Memory Mapping\n");
+    printf("Initializing Dynamic Memory Allocator\n\t");
     printMem();
+    printf("Finding Kernel Memory Mapping\n");
     char* mem = checkKernelMemory(0x7c00 + KERNEL_SIZE - 10, 20, "42069");
     if (mem != nullptr) {
         printf("\tINFO: Start Addr: 0x7c00, End Addr: 0x%x\n", (int)mem);

@@ -57,6 +57,9 @@ int fprintf(stream serial, string format, T value, Args... args) {
                 case 'X':
                     characters += printValue(serial, value, 16);
                     break;
+                case 's':
+                    characters += printValue(serial, value, NULL);
+                    break;
                 default:
                     characters += printValue(serial, value, NULL);
                     break;

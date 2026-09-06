@@ -133,10 +133,12 @@ void pciPrintConfigSpace(const PCI::ConfigSpaceHeader* cfg, stream output) {
     fprintf(output, "  Prog IF                     : 0x%x\n", (unsigned)cfg->progIF);
     fprintf(output, "  Subclass                    : 0x%x\n", (unsigned)cfg->subclass);
     fprintf(output, "  Class                       : 0x%x\n", (unsigned)cfg->classCode);
+    decodeDeviceTypesFunctions(cfg->classCode, cfg->subclass, cfg->progIF);
     fprintf(output, "  CacheLine                   : %u\n", (unsigned)cfg->cacheLineSize);
     fprintf(output, "  Latency                     : %u\n", (unsigned)cfg->latencyTimer);
     fprintf(output, "  HeaderType                  : 0x%x\n", (unsigned)cfg->headerType);
     fprintf(output, "  Multifunc                   : %u\n", (unsigned)cfg->multiFunction);
+
 
     fprintf(output, "  BIST                        :\n");
     fprintf(output, "    start_bist                : %u\n", (unsigned)cfg->BIST.startBIST);
@@ -152,11 +154,17 @@ void pciPrintFullConfigSpace(const PCI::FullConfigSpace* space, stream output) {
     switch (space->header.headerType) {
         case PCI::GENERAL:
             fprintf(output, "  Base Address 0             : 0x%x\n", (unsigned)space->device.general.baseAddr0);
+            decodeBaseAddressRegister(space->device.general.baseAddr0);
             fprintf(output, "  Base Address 1             : 0x%x\n", (unsigned)space->device.general.baseAddr1);
+            decodeBaseAddressRegister(space->device.general.baseAddr1);
             fprintf(output, "  Base Address 2             : 0x%x\n", (unsigned)space->device.general.baseAddr2);
+            decodeBaseAddressRegister(space->device.general.baseAddr2);
             fprintf(output, "  Base Address 3             : 0x%x\n", (unsigned)space->device.general.baseAddr3);
+            decodeBaseAddressRegister(space->device.general.baseAddr3);
             fprintf(output, "  Base Address 4             : 0x%x\n", (unsigned)space->device.general.baseAddr4);
+            decodeBaseAddressRegister(space->device.general.baseAddr4);
             fprintf(output, "  Base Address 5             : 0x%x\n", (unsigned)space->device.general.baseAddr5);
+            decodeBaseAddressRegister(space->device.general.baseAddr5);
             fprintf(output, "  CardBus CIS Pointer         : 0x%x\n", (unsigned)space->device.general.cardBusCISPtr);
             fprintf(output, "  Subsystem Vendor ID         : 0x%x\n", (unsigned)space->device.general.subsystemVendorID);
             fprintf(output, "  Subsystem ID                : 0x%x\n", (unsigned)space->device.general.subsystemID);
@@ -212,6 +220,109 @@ void pciPrintAllDevices(stream output, int level) {
             }
         }
     }
+}
+
+void decodeBaseAddressRegister(uint32_t address) {
+    PCI::BaseAddrType baseAddrType = (PCI::BaseAddrType)(address & 0x00000001);
+
+    uint32_t baseAddress;
+    fprintf(Serial, "    Address: 0b%s\n", intToStr(address, 2));
+    if (baseAddrType == PCI::IO_SPACE) {
+        fprintf(Serial, "    Kind: IO\n");
+        baseAddress = address & 0xFFFFFFFC;
+    } else {
+        baseAddress = address & 0xFFFFFFF0;
+        fprintf(Serial, "    Kind: Memory\n");
+        PCI::MemoryAddrType type = (PCI::MemoryAddrType)((address & 0x00000006) >> 1);
+        fprintf(Serial, "    Type: %s\n", type == PCI::BIT32 ? "32 Bits" : "64 Bits");
+        bool prefetchble = (address & 0x00000008) >> 3;
+        fprintf(Serial, "    Prefetchble: %s\n", prefetchble ? "True" : "False");
+    }
+    fprintf(Serial, "    True Base Address: 0x%x\n", baseAddress);
+}
+
+void decodeDeviceTypesFunctions(uint8_t classCode, uint8_t subclass, uint8_t progif) {
+    static const char* const list[] = {"Unclassified", "MassStorageController", "NetworkController", "DisplayController", "MultiMediaController", "MemoryController", "Bridge", "SimpleCommunicationController", "BaseSystemPeripheral", "InputDeviceController", "DockingStation", "Processor", "SerialBusController", "WirelessController", "IntelligentController", "SatelliteCommunicationController", "EncryptionController", "SignalProcessingController", "ProcessingAccelerator", "NonEssentialInstrumentation"};
+
+
+
+    // its pointing to constant strings, but the pointer itself is not constant (?);
+    const char* className;
+    if (classCode < sizeof(list) / sizeof(list[0])) {
+        className = list[classCode];
+    } else if (classCode == 0x40) {
+        className = "CoProcessor";
+    } else if (classCode == 0xFF) {
+        className = "UnassignedClass";
+    } else {
+        className = "Unknown";
+    }
+    
+    fprintf(Serial, "    Class Name is: %s\n", className);
+    // print infor for common classes (Networking, Display, Storage)
+    if(classCode == 0x01) {
+        switch(subclass) {
+            case 0x00:
+                fprintf(Serial, "    Subclass Name is: SCSI Controller\n");
+                break;
+            case 0x01:
+                fprintf(Serial, "    Subclass Name is: IDE Controller\n");
+                break;
+            case 0x02:
+                fprintf(Serial, "    Subclass Name is: Floppy Disk Controller\n");
+                break;
+            case 0x03:
+                fprintf(Serial, "    Subclass Name is: IPI Bus Controller\n");
+                break;
+            case 0x04:
+                fprintf(Serial, "    Subclass Name is: RAID Controller\n");
+                break;
+            case 0x05:
+                fprintf(Serial, "    Subclass Name is: ATA Controller\n");
+                break;
+            case 0x06:
+                fprintf(Serial, "    Subclass Name is: SATA Controller\n");
+                break;
+            case 0x07:
+                fprintf(Serial, "    Subclass Name is: Serial Attached SCSI (SAS) Controller\n");
+                break;
+            default:
+                fprintf(Serial, "    Subclass Name is: Unknown Mass Storage Controller\n");
+        }
+    } else if(classCode == 0x02) {
+        switch(subclass) {
+            case 0x00:
+                fprintf(Serial, "    Subclass Name is: Ethernet Controller\n");
+                break;
+            case 0x01:
+                fprintf(Serial, "    Subclass Name is: Token Ring Controller\n");
+                break;
+            case 0x02:
+                fprintf(Serial, "    Subclass Name is: FDDI Controller\n");
+                break;
+            case 0x03:
+                fprintf(Serial, "    Subclass Name is: ATM Controller\n");
+                break;
+            default:
+                fprintf(Serial, "    Subclass Name is: Unknown Network Controller\n");
+        }
+    } else if(classCode == 0x03) {
+        switch(subclass) {
+            case 0x00:
+                fprintf(Serial, "    Subclass Name is: VGA Compatible Controller\n");
+                break;
+            case 0x01:
+                fprintf(Serial, "    Subclass Name is: XGA Compatible Controller\n");
+                break;
+            default:
+                fprintf(Serial, "    Subclass Name is: Unknown Display Controller\n");
+        }
+    } else {
+        fprintf(Serial, "    Subclass Name is: Unknown\n");
+    }
+
+    // fprintf(Serial, "    Subclass: 0x%x\n", subclass);
+    // fprintf(Serial, "    Programming Interface: 0x%x\n", subclass, progif);
 }
 
 // // Manual Attempt
