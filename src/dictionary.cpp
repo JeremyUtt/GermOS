@@ -25,10 +25,6 @@ dictionary::~dictionary() {
 }
 
 void dictionary::add(int key, string value) {
-    if (this == nullptr) {
-        return;  // Dictionary is null
-    }
-
     node* current = this->head;
     while (current != nullptr) {
         if (current->key == key) {
@@ -63,9 +59,6 @@ void dictionary::add(int key, string value) {
 }
 
 void dictionary::remove(int key) {
-    if (this == nullptr) {
-        return nullptr;  // Dictionary is null
-    }
     node* current = this->head;
     node* previous = nullptr;
 
@@ -94,10 +87,6 @@ void dictionary::remove(int key) {
 }
 
 dictionary::node* dictionary::getByKey(int key) {
-    if (this == nullptr) {
-        return nullptr;  // Dictionary is null
-    }
-
     node* current = this->head;
     while (current != nullptr) {
         if (current->key == key) {
@@ -109,10 +98,6 @@ dictionary::node* dictionary::getByKey(int key) {
 }
 
 dictionary::node* dictionary::getByValue(string& value) {
-    if (this == nullptr) {
-        return nullptr;  // Dictionary is null
-    }
-
     node* current = this->head;
     while (current != nullptr) {
         if (current->value == value) {
@@ -124,10 +109,6 @@ dictionary::node* dictionary::getByValue(string& value) {
 }
 
 dictionary* dictionary::createChildDictionary(int key) {
-    if (this == nullptr) {
-        return nullptr;  // Dictionary is null
-    }
-
     node* parentNode = this->getByKey(key);
     if (parentNode == nullptr) {
         return nullptr;  // Key not found

@@ -1,8 +1,8 @@
+#include <dictionary.hpp>
 #include <libIO.hpp>
 #include <libPCI.hpp>
 #include <printf.hpp>
 #include <utils.hpp>
-#include <dictionary.hpp>
 uint16_t pciConfigReadWord(uint8_t bus, uint8_t slot, uint8_t func, uint8_t offset) {
     uint32_t address;
     uint32_t lbus = (uint32_t)bus;
@@ -140,7 +140,6 @@ void pciPrintConfigSpace(const PCI::ConfigSpaceHeader* cfg, stream output) {
     fprintf(output, "  HeaderType                  : 0x%x\n", (unsigned)cfg->headerType);
     fprintf(output, "  Multifunc                   : %u\n", (unsigned)cfg->multiFunction);
 
-
     fprintf(output, "  BIST                        :\n");
     fprintf(output, "    start_bist                : %u\n", (unsigned)cfg->BIST.startBIST);
     fprintf(output, "    bist_completion_code      : 0x%x\n", (unsigned)(cfg->BIST.completionCode));
@@ -237,18 +236,13 @@ void pciPrintAllDevicesBrief(stream output) {
                 }
 
                 uint32_t classInfo = pciConfigRead32((uint8_t)bus, slot, function, 0x08);
-                fprintf(output,
-                        "%u:%u.%u ID 0x%x:0x%x Class 0x%x Subclass 0x%x\n",
-                        (unsigned)bus, (unsigned)slot, (unsigned)function,
-                        (unsigned)(id & 0xFFFF), (unsigned)(id >> 16),
-                        (unsigned)((classInfo >> 24) & 0xFF),
-                        (unsigned)((classInfo >> 16) & 0xFF));
+                fprintf(output, "%u:%u.%u ID 0x%x:0x%x Class 0x%x Subclass 0x%x\n", (unsigned)bus, (unsigned)slot, (unsigned)function, (unsigned)(id & 0xFFFF), (unsigned)(id >> 16), (unsigned)((classInfo >> 24) & 0xFF), (unsigned)((classInfo >> 16) & 0xFF));
             }
         }
     }
 }
 
-void decodeBaseAddressRegister(uint32_t address) {
+static void decodeBaseAddressRegister(uint32_t address) {
     PCI::BaseAddrType baseAddrType = (PCI::BaseAddrType)(address & 0x00000001);
 
     uint32_t baseAddress;
@@ -267,8 +261,46 @@ void decodeBaseAddressRegister(uint32_t address) {
     fprintf(Serial, "    True Base Address: 0x%x\n", baseAddress);
 }
 
+static void decodeDeviceTypesFunctions(uint8_t classCode, uint8_t subclass, uint8_t progif) {
+    dictionary dict;
+    createDict(&dict);
 
-// static const char* const list[] = {"Unclassified", "MassStorageController", "NetworkController", "DisplayController", "MultiMediaController", "MemoryController", "Bridge", "SimpleCommunicationController", "BaseSystemPeripheral", "InputDeviceController", "DockingStation", "Processor", "SerialBusController", "WirelessController", "IntelligentController", "SatelliteCommunicationController", "EncryptionController", "SignalProcessingController", "ProcessingAccelerator", "NonEssentialInstrumentation"};
+    dictionary::node* classNode = dict.getByKey(classCode);
+    if (!classNode) {
+        fprintf(Serial, "    Class Type: Unknown\n");
+        fprintf(Serial, "    Subclass Type: Unknown\n");
+        fprintf(Serial, "    Programming Interface Type: Unknown\n");
+        return;
+    }
+    fprintf(Serial, "    Class Type: %s\n", classNode->value);
+
+    if (!classNode->child) {
+        fprintf(Serial, "    Subclass Type: Unknown\n");
+        fprintf(Serial, "    Programming Interface Type: Unknown\n");
+        return;
+    }
+
+    dictionary::node* subclassNode = classNode->child->getByKey(subclass);
+    if (!subclassNode) {
+        fprintf(Serial, "    Subclass Type: Unknown\n");
+        fprintf(Serial, "    Programming Interface Type: Unknown\n");
+        return;
+    }
+    fprintf(Serial, "    Subclass Type: %s\n", subclassNode->value);
+
+    if (!subclassNode->child) {
+        fprintf(Serial, "    Programming Interface Type: Unknown\n");
+        return;
+    }
+
+    dictionary::node* progifNode = subclassNode->child->getByKey(progif);
+    if (!progifNode) {
+        fprintf(Serial, "    Programming Interface Type: Unknown\n");
+        return;
+    }
+    fprintf(Serial, "    Programming Interface Type: %s\n", progifNode->value);
+}
+
 void createDict(dictionary* dict) {
     dict->add(0, "Unclassified");
     dict->add(1, "MassStorageController");
@@ -298,14 +330,12 @@ void createDict(dictionary* dict) {
     dict->getByKey(2)->child->add(8, "FabricController");
     dict->getByKey(2)->child->add(0x80, "Other");
 
-
     dict->add(3, "DisplayController");
     dict->createChildDictionary(3);
     dict->getByKey(3)->child->add(0, "VGAController");
     dict->getByKey(3)->child->add(1, "XGAController");
     dict->getByKey(3)->child->add(2, "3DController");
     dict->getByKey(3)->child->add(0x80, "Other");
-
 
     dict->add(4, "MultiMediaController");
     dict->add(5, "MemoryController");
@@ -325,34 +355,5 @@ void createDict(dictionary* dict) {
     dict->add(19, "NonEssentialInstrumentation");
     dict->add(0x40, "CoProcessor");
     dict->add(0xFF, "UnassignedClass");
-
 }
-
-
-
-void decodeDeviceTypesFunctions(uint8_t classCode, uint8_t subclass, uint8_t progif) {
-    dictionary dict;
-    createDict(&dict);
-
-    dictionary::node* classNode = dict.getByKey(classCode);
-    if (classNode) {
-        fprintf(Serial, "    Class Type: %s\n", classNode->value);
-        dictionary::node* subclassNode = classNode->child->getByKey(subclass);
-        if (subclassNode) {
-            fprintf(Serial, "    Subclass Type: %s\n", subclassNode->value);
-            dictionary::node* progifNode = subclassNode->child->getByKey(progif);
-            if (progifNode) {
-                fprintf(Serial, "    Programming Interface Type: %s\n", progifNode->value);
-            } else {
-                fprintf(Serial, "    Programming Interface Type: Unknown\n");
-            }
-        } else {
-            fprintf(Serial, "    Subclass Type: Unknown\n");
-        }
-    } else {
-        fprintf(Serial, "    Class Type: Unknown\n");
-    }
-}
-
-
 

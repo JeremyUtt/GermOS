@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 #include <classTest.hpp>
+#include <dictionary.hpp>
 #include <error.hpp>
 #include <fonts.hpp>
 #include <kernel.hpp>
@@ -26,7 +27,6 @@
 #include <system.hpp>
 #include <tests.hpp>
 #include <utils.hpp>
-#include <dictionary.hpp>
 
 extern "C" uint8_t createFrame();
 
@@ -57,7 +57,7 @@ extern "C" void main() {
 
     // stackTest(1, 2, 3);
     pciPrintAllDevices(Serial, 3);
-    // pciPrintAllDevicesBrief(Serial);
+    pciPrintAllDevicesBrief(Serial);
 
 
     // ScrollBox scrollBox(10, 10, 300, 200, temp);

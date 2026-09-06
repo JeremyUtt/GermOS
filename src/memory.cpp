@@ -82,7 +82,7 @@ void mergeEntries(allocEntry& a) {
     for (uint16_t j = 0; j < TABLE_SIZE; j++) {
         if (table[j].end + 1 == a.start) {
             if (table[j].realEntry && !table[j].inUse) {
-                a.end = table[j].end;
+                a.start = table[j].start;
 
                 // clean up old entries
                 table[j].inUse = false;
