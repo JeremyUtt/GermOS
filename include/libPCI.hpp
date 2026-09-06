@@ -186,3 +186,4 @@ void pciPrintFullConfigSpace(const PCI::FullConfigSpace* space, stream output);
 void pciPrintAllDevices(stream output, int level);
 void decodeBaseAddressRegister(uint32_t address);
 void decodeDeviceTypesFunctions(uint8_t classCode, uint8_t subclass, uint8_t progif);
+void pciPrintAllDevicesBrief(stream output);

@@ -222,6 +222,31 @@ void pciPrintAllDevices(stream output, int level) {
     }
 }
 
+// Print one compact line for every device found on the PCI bus.
+void pciPrintAllDevicesBrief(stream output) {
+    for (uint16_t bus = 0; bus < 256; bus++) {
+        for (uint8_t slot = 0; slot < 32; slot++) {
+            for (uint8_t function = 0; function < 8; function++) {
+                uint32_t id = pciConfigRead32((uint8_t)bus, slot, function, 0x00);
+
+                if ((id & 0xFFFF) == 0xFFFF) {
+                    if (function == 0)
+                        break;
+                    continue;
+                }
+
+                uint32_t classInfo = pciConfigRead32((uint8_t)bus, slot, function, 0x08);
+                fprintf(output,
+                        "%u:%u.%u ID 0x%x:0x%x Class 0x%x Subclass 0x%x\n",
+                        (unsigned)bus, (unsigned)slot, (unsigned)function,
+                        (unsigned)(id & 0xFFFF), (unsigned)(id >> 16),
+                        (unsigned)((classInfo >> 24) & 0xFF),
+                        (unsigned)((classInfo >> 16) & 0xFF));
+            }
+        }
+    }
+}
+
 void decodeBaseAddressRegister(uint32_t address) {
     PCI::BaseAddrType baseAddrType = (PCI::BaseAddrType)(address & 0x00000001);
 
@@ -324,6 +349,10 @@ void decodeDeviceTypesFunctions(uint8_t classCode, uint8_t subclass, uint8_t pro
     // fprintf(Serial, "    Subclass: 0x%x\n", subclass);
     // fprintf(Serial, "    Programming Interface: 0x%x\n", subclass, progif);
 }
+
+
+
+
 
 // // Manual Attempt
 // bool pciGetConfigSpace_2(PCI::configSpaceHeader* config, uint8_t bus, uint8_t slot, uint8_t func) {
