@@ -56,33 +56,8 @@ extern "C" void main() {
     // }
 
     // stackTest(1, 2, 3);
-    // pciPrintAllDevices(Serial, 3);
-    pciPrintAllDevicesBrief(Serial);
-
-    dictionary dict;
-    dict.add(1, "One");
-    dict.add(2, "Two");
-    dict.add(3, "Three");
-    dict.add(4, "Four");
-
-
-    dictionary* cdict = dict.createChildDictionary(2);
-    cdict->add(5, "Five");
-    cdict->add(6, "Six");
-    cdict->add(7, "Seven");
-
-    dictionary* cdict2 = dict.createChildDictionary(4);
-    cdict2->add(8, "Eight");
-    cdict2->add(9, "Nine");
-    cdict2->add(10, "Ten");
-
-    dictionary* cdict3 = cdict->createChildDictionary(6);
-    cdict3->add(11, "Eleven");
-    cdict3->add(12, "Twelve");
-    cdict3->add(13, "Thirteen");
-
-
-    dict.deleteAll();
+    pciPrintAllDevices(Serial, 3);
+    // pciPrintAllDevicesBrief(Serial);
 
 
     // ScrollBox scrollBox(10, 10, 300, 200, temp);

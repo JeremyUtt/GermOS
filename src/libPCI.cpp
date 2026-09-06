@@ -2,6 +2,7 @@
 #include <libPCI.hpp>
 #include <printf.hpp>
 #include <utils.hpp>
+#include <dictionary.hpp>
 uint16_t pciConfigReadWord(uint8_t bus, uint8_t slot, uint8_t func, uint8_t offset) {
     uint32_t address;
     uint32_t lbus = (uint32_t)bus;
@@ -266,136 +267,92 @@ void decodeBaseAddressRegister(uint32_t address) {
     fprintf(Serial, "    True Base Address: 0x%x\n", baseAddress);
 }
 
-void decodeDeviceTypesFunctions(uint8_t classCode, uint8_t subclass, uint8_t progif) {
-    static const char* const list[] = {"Unclassified", "MassStorageController", "NetworkController", "DisplayController", "MultiMediaController", "MemoryController", "Bridge", "SimpleCommunicationController", "BaseSystemPeripheral", "InputDeviceController", "DockingStation", "Processor", "SerialBusController", "WirelessController", "IntelligentController", "SatelliteCommunicationController", "EncryptionController", "SignalProcessingController", "ProcessingAccelerator", "NonEssentialInstrumentation"};
+
+// static const char* const list[] = {"Unclassified", "MassStorageController", "NetworkController", "DisplayController", "MultiMediaController", "MemoryController", "Bridge", "SimpleCommunicationController", "BaseSystemPeripheral", "InputDeviceController", "DockingStation", "Processor", "SerialBusController", "WirelessController", "IntelligentController", "SatelliteCommunicationController", "EncryptionController", "SignalProcessingController", "ProcessingAccelerator", "NonEssentialInstrumentation"};
+void createDict(dictionary* dict) {
+    dict->add(0, "Unclassified");
+    dict->add(1, "MassStorageController");
+
+    dict->createChildDictionary(1);
+    dict->getByKey(1)->child->add(0, "SCSIController");
+    dict->getByKey(1)->child->add(1, "IDEController");
+    dict->getByKey(1)->child->add(2, "FloppyDiskController");
+    dict->getByKey(1)->child->add(3, "IPIBusController");
+    dict->getByKey(1)->child->add(4, "RAIDController");
+    dict->getByKey(1)->child->add(5, "ATAController");
+    dict->getByKey(1)->child->add(6, "SATAController");
+    dict->getByKey(1)->child->add(7, "SerialAttachedSCSI(SAS)Controller");
+    dict->getByKey(1)->child->add(8, "NonVolatileMemoryController");
+    dict->getByKey(1)->child->add(0x80, "Other");
+
+    dict->add(2, "NetworkController");
+    dict->createChildDictionary(2);
+    dict->getByKey(2)->child->add(0, "EthernetController");
+    dict->getByKey(2)->child->add(1, "TokenRingController");
+    dict->getByKey(2)->child->add(2, "FDDIController");
+    dict->getByKey(2)->child->add(3, "ATMController");
+    dict->getByKey(2)->child->add(4, "ISDNController");
+    dict->getByKey(2)->child->add(5, "WorldFipController");
+    dict->getByKey(2)->child->add(6, "PICMGController");
+    dict->getByKey(2)->child->add(7, "InfinibandController");
+    dict->getByKey(2)->child->add(8, "FabricController");
+    dict->getByKey(2)->child->add(0x80, "Other");
 
 
+    dict->add(3, "DisplayController");
+    dict->createChildDictionary(3);
+    dict->getByKey(3)->child->add(0, "VGAController");
+    dict->getByKey(3)->child->add(1, "XGAController");
+    dict->getByKey(3)->child->add(2, "3DController");
+    dict->getByKey(3)->child->add(0x80, "Other");
 
-    // its pointing to constant strings, but the pointer itself is not constant (?);
-    const char* className;
-    if (classCode < sizeof(list) / sizeof(list[0])) {
-        className = list[classCode];
-    } else if (classCode == 0x40) {
-        className = "CoProcessor";
-    } else if (classCode == 0xFF) {
-        className = "UnassignedClass";
-    } else {
-        className = "Unknown";
-    }
-    
-    fprintf(Serial, "    Class Name is: %s\n", className);
-    // print infor for common classes (Networking, Display, Storage)
-    if(classCode == 0x01) {
-        switch(subclass) {
-            case 0x00:
-                fprintf(Serial, "    Subclass Name is: SCSI Controller\n");
-                break;
-            case 0x01:
-                fprintf(Serial, "    Subclass Name is: IDE Controller\n");
-                break;
-            case 0x02:
-                fprintf(Serial, "    Subclass Name is: Floppy Disk Controller\n");
-                break;
-            case 0x03:
-                fprintf(Serial, "    Subclass Name is: IPI Bus Controller\n");
-                break;
-            case 0x04:
-                fprintf(Serial, "    Subclass Name is: RAID Controller\n");
-                break;
-            case 0x05:
-                fprintf(Serial, "    Subclass Name is: ATA Controller\n");
-                break;
-            case 0x06:
-                fprintf(Serial, "    Subclass Name is: SATA Controller\n");
-                break;
-            case 0x07:
-                fprintf(Serial, "    Subclass Name is: Serial Attached SCSI (SAS) Controller\n");
-                break;
-            default:
-                fprintf(Serial, "    Subclass Name is: Unknown Mass Storage Controller\n");
-        }
-    } else if(classCode == 0x02) {
-        switch(subclass) {
-            case 0x00:
-                fprintf(Serial, "    Subclass Name is: Ethernet Controller\n");
-                break;
-            case 0x01:
-                fprintf(Serial, "    Subclass Name is: Token Ring Controller\n");
-                break;
-            case 0x02:
-                fprintf(Serial, "    Subclass Name is: FDDI Controller\n");
-                break;
-            case 0x03:
-                fprintf(Serial, "    Subclass Name is: ATM Controller\n");
-                break;
-            default:
-                fprintf(Serial, "    Subclass Name is: Unknown Network Controller\n");
-        }
-    } else if(classCode == 0x03) {
-        switch(subclass) {
-            case 0x00:
-                fprintf(Serial, "    Subclass Name is: VGA Compatible Controller\n");
-                break;
-            case 0x01:
-                fprintf(Serial, "    Subclass Name is: XGA Compatible Controller\n");
-                break;
-            default:
-                fprintf(Serial, "    Subclass Name is: Unknown Display Controller\n");
-        }
-    } else {
-        fprintf(Serial, "    Subclass Name is: Unknown\n");
-    }
 
-    // fprintf(Serial, "    Subclass: 0x%x\n", subclass);
-    // fprintf(Serial, "    Programming Interface: 0x%x\n", subclass, progif);
+    dict->add(4, "MultiMediaController");
+    dict->add(5, "MemoryController");
+    dict->add(6, "Bridge");
+    dict->add(7, "SimpleCommunicationController");
+    dict->add(8, "BaseSystemPeripheral");
+    dict->add(9, "InputDeviceController");
+    dict->add(10, "DockingStation");
+    dict->add(11, "Processor");
+    dict->add(12, "SerialBusController");
+    dict->add(13, "WirelessController");
+    dict->add(14, "IntelligentController");
+    dict->add(15, "SatelliteCommunicationController");
+    dict->add(16, "EncryptionController");
+    dict->add(17, "SignalProcessingController");
+    dict->add(18, "ProcessingAccelerator");
+    dict->add(19, "NonEssentialInstrumentation");
+    dict->add(0x40, "CoProcessor");
+    dict->add(0xFF, "UnassignedClass");
+
 }
 
 
 
+void decodeDeviceTypesFunctions(uint8_t classCode, uint8_t subclass, uint8_t progif) {
+    dictionary dict;
+    createDict(&dict);
+
+    dictionary::node* classNode = dict.getByKey(classCode);
+    if (classNode) {
+        fprintf(Serial, "    Class Type: %s\n", classNode->value);
+        dictionary::node* subclassNode = classNode->child->getByKey(subclass);
+        if (subclassNode) {
+            fprintf(Serial, "    Subclass Type: %s\n", subclassNode->value);
+            dictionary::node* progifNode = subclassNode->child->getByKey(progif);
+            if (progifNode) {
+                fprintf(Serial, "    Programming Interface Type: %s\n", progifNode->value);
+            } else {
+                fprintf(Serial, "    Programming Interface Type: Unknown\n");
+            }
+        } else {
+            fprintf(Serial, "    Subclass Type: Unknown\n");
+        }
+    } else {
+        fprintf(Serial, "    Class Type: Unknown\n");
+    }
+}
 
 
-// // Manual Attempt
-// bool pciGetConfigSpace_2(PCI::configSpaceHeader* config, uint8_t bus, uint8_t slot, uint8_t func) {
-//     uint32_t array[8];
 
-//     for (size_t i = 0; i < 8; i++) {
-//         uint32_t word = pciConfigRead32(bus, slot, func, i * 4);
-//         array[i] = word;
-//     }
-
-//     if (upper16(array[0]) == 0xFFFF) {
-//         return false;
-//     }
-
-//     config->vendorID = lower16(array[0]);
-//     config->deviceID = upper16(array[0]);
-
-//     uint16_t tmp = lower16(array[1]);
-//     memcpy(&tmp, &(config->command), sizeof(tmp));
-
-//     tmp = upper16(array[1]);
-//     memcpy(&tmp, &(config->status), sizeof(tmp));
-
-//     config->revisionID = (array[2] >> 0) & 0x00ff;
-//     config->progIF = (array[2] >> 8) & 0x00ff;
-//     config->subclass = (array[2] >> 16) & 0x00ff;
-//     config->classCode = (array[2] >> 24) & 0x00ff;
-
-//     config->cacheLineSize = (array[3] >> 0) & 0x00ff;
-//     config->latencyTimer = (array[3] >> 8) & 0x00ff;
-//     config->headerType = (PCI::HeaderType)((array[3] >> 16) & 0x00ff);
-
-//     tmp = (array[3] >> 24) & 0x00ff;
-//     memcpy(&tmp, &(config->BIST), sizeof(tmp));
-//     return true;
-// }
-
-// uint16_t pciCheckVendor(uint8_t bus, uint8_t slot) {
-//     uint16_t vendor, device;
-//     /* Try and read the first configuration register. Since there are no
-//      * vendors that == 0xFFFF, it must be a non-existent device. */
-//     if ((vendor = pciConfigReadWord(bus, slot, 0, 0)) != 0xFFFF) {
-//         device = pciConfigReadWord(bus, slot, 0, 2);
-//     }
-//     return (vendor);
-// }

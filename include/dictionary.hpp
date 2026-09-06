@@ -1,10 +1,7 @@
 #include <string.hpp>
 
-
 class dictionary {
-  private:
-    int numElements;
-
+  public:
     struct node {
         int key;
         string value;
@@ -12,9 +9,11 @@ class dictionary {
         node* next;
     };
 
+  private:
+    int numElements;
     node* head;
-    
-    public:
+
+  public:
     dictionary(/* args */);
     ~dictionary(/* args */);
     void add(int key, string value);
@@ -22,5 +21,4 @@ class dictionary {
     node* getByKey(int key);
     node* getByValue(string& value);
     dictionary* createChildDictionary(int key);
-    void deleteAll();
 };

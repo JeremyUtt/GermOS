@@ -3,17 +3,42 @@
 #include <memory.hpp>
 #include <utils.hpp>
 
-
 dictionary::dictionary(/* args */) {
     this->head = nullptr;
     this->numElements = 0;
 }
 
 dictionary::~dictionary() {
-    this->deleteAll();
+    node* current = this->head;
+    while (current != nullptr) {
+        node* nextNode = current->next;
+        if (current->child != nullptr) {
+            current->child->~dictionary();
+            free(current->child);
+        }
+        current->value.~string();
+        free(current);
+        current = nextNode;
+    }
+    this->head = nullptr;
+    this->numElements = 0;
 }
 
 void dictionary::add(int key, string value) {
+    if (this == nullptr) {
+        return;  // Dictionary is null
+    }
+
+    node* current = this->head;
+    while (current != nullptr) {
+        if (current->key == key) {
+            // Key already exists, update the value
+            current->value = value;
+            return;
+        }
+        current = current->next;
+    }
+
     node tempNode = node();
     node* newNode = reinterpret_cast<node*>(malloc(sizeof(node)));
     memcpy(&tempNode, newNode, sizeof(node));
@@ -23,20 +48,14 @@ void dictionary::add(int key, string value) {
     newNode->child = nullptr;
     newNode->next = nullptr;
 
-    node* current = this->head;
-
     if (this->head == nullptr) {
         this->head = newNode;
         this->numElements++;
         return;
     }
 
+    current = this->head;
     while (current->next != nullptr) {
-        if (current->key == key) {
-            // Key already exists, update the value
-            current->value = value;
-            return;
-        }
         current = current->next;
     }
     current->next = newNode;
@@ -44,6 +63,9 @@ void dictionary::add(int key, string value) {
 }
 
 void dictionary::remove(int key) {
+    if (this == nullptr) {
+        return nullptr;  // Dictionary is null
+    }
     node* current = this->head;
     node* previous = nullptr;
 
@@ -55,12 +77,13 @@ void dictionary::remove(int key) {
             } else {
                 previous->next = current->next;
             }
-            
+
             if (current->child != nullptr) {
-                current->child->deleteAll();
+                current->child->~dictionary();
                 free(current->child);
             }
-            
+
+            current->value.~string();
             free(current);
             this->numElements--;
             return;
@@ -70,8 +93,11 @@ void dictionary::remove(int key) {
     }
 }
 
-
 dictionary::node* dictionary::getByKey(int key) {
+    if (this == nullptr) {
+        return nullptr;  // Dictionary is null
+    }
+
     node* current = this->head;
     while (current != nullptr) {
         if (current->key == key) {
@@ -79,10 +105,14 @@ dictionary::node* dictionary::getByKey(int key) {
         }
         current = current->next;
     }
-    return nullptr; // Key not found
+    return nullptr;  // Key not found
 }
 
 dictionary::node* dictionary::getByValue(string& value) {
+    if (this == nullptr) {
+        return nullptr;  // Dictionary is null
+    }
+
     node* current = this->head;
     while (current != nullptr) {
         if (current->value == value) {
@@ -90,37 +120,25 @@ dictionary::node* dictionary::getByValue(string& value) {
         }
         current = current->next;
     }
-    return nullptr; // Value not found
+    return nullptr;  // Value not found
 }
 
-dictionary* dictionary::createChildDictionary(int key){
+dictionary* dictionary::createChildDictionary(int key) {
+    if (this == nullptr) {
+        return nullptr;  // Dictionary is null
+    }
+
     node* parentNode = this->getByKey(key);
     if (parentNode == nullptr) {
-        return nullptr; // Key not found
+        return nullptr;  // Key not found
     }
 
     if (parentNode->child == nullptr) {
         dictionary tempDict = dictionary();
         parentNode->child = reinterpret_cast<dictionary*>(malloc(sizeof(dictionary)));
         memcpy(&tempDict, parentNode->child, sizeof(dictionary));
-        
+
         return parentNode->child;
     }
     return parentNode->child;
-}
-
-
-void dictionary::deleteAll(){
-    node* current = this->head;
-    while (current != nullptr) {
-        node* nextNode = current->next;
-        if (current->child != nullptr) {
-            current->child->deleteAll();
-            free(current->child);
-        }
-        free(current);
-        current = nextNode;
-    }
-    this->head = nullptr;
-    this->numElements = 0;
 }
