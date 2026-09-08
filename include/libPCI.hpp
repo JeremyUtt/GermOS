@@ -20,7 +20,7 @@ enum BaseAddrType { MEMORY_SPACE, IO_SPACE };
 //     Bridge,
 //     SimpleCommunicationController,
 //     BaseSystemPeripheral,
-//     InputDeviceController, 
+//     InputDeviceController,
 //     DockingStation,
 //     Processor,
 //     SerialBusController,
@@ -42,11 +42,7 @@ enum BaseAddrType { MEMORY_SPACE, IO_SPACE };
 // A value of 0x1 is reserved as of revision 3.0 of the PCI Local Bus Specification.
 // In earlier versions it was used to support memory space below 1MB
 // (16-bit wide base register that can be mapped anywhere in the 16-bit Memory Space).
-enum MemoryAddrType {
-    BIT32,
-    RESERVED,
-    BIT64
-};
+enum MemoryAddrType { BIT32, RESERVED, BIT64 };
 
 // https://wiki.osdev.org/PCI
 // Detected Parity Error - This bit will be set to 1 whenever the device detects a parity error, even if parity error handling is disabled.
@@ -184,6 +180,8 @@ void pciPrintConfigSpace(const PCI::ConfigSpaceHeader* cfg, stream output);
 void pciPrintFullConfigSpace(const PCI::FullConfigSpace* space, stream output);
 
 void pciPrintAllDevices(stream output, int level);
-static void decodeBaseAddressRegister(uint32_t address);
-static void decodeDeviceTypesFunctions(uint8_t classCode, uint8_t subclass, uint8_t progif)
-void pciPrintAllDevicesBrief(stream output);
+void decodeBaseAddressRegister(uint32_t address);
+void decodeDeviceTypesFunctions(uint8_t classCode, uint8_t subclass, uint8_t progif);
+void pciPrintConfigSpaceBrief(const PCI::FullConfigSpace*, stream output);
+void pciInit();
+void createDict(dictionary* dict);

@@ -3,6 +3,11 @@
 #include <libPCI.hpp>
 #include <printf.hpp>
 #include <utils.hpp>
+#include <memory.hpp>
+
+dictionary* pciClassCodeDictionary;
+
+
 uint16_t pciConfigReadWord(uint8_t bus, uint8_t slot, uint8_t func, uint8_t offset) {
     uint32_t address;
     uint32_t lbus = (uint32_t)bus;
@@ -96,6 +101,13 @@ bool pciGetFullConfigSpace(PCI::FullConfigSpace* space, uint8_t bus, uint8_t slo
     }
     return true;
 }
+
+// Assume valid config space (no vender ID of 0xFFFF)
+void pciPrintConfigSpaceBrief(const PCI::FullConfigSpace* space, stream output) {
+    fprintf(output, "Vendor: 0x%x, Device: 0x%x, Class: 0x%x, Subclass: 0x%x, ProgIF: 0x%x\n", space->header.vendorID, space->header.deviceID, space->header.classCode, space->header.subclass, space->header.progIF);
+    // get class, subclass, and progIF names from dictionary
+    decodeDeviceTypesFunctions(space->header.classCode, space->header.subclass, space->header.progIF);
+}   
 
 void pciPrintConfigSpace(const PCI::ConfigSpaceHeader* cfg, stream output) {
     if (!cfg)
@@ -206,7 +218,7 @@ void pciPrintAllDevices(stream output, int level) {
 
                     switch (level) {
                         case 1:
-                            fprintf(output, "   Vendor: 0x%x, Device: 0x%x\n", space.header.vendorID, space.header.deviceID);
+                            pciPrintConfigSpaceBrief(&space, output);
                             break;
                         case 2:
                             pciPrintConfigSpace(&space.header, output);
@@ -222,27 +234,7 @@ void pciPrintAllDevices(stream output, int level) {
     }
 }
 
-// Print one compact line for every device found on the PCI bus.
-void pciPrintAllDevicesBrief(stream output) {
-    for (uint16_t bus = 0; bus < 256; bus++) {
-        for (uint8_t slot = 0; slot < 32; slot++) {
-            for (uint8_t function = 0; function < 8; function++) {
-                uint32_t id = pciConfigRead32((uint8_t)bus, slot, function, 0x00);
-
-                if ((id & 0xFFFF) == 0xFFFF) {
-                    if (function == 0)
-                        break;
-                    continue;
-                }
-
-                uint32_t classInfo = pciConfigRead32((uint8_t)bus, slot, function, 0x08);
-                fprintf(output, "%u:%u.%u ID 0x%x:0x%x Class 0x%x Subclass 0x%x\n", (unsigned)bus, (unsigned)slot, (unsigned)function, (unsigned)(id & 0xFFFF), (unsigned)(id >> 16), (unsigned)((classInfo >> 24) & 0xFF), (unsigned)((classInfo >> 16) & 0xFF));
-            }
-        }
-    }
-}
-
-static void decodeBaseAddressRegister(uint32_t address) {
+void decodeBaseAddressRegister(uint32_t address) {
     PCI::BaseAddrType baseAddrType = (PCI::BaseAddrType)(address & 0x00000001);
 
     uint32_t baseAddress;
@@ -261,11 +253,9 @@ static void decodeBaseAddressRegister(uint32_t address) {
     fprintf(Serial, "    True Base Address: 0x%x\n", baseAddress);
 }
 
-static void decodeDeviceTypesFunctions(uint8_t classCode, uint8_t subclass, uint8_t progif) {
-    dictionary dict;
-    createDict(&dict);
+void decodeDeviceTypesFunctions(uint8_t classCode, uint8_t subclass, uint8_t progif) {
 
-    dictionary::node* classNode = dict.getByKey(classCode);
+    dictionary::node* classNode = pciClassCodeDictionary->getByKey(classCode);
     if (!classNode) {
         fprintf(Serial, "    Class Type: Unknown\n");
         fprintf(Serial, "    Subclass Type: Unknown\n");
@@ -303,8 +293,8 @@ static void decodeDeviceTypesFunctions(uint8_t classCode, uint8_t subclass, uint
 
 void createDict(dictionary* dict) {
     dict->add(0, "Unclassified");
+    
     dict->add(1, "MassStorageController");
-
     dict->createChildDictionary(1);
     dict->getByKey(1)->child->add(0, "SCSIController");
     dict->getByKey(1)->child->add(1, "IDEController");
@@ -339,14 +329,65 @@ void createDict(dictionary* dict) {
 
     dict->add(4, "MultiMediaController");
     dict->add(5, "MemoryController");
+    
     dict->add(6, "Bridge");
+    dict->createChildDictionary(6);
+    dict->getByKey(6)->child->add(0, "HostBridge");
+    dict->getByKey(6)->child->add(1, "ISA");
+    dict->getByKey(6)->child->add(2, "EISA");
+    dict->getByKey(6)->child->add(3, "MCA");
+    dict->getByKey(6)->child->add(4, "PCI-PCIBridge(1)");
+    dict->getByKey(6)->child->add(5, "PCMCIA");
+    dict->getByKey(6)->child->add(6, "NuBus");
+    dict->getByKey(6)->child->add(7, "CardBus");
+    dict->getByKey(6)->child->add(8, "RACEwayBridge");
+    dict->getByKey(6)->child->add(9, "PCI-PCIBridge(2)");
+    dict->getByKey(6)->child->add(10, "InfiniBandToPCIHostBridge");
+    dict->getByKey(6)->child->add(0x80, "Other");
+
+
     dict->add(7, "SimpleCommunicationController");
+    dict->createChildDictionary(7);
+    dict->getByKey(7)->child->add(0, "SerialController");
+    dict->getByKey(7)->child->add(1, "ParallelController");
+    dict->getByKey(7)->child->add(2, "MultiportSerialController");
+    dict->getByKey(7)->child->add(3, "Modem");
+    dict->getByKey(7)->child->add(4, "IEEE488GPIBController");
+    dict->getByKey(7)->child->add(5, "SmartCardController");
+    dict->getByKey(7)->child->add(0x80, "Other");
+
+
     dict->add(8, "BaseSystemPeripheral");
     dict->add(9, "InputDeviceController");
     dict->add(10, "DockingStation");
     dict->add(11, "Processor");
     dict->add(12, "SerialBusController");
+    
+    dict->createChildDictionary(12);
+    dict->getByKey(12)->child->add(0, "FireWireController");
+    dict->getByKey(12)->child->add(1, "ACCESSBusController");
+    dict->getByKey(12)->child->add(2, "SSAController");
+    dict->getByKey(12)->child->add(3, "USBController");
+    dict->getByKey(12)->child->add(4, "FibreChannelController");
+    dict->getByKey(12)->child->add(5, "SMBusController");
+    dict->getByKey(12)->child->add(6, "InfinibandController");
+    dict->getByKey(12)->child->add(7, "IPMIInterfaceController");
+    dict->getByKey(12)->child->add(8, "SERCOSInterfaceController");
+    dict->getByKey(12)->child->add(9, "CANBusController");
+    dict->getByKey(12)->child->add(0x80, "Other");
+
     dict->add(13, "WirelessController");
+
+    dict->createChildDictionary(13);
+    dict->getByKey(13)->child->add(0, "iRDAController");
+    dict->getByKey(13)->child->add(1, "ConsumerIRController");
+    dict->getByKey(13)->child->add(0x10, "RFController");
+    dict->getByKey(13)->child->add(0x11, "BluetoothController");
+    dict->getByKey(13)->child->add(0x12, "BroadbandController");
+    dict->getByKey(13)->child->add(0x20, "EthernetController 802.1a");
+    dict->getByKey(13)->child->add(0x21, "EthernetController 802.1b");
+    dict->getByKey(13)->child->add(0x80, "Other");
+
     dict->add(14, "IntelligentController");
     dict->add(15, "SatelliteCommunicationController");
     dict->add(16, "EncryptionController");
@@ -357,3 +398,14 @@ void createDict(dictionary* dict) {
     dict->add(0xFF, "UnassignedClass");
 }
 
+
+
+void pciInit() {
+    dictionary dict;
+
+    pciClassCodeDictionary = reinterpret_cast<dictionary*>(malloc(sizeof(dictionary)));
+    memcpy(&dict, pciClassCodeDictionary, sizeof(dictionary));
+    
+    
+    createDict(pciClassCodeDictionary);
+}

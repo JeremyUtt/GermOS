@@ -56,8 +56,7 @@ extern "C" void main() {
     // }
 
     // stackTest(1, 2, 3);
-    pciPrintAllDevices(Serial, 3);
-    pciPrintAllDevicesBrief(Serial);
+    pciPrintAllDevices(Serial, 1);
 
 
     // ScrollBox scrollBox(10, 10, 300, 200, temp);
@@ -132,6 +131,9 @@ void initKernel(Renderer& renderer) {
 
     printf("Initializing PS2 Keyboard Driver\n");
     KB::init();
+
+    printf("Initializing PCI Bus\n");
+    pciInit();
 
     // println("Finding RSDP Pointer");
     // findRSDP();
