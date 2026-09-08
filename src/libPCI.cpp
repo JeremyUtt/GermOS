@@ -91,7 +91,12 @@ bool pciGetFullConfigSpace(PCI::FullConfigSpace* space, uint8_t bus, uint8_t slo
 
             break;
         case PCI::PCI_PCI_BRIDGE:
-            /* code */
+            
+        for (size_t i = 0; i < extendedConfigSize; i++) {
+                uint32_t word = pciConfigRead32(bus, slot, func, (i + 4) * 4);
+                array[i] = word;
+            }
+            memcpy(array, &space->device.general, sizeof(PCI::ExtendedConfigSpace));
             break;
         case PCI::PCI_CARDBUS_BRIDGE:
             /* code */
