@@ -102,6 +102,39 @@ bool pciGetFullConfigSpace(PCI::FullConfigSpace* space, uint8_t bus, uint8_t slo
     return true;
 }
 
+void pciPrintAllDevices(stream output, int level) {
+    for (uint16_t bus = 0; bus < 2; bus++) {
+        for (uint16_t slot = 0; slot < 32; slot++) {
+            for (uint8_t function = 0; function < 8; function++) {
+                PCI::FullConfigSpace space;
+
+                bool result = pciGetFullConfigSpace(&space, bus, slot, function);
+                if (function == 0 && !result) {
+                    // fprintf(Serial, "Bus %d, Slot %d is Empty\n", bus, slot);
+                    break;
+                }
+
+                if (result) {
+                    fprintf(output, "Bus %d, Slot %d is has function %d\n", bus, slot, function);
+
+                    switch (level) {
+                        case 1:
+                            pciPrintConfigSpaceBrief(&space, output);
+                            break;
+                        case 2:
+                            pciPrintConfigSpace(&space.header, output);
+                            break;
+                        case 3:
+                            pciPrintFullConfigSpace(&space, output);
+                        default:
+                            break;
+                    }
+                }
+            }
+        }
+    }
+}
+
 // Assume valid config space (no vender ID of 0xFFFF)
 void pciPrintConfigSpaceBrief(const PCI::FullConfigSpace* space, stream output) {
     fprintf(output, "Vendor: 0x%x, Device: 0x%x, Class: 0x%x, Subclass: 0x%x, ProgIF: 0x%x\n", space->header.vendorID, space->header.deviceID, space->header.classCode, space->header.subclass, space->header.progIF);
@@ -165,23 +198,23 @@ void pciPrintFullConfigSpace(const PCI::FullConfigSpace* space, stream output) {
     pciPrintConfigSpace(&space->header, output);
     switch (space->header.headerType) {
         case PCI::GENERAL:
-            fprintf(output, "  Base Address 0             : 0x%x\n", (unsigned)space->device.general.baseAddr0);
+            fprintf(output, "  Base Address 0              : 0x%x\n", (unsigned)space->device.general.baseAddr0);
             decodeBaseAddressRegister(space->device.general.baseAddr0);
-            fprintf(output, "  Base Address 1             : 0x%x\n", (unsigned)space->device.general.baseAddr1);
+            fprintf(output, "  Base Address 1              : 0x%x\n", (unsigned)space->device.general.baseAddr1);
             decodeBaseAddressRegister(space->device.general.baseAddr1);
-            fprintf(output, "  Base Address 2             : 0x%x\n", (unsigned)space->device.general.baseAddr2);
+            fprintf(output, "  Base Address 2              : 0x%x\n", (unsigned)space->device.general.baseAddr2);
             decodeBaseAddressRegister(space->device.general.baseAddr2);
-            fprintf(output, "  Base Address 3             : 0x%x\n", (unsigned)space->device.general.baseAddr3);
+            fprintf(output, "  Base Address 3              : 0x%x\n", (unsigned)space->device.general.baseAddr3);
             decodeBaseAddressRegister(space->device.general.baseAddr3);
-            fprintf(output, "  Base Address 4             : 0x%x\n", (unsigned)space->device.general.baseAddr4);
+            fprintf(output, "  Base Address 4              : 0x%x\n", (unsigned)space->device.general.baseAddr4);
             decodeBaseAddressRegister(space->device.general.baseAddr4);
-            fprintf(output, "  Base Address 5             : 0x%x\n", (unsigned)space->device.general.baseAddr5);
+            fprintf(output, "  Base Address 5              : 0x%x\n", (unsigned)space->device.general.baseAddr5);
             decodeBaseAddressRegister(space->device.general.baseAddr5);
             fprintf(output, "  CardBus CIS Pointer         : 0x%x\n", (unsigned)space->device.general.cardBusCISPtr);
             fprintf(output, "  Subsystem Vendor ID         : 0x%x\n", (unsigned)space->device.general.subsystemVendorID);
             fprintf(output, "  Subsystem ID                : 0x%x\n", (unsigned)space->device.general.subsystemID);
-            fprintf(output, "  Expansion ROM Base Address   : 0x%x\n", (unsigned)space->device.general.extROMBaseAddr);
-            fprintf(output, "  Capabilities Pointer         : 0x%x\n", (unsigned)space->device.general.capabilitiesPtr);
+            fprintf(output, "  Expansion ROM Base Address  : 0x%x\n", (unsigned)space->device.general.extROMBaseAddr);
+            fprintf(output, "  Capabilities Pointer        : 0x%x\n", (unsigned)space->device.general.capabilitiesPtr);
             fprintf(output, "  Interrupt Line              : %u\n", (unsigned)space->device.general.interruptLine);
             fprintf(output, "  Interrupt Pin               : %u\n", (unsigned)space->device.general.interruptPIN);
             fprintf(output, "  Min Grant                   : %u\n", (unsigned)space->device.general.minGrant);
@@ -189,7 +222,28 @@ void pciPrintFullConfigSpace(const PCI::FullConfigSpace* space, stream output) {
 
             break;
         case PCI::PCI_PCI_BRIDGE:
-            fprintf(output, "  Unimplemented PCI-PCI Bridge Device\n");
+            fprintf(output, "  Base Address 0             : 0x%x\n", (unsigned)space->device.pciPciBridge.baseAddr0);
+            fprintf(output, "  Base Address 1             : 0x%x\n", (unsigned)space->device.pciPciBridge.baseAddr1);
+            fprintf(output, "  Primary Bus Number          : %u\n", (unsigned)space->device.pciPciBridge.primBusNum);
+            fprintf(output, "  Secondary Bus Number        : %u\n", (unsigned)space->device.pciPciBridge.secBusNum);
+            fprintf(output, "  Subordinate Bus Number      : %u\n", (unsigned)space->device.pciPciBridge.subBusNum);
+            fprintf(output, "  Secondary Latency Timer      : %u\n", (unsigned)space->device.pciPciBridge.secLatencyTimer);
+            fprintf(output, "  I/O Base                    : 0x%x\n", (unsigned)space->device.pciPciBridge.IOBase);
+            fprintf(output, "  I/O Limit                   : 0x%x\n", (unsigned)space->device.pciPciBridge.IOLimit); 
+            fprintf(output, "  Secondary Status            : 0x%x\n", (unsigned)space->device.pciPciBridge.secondaryStatus);
+            fprintf(output, "  Memory Base                 : 0x%x\n", (unsigned)space->device.pciPciBridge.memoryBase);
+            fprintf(output, "  Memory Limit                : 0x%x\n", (unsigned)space->device.pciPciBridge.memoryLimit);
+            fprintf(output, "  Prefetchable Memory Base     : 0x%x\n", (unsigned)space->device.pciPciBridge.prefetchableMemoryBase);
+            fprintf(output, "  Prefetchable Memory Limit    : 0x%x\n", (unsigned)space->device.pciPciBridge.prefetchableMemoryLimit);
+            fprintf(output, "  Prefetchable Memory Base Upper 32 : 0x%x\n", (unsigned)space->device.pciPciBridge.prefetchableMemoryBaseUpper32);
+            fprintf(output, "  Prefetchable Memory Limit Upper 32 : 0x%x\n", (unsigned)space->device.pciPciBridge.prefetchableMemoryLimitUpper32);
+            fprintf(output, "  I/O Base Upper 16           : 0x%x\n", (unsigned)space->device.pciPciBridge.IOBaseUpper16);
+            fprintf(output, "  I/O Limit Upper 16          : 0x%x\n", (unsigned)space->device.pciPciBridge.IOLimitUpper16);
+            fprintf(output, "  Capabilities Pointer         : 0x%x\n", (unsigned)space->device.pciPciBridge.capabilitiesPtr);
+            fprintf(output, "  Expansion ROM Base Address   : 0x%x\n", (unsigned)space->device.pciPciBridge.extROMBaseAddr);
+            fprintf(output, "  Interrupt Line              : %u\n", (unsigned)space->device.pciPciBridge.interruptLine);
+            fprintf(output, "  Interrupt Pin               : %u\n", (unsigned)space->device.pciPciBridge.interruptPIN);
+            fprintf(output, "  Bridge Control              : 0x%x\n", (unsigned)space->device.pciPciBridge.bridgeControl);
 
             break;
         case PCI::PCI_CARDBUS_BRIDGE:
@@ -201,82 +255,49 @@ void pciPrintFullConfigSpace(const PCI::FullConfigSpace* space, stream output) {
     }
 }
 
-void pciPrintAllDevices(stream output, int level) {
-    for (uint16_t bus = 0; bus < 2; bus++) {
-        for (uint16_t slot = 0; slot < 32; slot++) {
-            for (uint8_t function = 0; function < 8; function++) {
-                PCI::FullConfigSpace space;
-
-                bool result = pciGetFullConfigSpace(&space, bus, slot, function);
-                if (function == 0 && !result) {
-                    // fprintf(Serial, "Bus %d, Slot %d is Empty\n", bus, slot);
-                    break;
-                }
-
-                if (result) {
-                    fprintf(output, "Bus %d, Slot %d is has function %d\n", bus, slot, function);
-
-                    switch (level) {
-                        case 1:
-                            pciPrintConfigSpaceBrief(&space, output);
-                            break;
-                        case 2:
-                            pciPrintConfigSpace(&space.header, output);
-                            break;
-                        case 3:
-                            pciPrintFullConfigSpace(&space, output);
-                        default:
-                            break;
-                    }
-                }
-            }
-        }
-    }
-}
-
 void decodeBaseAddressRegister(uint32_t address) {
     PCI::BaseAddrType baseAddrType = (PCI::BaseAddrType)(address & 0x00000001);
 
     uint32_t baseAddress;
-    fprintf(Serial, "    Address: 0b%s\n", intToStr(address, 2));
+    fprintf(Serial, "    Address                   : 0b%s\n", intToStr(address, 2));
     if (baseAddrType == PCI::IO_SPACE) {
-        fprintf(Serial, "    Kind: IO\n");
+        fprintf(Serial, "    Kind                      : IO\n");
         baseAddress = address & 0xFFFFFFFC;
     } else {
         baseAddress = address & 0xFFFFFFF0;
-        fprintf(Serial, "    Kind: Memory\n");
+        fprintf(Serial, "    Kind                      : Memory\n");
         PCI::MemoryAddrType type = (PCI::MemoryAddrType)((address & 0x00000006) >> 1);
-        fprintf(Serial, "    Type: %s\n", type == PCI::BIT32 ? "32 Bits" : "64 Bits");
+        fprintf(Serial, "    Type                      : %s\n", type == PCI::BIT32 ? "32 Bits" : "64 Bits");
         bool prefetchble = (address & 0x00000008) >> 3;
-        fprintf(Serial, "    Prefetchble: %s\n", prefetchble ? "True" : "False");
+        fprintf(Serial, "    Prefetchble               : %s\n", prefetchble ? "True" : "False");
     }
-    fprintf(Serial, "    True Base Address: 0x%x\n", baseAddress);
+    fprintf(Serial, "    True Base Address         : 0x%x\n", baseAddress);
 }
 
 void decodeDeviceTypesFunctions(uint8_t classCode, uint8_t subclass, uint8_t progif) {
 
     dictionary::node* classNode = pciClassCodeDictionary->getByKey(classCode);
     if (!classNode) {
-        fprintf(Serial, "    Class Type: Unknown\n");
-        fprintf(Serial, "    Subclass Type: Unknown\n");
+        fprintf(Serial, "    Class Type                : Unknown\n");
+        fprintf(Serial, "    Subclass Type             : Unknown\n");
         fprintf(Serial, "    Programming Interface Type: Unknown\n");
         return;
     }
-    fprintf(Serial, "    Class Type: %s\n", classNode->value);
+    fprintf(Serial, "    Class Type                : %s\n", classNode->value);
 
     if (!classNode->child) {
-        fprintf(Serial, "    Subclass Type: Unknown\n");
+        fprintf(Serial, "    Subclass Type             : Unknown\n");
         fprintf(Serial, "    Programming Interface Type: Unknown\n");
         return;
     }
 
     dictionary::node* subclassNode = classNode->child->getByKey(subclass);
     if (!subclassNode) {
-        fprintf(Serial, "    Subclass Type: Unknown\n");
+        fprintf(Serial, "    Subclass Type             : Unknown\n");
         fprintf(Serial, "    Programming Interface Type: Unknown\n");
         return;
     }
-    fprintf(Serial, "    Subclass Type: %s\n", subclassNode->value);
+    fprintf(Serial, "    Subclass Type             : %s\n", subclassNode->value);
 
     if (!subclassNode->child) {
         fprintf(Serial, "    Programming Interface Type: Unknown\n");

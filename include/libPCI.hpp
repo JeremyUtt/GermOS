@@ -10,31 +10,6 @@ enum HeaderType { GENERAL, PCI_PCI_BRIDGE, PCI_CARDBUS_BRIDGE };
 
 enum BaseAddrType { MEMORY_SPACE, IO_SPACE };
 
-// enum ClassCode {
-//     Unclassified,
-//     MassStorageController,
-//     NetworkController,
-//     DisplayController,
-//     MultiMediaController,
-//     MemoryController,
-//     Bridge,
-//     SimpleCommunicationController,
-//     BaseSystemPeripheral,
-//     InputDeviceController,
-//     DockingStation,
-//     Processor,
-//     SerialBusController,
-//     WirelessController,
-//     IntelligentController,
-//     SatelliteCommunicationController,
-//     EncryptionController,
-//     SignalProcessingController,
-//     ProcessingAccelerator,
-//     NonEssentialInstrumentation,
-//     CoProcessor = 0x40,
-//     UnassignedClass = 0xff
-// }
-
 // https://wiki.osdev.org/PCI
 // If it has a value of 0x0 then the base register is 32-bits wide and can be mapped anywhere in the 32-bit Memory Space.
 // A value of 0x2 means the base register is 64-bits wide and can be mapped anywhere in the 64-bit Memory Space
@@ -153,7 +128,30 @@ struct generalDevice {
 };
 
 struct pciPciBridgeDevice {
-    /* data */
+    uint32_t baseAddr0;
+    uint32_t baseAddr1;
+    uint8_t primBusNum;
+    uint8_t secBusNum;
+    uint8_t subBusNum;
+    uint8_t secLatencyTimer;
+    uint8_t IOBase;
+    uint8_t IOLimit;
+    uint16_t secondaryStatus;
+    uint16_t memoryBase;
+    uint16_t memoryLimit;
+    uint16_t prefetchableMemoryBase;
+    uint16_t prefetchableMemoryLimit;
+    uint32_t prefetchableMemoryBaseUpper32;
+    uint32_t prefetchableMemoryLimitUpper32;
+    uint16_t IOBaseUpper16;
+    uint16_t IOLimitUpper16;
+    uint8_t capabilitiesPtr;
+    uint16_t reserved1;
+    uint8_t reserved2;
+    uint32_t extROMBaseAddr;
+    uint8_t interruptLine;
+    uint8_t interruptPIN;
+    uint16_t bridgeControl;
 };
 
 struct pciCardBusDevice {
