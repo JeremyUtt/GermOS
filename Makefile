@@ -31,10 +31,11 @@ NOCOLOR := "\033[0m"
 
 # Get list of all types of files 
 CPP_FILES := $(wildcard $(SRC_DIR)/*.cpp)
+CPP_FILES += $(wildcard $(SRC_DIR)/*/*.cpp)
 C_FILES := $(wildcard $(SRC_DIR)/*.c)
 ASM_FILES := $(wildcard $(SRC_DIR)/*.asm)
 BLOBS := $(wildcard $(BLOBS_DIR)/*)
-HEADERS := $(wildcard $(INCLUDE_DIR)/*.hpp)
+# HEADERS := $(wildcard $(INCLUDE_DIR)/*.hpp)
 
 # Combine all above lists and convert all file extensions to ".o"
 OBJS := $(patsubst $(SRC_DIR)/%.asm,$(BUILD_DIR)/%.o,$(ASM_FILES)) \
@@ -54,7 +55,8 @@ all: bin/OS.sym bin/OS.bin info
 # ============================================================
 
 # Compile all CPP files
-$(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp $(INCLUDE_DIR)/%.hpp
+# $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp $(INCLUDE_DIR)/%.hpp
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
 	@$(CC_DIR)/i386-elf-g++ $(CFLAGS) $(MODEFLAGS) -o $@ ./$<
 	@printf "%b" "\033[0;36m\e0CC $< \033[0m\n"
 
