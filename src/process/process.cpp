@@ -1,5 +1,6 @@
 
 #include <process.hpp>
+#include <scheduler.hpp>
 Process::Process(string name, uint32_t entrypoint, UiMode uiMode) {
     // _cState;
     _name = name;

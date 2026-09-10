@@ -21,6 +21,7 @@
 #include <photo.hpp>
 #include <printf.hpp>
 #include <process.hpp>
+#include <scheduler.hpp>
 #include <PROGRAM_PONG.hpp>
 #include <PROGRAM_TUI.hpp>
 #include <string.hpp>
@@ -28,22 +29,6 @@
 #include <tests.hpp>
 #include <utils.hpp>
 
-extern "C" uint8_t createFrame();
-
-// void stackTest2(int one, int two, int three) {
-//     int local1 = 16 * 4;
-//     int local2 = 16 * 5;
-//     int local3 = 16 * 6;
-
-//     createFrame();
-// }
-// void stackTest(int one, int two, int three) {
-//     int local1 = 16;
-//     int local2 = 16 * 2;
-//     int local3 = 16 * 3;
-
-//     stackTest2(4, 5, 6);
-// }
 
 extern "C" void main() {
     setUiMode(TEXT);
@@ -54,9 +39,9 @@ extern "C" void main() {
     // while (true) {
     //     halt();
     // }
-
-    // stackTest(1, 2, 3);
-    pciPrintAllDevices(Serial, 1);
+    asmfunction();
+    // createFrame();
+    // pciPrintAllDevices(Serial, 1);
 
 
     // ScrollBox scrollBox(10, 10, 300, 200, temp);
