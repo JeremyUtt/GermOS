@@ -5,7 +5,7 @@ SECTION .text
 ;            uint32_t* registerSnapshot)
 ; interruptFrame: EIP, CS, EFLAGS
 ; registerSnapshot is the stack area after pushes, in memory order:
-; EDI, ESI, EDX, ECX, EBX, EAX, EBP
+; EDI, ESI, EDX, ECX, EBX, EAX, EBP, original ESP
 global storeState
 storeState:
     push ebp
@@ -23,7 +23,8 @@ storeState:
     mov [eax + 8], ebx       ; ECX
     mov ebx, [ecx + 8]
     mov [eax + 12], ebx      ; EDX
-    mov [eax + 16], edx      ; ESP before interrupt
+    mov ebx, [ecx + 28]
+    mov [eax + 16], ebx      ; ESP before interrupt
     mov ebx, [ecx + 24]
     mov [eax + 20], ebx      ; EBP
     mov ebx, [ecx + 4]
@@ -62,6 +63,8 @@ global asmTimerHandler
 [extern currentState]
 asmTimerHandler:
     ; Save the interrupted registers before calling any C++ function.
+    push esp
+    add dword [esp], 12   ; recover ESP from before the CPU interrupt frame
     push ebp
     push eax
     push ebx
@@ -77,7 +80,7 @@ asmTimerHandler:
     ; ESP is still the snapshot base after the C++ call; recompute these
     ; caller-saved pointers instead of trusting ECX/EDX across the call.
     mov edx, esp
-    lea ecx, [esp + 28]
+    lea ecx, [esp + 32]
     push edx
     push ecx
     push dword currentState
@@ -96,4 +99,5 @@ asmTimerHandler:
     pop ebx
     pop eax
     pop ebp
+    add esp, 4
     iret
