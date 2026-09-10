@@ -1,19 +1,24 @@
 SECTION .text
 [bits 32]
 
-global storeState
-storeState:
-    push ebp             ; Save the caller's EBP
-    mov ebp, esp         ; Set EBP to the current ESP to create a new stack frame
-    push eax
 
+; Normally:
     ; Access the first parameter (int a) at [ebp + 8]
     ; Access the second parameter (int b) at [ebp + 12]
     ; (4 bytes for EBP, 4 bytes for return address)
 
+
+
+global storeState
+storeState:
+    push eax
+
+
     push ebx
     mov ebx, eax
-    mov eax, [ebp + 8]   ; Load 'a' (first parameter, in this case a pointer to struct) into EAX
+    ; Special case:
+    ; Access the first parameter (int a) at [esp - 12] (since we pushed EAX and EBX onto the stack)
+    mov eax, [esp + 12]   ; Load 'a' (first parameter, in this case a pointer to struct) into EAX
     mov [eax + 0], ebx ; load original eax
     pop ebx
     mov [eax + 4], ebx
@@ -40,8 +45,7 @@ storeState:
     mov [eax + 50], gs
 
     pop eax
-    pop ebp              ; Restore the caller's EBP
-    ret                  ; Return to the caller; caller cleans the stack
+    ret                  ; Return to the caller
 
 
 global asmTimerHandler

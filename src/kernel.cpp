@@ -30,7 +30,7 @@
 #include <utils.hpp>
 
 void experiments(){
-    // asmfunction();
+    asmfunction();
     // createFrame();
     // pciPrintAllDevices(Serial, 1);
 
