@@ -21,7 +21,7 @@
 #include <photo.hpp>
 #include <printf.hpp>
 #include <process.hpp>
-#include <scheduler.hpp>
+// #include <scheduler.hpp>
 #include <PROGRAM_PONG.hpp>
 #include <PROGRAM_TUI.hpp>
 #include <string.hpp>
@@ -29,6 +29,13 @@
 #include <tests.hpp>
 #include <utils.hpp>
 
+void experiments(){
+    // asmfunction();
+    // createFrame();
+    // pciPrintAllDevices(Serial, 1);
+
+
+}
 
 extern "C" void main() {
     setUiMode(TEXT);
@@ -36,25 +43,7 @@ extern "C" void main() {
     Renderer& renderer = temp;
 
     initKernel(renderer);
-    // while (true) {
-    //     halt();
-    // }
-    asmfunction();
-    // createFrame();
-    // pciPrintAllDevices(Serial, 1);
-
-
-    // ScrollBox scrollBox(10, 10, 300, 200, temp);
-
-    // string content = "Line 1\nLine 2\nLine 3\nLine 4\nLine 5\nLine 6\nLine 7\nLine 8\nLine 9\nLine 10\nLine 11\nLine 12\nLine 13\nLine 14\nLine 15\nLine 16\nLine 17\nLine 18\nLine 19\nLine 20";
-    // scrollBox.addContent(content);
-
-    // scrollBox.render();
-    // sleep(2000);
-    // scrollBox.scrollDown(5);
-    // sleep(2000);
-    // scrollBox.scrollUp(3);
-    // sleep(2000);
+    experiments();
 
     // Run the UI
     startTUI();
