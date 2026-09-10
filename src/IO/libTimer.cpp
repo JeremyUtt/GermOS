@@ -34,9 +34,6 @@ void sleep(int milliseconds) {
 }
 
 INTERRUPT void timerHandler(struct interrupt_frame*) {
-    
-    storeState(&currentState);
-
     Timer::timerPIT++;
     // serialWriteStr("Hello World!");
     outb(PIC1_COMMAND, PIC_EOI);

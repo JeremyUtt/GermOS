@@ -37,8 +37,6 @@ void Process::start() {
         needToChangeMode = true;
     }
 
-    storeState(&this->_cState);
-
     _pState = Running;
 
     auto func = (void (*)())_entrypoint;

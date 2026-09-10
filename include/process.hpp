@@ -1,5 +1,6 @@
 #pragma once
 #include <stdint.h>
+#include <stddef.h>
 
 #include <libVGA.hpp>
 #include <string.hpp>
@@ -31,7 +32,14 @@ struct CpuState {
 };
 
 
-extern "C" uint8_t storeState(CpuState* address);
+static_assert(sizeof(CpuState) == 64, "CpuState layout must remain 64 bytes");
+static_assert(offsetof(CpuState, esp) == 16, "CpuState::esp offset changed");
+static_assert(offsetof(CpuState, eip) == 32, "CpuState::eip offset changed");
+static_assert(offsetof(CpuState, fs) == 56, "CpuState::fs offset changed");
+static_assert(offsetof(CpuState, gs) == 60, "CpuState::gs offset changed");
+
+extern "C" void storeState(CpuState* address, uint32_t* interrupt_frame,
+                            uint32_t* register_snapshot);
 extern "C" uint8_t createFrame();
 extern "C" void asmfunction();
 extern "C" void asmTimerHandler();

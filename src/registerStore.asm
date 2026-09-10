@@ -1,81 +1,99 @@
 SECTION .text
 [bits 32]
 
-
-; Normally:
-    ; Access the first parameter (int a) at [ebp + 8]
-    ; Access the second parameter (int b) at [ebp + 12]
-    ; (4 bytes for EBP, 4 bytes for return address)
-
-
-
+; storeState(CpuState* destination, uint32_t* interruptFrame,
+;            uint32_t* registerSnapshot)
+; interruptFrame: EIP, CS, EFLAGS
+; registerSnapshot is the stack area after pushes, in memory order:
+; EDI, ESI, EDX, ECX, EBX, EAX, EBP
 global storeState
 storeState:
-    push eax
+    push ebp
+    mov ebp, esp
 
+    mov eax, [ebp + 8]
+    mov edx, [ebp + 12]
+    mov ecx, [ebp + 16]
 
-    push ebx
-    mov ebx, eax
-    ; Special case:
-    ; Access the first parameter (int a) at [esp - 12] (since we pushed EAX and EBX onto the stack)
-    mov eax, [esp + 12]   ; Load 'a' (first parameter, in this case a pointer to struct) into EAX
-    mov [eax + 0], ebx ; load original eax
-    pop ebx
-    mov [eax + 4], ebx
-    mov [eax + 8], ecx
-    mov [eax + 12], edx
-    mov [eax + 16], esp
-    mov [eax + 20], ebp
-    mov [eax + 24], esi
-    mov [eax + 28], edi
-    
-    push ebx ; save original ebx just in case
-    
-    mov ebx, [ebp + 4] ; interrupts return address
-    mov [eax + 32], ebx ; interrupts return address store to memory
-    
-    pop ebx
+    mov ebx, [ecx + 20]
+    mov [eax + 0], ebx       ; EAX
+    mov ebx, [ecx + 16]
+    mov [eax + 4], ebx       ; EBX
+    mov ebx, [ecx + 12]
+    mov [eax + 8], ebx       ; ECX
+    mov ebx, [ecx + 8]
+    mov [eax + 12], ebx      ; EDX
+    mov [eax + 16], edx      ; ESP before interrupt
+    mov ebx, [ecx + 24]
+    mov [eax + 20], ebx      ; EBP
+    mov ebx, [ecx + 4]
+    mov [eax + 24], ebx      ; ESI
+    mov ebx, [ecx + 0]
+    mov [eax + 28], ebx      ; EDI
 
-    mov [eax + 36], dword 0xffffffff
-    mov [eax + 40], cs
-    mov [eax + 44], ss
-    mov [eax + 48], ds
-    mov [eax + 52], es
-    mov [eax + 46], fs
-    mov [eax + 50], gs
+    mov ebx, [edx + 0]
+    mov [eax + 32], ebx      ; EIP
+    mov ebx, [edx + 8]
+    mov [eax + 36], ebx      ; EFLAGS
+    mov ebx, [edx + 4]
+    mov [eax + 40], ebx      ; CS
+    xor ebx, ebx
+    mov bx, ss
+    mov [eax + 44], ebx      ; SS
+    xor ebx, ebx
+    mov bx, ds
+    mov [eax + 48], ebx      ; DS
+    xor ebx, ebx
+    mov bx, es
+    mov [eax + 52], ebx      ; ES
+    xor ebx, ebx
+    mov bx, fs
+    mov [eax + 56], ebx      ; FS
+    xor ebx, ebx
+    mov bx, gs
+    mov [eax + 60], ebx      ; GS
 
-    pop eax
-    ret                  ; Return to the caller
-
+    pop ebp
+    ret
 
 global asmTimerHandler
 [extern incTimer]
 [extern determineIfSwitchNeeded]
 [extern currentState]
 asmTimerHandler:
-    push ebp             ; Save the caller's EBP
-    mov ebp, esp         ; Set EBP to the current ESP to create a new stack frame
-    
-    ; --- Main function:
+    ; Save the interrupted registers before calling any C++ function.
+    push ebp
     push eax
+    push ebx
+    push ecx
+    push edx
+    push esi
+    push edi
 
-    
-    call determineIfSwitchNeeded ; Call the C++ function to determine if a context switch is needed
-    test eax, eax                ; Test the return value (eax) to see if it's zero
-    jz noSwitch                  ; If zero (no switch needed), jump to noSwitch label
+    call determineIfSwitchNeeded
+    test eax, eax
+    jz .noSwitch
 
-    push currentState ; Push the address of currentState onto the stack
-    call storeState   ; Call the storeState function to save the CPU state to currentState 
-    pop eax           ; pop currentState address to clean stack (eax unused)
+    ; ESP is still the snapshot base after the C++ call; recompute these
+    ; caller-saved pointers instead of trusting ECX/EDX across the call.
+    mov edx, esp
+    lea ecx, [esp + 28]
+    push edx
+    push ecx
+    push dword currentState
+    call storeState
+    add esp, 12
 
-    noSwitch:
-    call incTimer          ; Call the C++ function to increment the timer counter
+.noSwitch:
+    call incTimer
+    mov al, 0x20
+    out 0x20, al
 
-    mov al, 0x20          ; Prepare to send End of Interrupt (EOI) signal to the PIC
-    out 0x20, al          ; Send End of Interrupt (EOI) signal to the PIC
-    
+    pop edi
+    pop esi
+    pop edx
+    pop ecx
+    pop ebx
     pop eax
-    ; --- END of main function
-
-    pop ebp              ; Restore the caller's EBP
-    iret                  ; Return to the caller;
+    pop ebp
+    iret
