@@ -9,8 +9,8 @@ enum ProcessState { Initalized, Running, Queued, Paused, Exited };
 
 struct CpuState {
     int eax;
-    int ecx;
     int ebx;
+    int ecx;
     int edx;
 
     int esp;  // Stack Pointer
@@ -34,6 +34,7 @@ struct CpuState {
 extern "C" uint8_t storeState(CpuState* address);
 extern "C" uint8_t createFrame();
 extern "C" void asmfunction();
+extern "C" void asmTimerHandler();
 
 
 class Process {

@@ -42,3 +42,7 @@ INTERRUPT void timerHandler(struct interrupt_frame*) {
     outb(PIC1_COMMAND, PIC_EOI);
     return;
 }
+
+extern "C" void incTimer(){
+    Timer::timerPIT++;
+}

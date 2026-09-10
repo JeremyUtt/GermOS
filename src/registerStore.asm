@@ -1,6 +1,6 @@
 SECTION .text
-
 [bits 32]
+
 global storeState
 storeState:
     push ebp             ; Save the caller's EBP
@@ -16,9 +16,9 @@ storeState:
     mov eax, [ebp + 8]   ; Load 'a' (first parameter, in this case a pointer to struct) into EAX
     mov [eax + 0], ebx ; load original eax
     pop ebx
-    mov [eax + 4], ecx
-    mov [eax + 8], edx
-    mov [eax + 12], ebx
+    mov [eax + 4], ebx
+    mov [eax + 8], ecx
+    mov [eax + 12], edx
     mov [eax + 16], esp
     mov [eax + 20], ebp
     mov [eax + 24], esi
@@ -43,3 +43,35 @@ storeState:
     pop ebp              ; Restore the caller's EBP
     ret                  ; Return to the caller; caller cleans the stack
 
+
+global asmTimerHandler
+[extern incTimer]
+[extern determineIfSwitchNeeded]
+[extern currentState]
+asmTimerHandler:
+    push ebp             ; Save the caller's EBP
+    mov ebp, esp         ; Set EBP to the current ESP to create a new stack frame
+    
+    ; --- Main function:
+    push eax
+
+    
+    call determineIfSwitchNeeded ; Call the C++ function to determine if a context switch is needed
+    test eax, eax                ; Test the return value (eax) to see if it's zero
+    jz noSwitch                  ; If zero (no switch needed), jump to noSwitch label
+
+    push currentState ; Push the address of currentState onto the stack
+    call storeState   ; Call the storeState function to save the CPU state to currentState 
+    pop eax           ; pop currentState address to clean stack (eax unused)
+
+    noSwitch:
+    call incTimer          ; Call the C++ function to increment the timer counter
+
+    mov al, 0x20          ; Prepare to send End of Interrupt (EOI) signal to the PIC
+    out 0x20, al          ; Send End of Interrupt (EOI) signal to the PIC
+    
+    pop eax
+    ; --- END of main function
+
+    pop ebp              ; Restore the caller's EBP
+    iret                  ; Return to the caller;

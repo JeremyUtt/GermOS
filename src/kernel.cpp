@@ -91,7 +91,7 @@ void initKernel(Renderer& renderer) {
     initSerial();
 
     printf("Loading IDT Entry for Timer Handler\n");
-    loadIdtEntry(0x20, (uint32_t)timerHandler, 0x08, 0x8e);
+    loadIdtEntry(0x20, (uint32_t)asmTimerHandler, 0x08, 0x8e);
 
     printf("Loading IDT Entry for Keyboard Handler\n");
     loadIdtEntry(0x21, (uint32_t)keyboardHandler, 0x08, 0x8e);
