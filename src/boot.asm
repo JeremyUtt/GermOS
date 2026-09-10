@@ -117,11 +117,17 @@ loadKernelFromDisk:
 
 ;end load more disk
 
-; mov ax, 50
-; testloop:
-; printR "he"
-; dec ax
-; jnz testloop
+
+; ; Clear carry flag
+; clc
+; ; Switch to the BIOS (= request low memory size)
+; int 0x12
+; ; The carry flag is set if it failed
+; ; add al, 48
+
+; mov ah, 0x0e ;for bios interrupt
+; int 10h ;bios interrupt to put character on screen
+; mov bx, ax
 
 ; jmp $
 

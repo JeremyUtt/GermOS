@@ -10,6 +10,7 @@ uint32_t getStrLen(const char String[]);
 bool strcmp(char str1[], char str2[]);
 uint32_t pow(uint32_t a, uint32_t b);
 void memcpy(void* src, void* dst, size_t size);
+uint32_t checkMemory(uint32_t start, uint32_t increment);
 template <typename left, typename right>
 struct pair {
     left first;

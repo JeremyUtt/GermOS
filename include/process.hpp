@@ -42,7 +42,6 @@ extern "C" void storeState(CpuState* address, uint32_t* interrupt_frame,
                             uint32_t* register_snapshot);
 extern "C" uint8_t createFrame();
 extern "C" void asmfunction();
-extern "C" void asmTimerHandler();
 
 
 class Process {

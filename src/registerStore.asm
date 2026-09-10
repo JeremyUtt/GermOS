@@ -11,9 +11,9 @@ storeState:
     push ebp
     mov ebp, esp
 
-    mov eax, [ebp + 8]
-    mov edx, [ebp + 12]
-    mov ecx, [ebp + 16]
+    mov eax, [ebp + 8]      ; pointer to the destination struct: CpuState currentState
+    mov edx, [ebp + 12]     ; pointer to the interrupt frame (IP, cs, eflags) on the stack  
+    mov ecx, [ebp + 16]     ; pointer to the saved registers on the stack
 
     mov ebx, [ecx + 20]
     mov [eax + 0], ebx       ; EAX
@@ -81,8 +81,8 @@ asmTimerHandler:
     ; caller-saved pointers instead of trusting ECX/EDX across the call.
     mov edx, esp
     lea ecx, [esp + 32]
-    push edx
-    push ecx
+    push edx ; pointer to the saved registers on the stack
+    push ecx ; pointer to the interrupt frame (IP, cs, eflags) on the stack
     push dword currentState
     call storeState
     add esp, 12

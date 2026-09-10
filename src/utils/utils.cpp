@@ -98,3 +98,17 @@ void memcpy(void* src, void* dst, size_t size) {
         dstC[i] = srcC[i];
     }
 }
+
+uint32_t checkMemory(uint32_t start, uint32_t increment) {
+    char* current = (char*)start;
+    uint32_t bytesTried = 0;
+    while (true) {
+        *current = 69;
+        char readValue = *current;
+        if (readValue != 69){
+            return bytesTried;
+        }
+        current += increment;
+        bytesTried += increment;
+    }
+}

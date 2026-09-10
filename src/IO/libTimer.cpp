@@ -33,13 +33,13 @@ void sleep(int milliseconds) {
     }
 }
 
-INTERRUPT void timerHandler(struct interrupt_frame*) {
-    Timer::timerPIT++;
-    // serialWriteStr("Hello World!");
-    outb(PIC1_COMMAND, PIC_EOI);
-    return;
-}
-
 extern "C" void incTimer(){
     Timer::timerPIT++;
 }
+
+// INTERRUPT void timerHandler(struct interrupt_frame*) {
+//     Timer::timerPIT++;
+//     // serialWriteStr("Hello World!");
+//     outb(PIC1_COMMAND, PIC_EOI);
+//     return;
+// }

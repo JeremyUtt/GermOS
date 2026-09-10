@@ -30,11 +30,13 @@
 #include <utils.hpp>
 
 void experiments(){
-    asmfunction();
+    // asmfunction();
     // createFrame();
     // pciPrintAllDevices(Serial, 1);
-
-
+    // printf("Checking Memory...\n");
+    // uint32_t size =  checkMemory(0xB0000, 0x100);
+    // printf("Scanned 0x%x bytes", size);
+    // sleep(10000);
 }
 
 extern "C" void main() {
