@@ -55,7 +55,7 @@ static_assert(offsetof(CpuState, eip) == 32, "CpuState::eip offset changed");
 static_assert(offsetof(CpuState, fs) == 56, "CpuState::fs offset changed");
 static_assert(offsetof(CpuState, gs) == 60, "CpuState::gs offset changed");
 
-extern "C" void storeState(CpuState* address, uint32_t* interrupt_frame, uint32_t* register_snapshot);
+// extern "C" void storeState(CpuState* address, uint32_t* interrupt_frame, uint32_t* register_snapshot);
 extern "C" uint8_t createFrame();
 extern "C" void asmfunction();
 

@@ -12,7 +12,7 @@ void setFreq(int hz);
 
 }  // namespace Timer
 void sleep(int milliseconds);
-extern "C" void incTimer();
+// extern "C" void incTimer();
 extern "C" void asmTimerHandler();
 
 // INTERRUPT void timerHandler(struct interrupt_frame*);

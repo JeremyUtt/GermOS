@@ -33,9 +33,9 @@ void sleep(int milliseconds) {
     }
 }
 
-extern "C" void incTimer(){
-    Timer::timerPIT++;
-}
+// extern "C" void incTimer(){
+//     Timer::timerPIT++;
+// }
 
 // INTERRUPT void timerHandler(struct interrupt_frame*) {
 //     Timer::timerPIT++;

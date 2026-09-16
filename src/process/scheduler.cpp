@@ -1,6 +1,7 @@
 #include "scheduler.hpp"
 #include <process.hpp>
 #include <printf.hpp>
+#include <libTimer.hpp>
 CpuState currentState;
 
 void zeroCpuState(CpuState* state){
@@ -22,21 +23,19 @@ void zeroCpuState(CpuState* state){
     state->gs = 0;
 }
 
+// extern "C" int determineIfSwitchNeeded(){
+//     zeroCpuState(&currentState);
+//     // Check if a context switch is needed based on the current state of the CPU and the scheduler's state.
+//     // This function should return true if a context switch is required, false otherwise.
 
-
-extern "C" int determineIfSwitchNeeded(){
-    zeroCpuState(&currentState);
-    // Check if a context switch is needed based on the current state of the CPU and the scheduler's state.
-    // This function should return true if a context switch is required, false otherwise.
-
-    // For demonstration purposes, let's assume we always want to switch for now.
-    return 1;
-}
+//     // For demonstration purposes, let's assume we always want to switch for now.
+//     return 1;
+// }
 
 
 // hopefully equivalent to the asm version storeState
 // does NOT save segment registers other than CS
-extern "C" void cStoreState(CpuState* destination, InterruptFrame* interruptFrame, RegisterSnapshot* registerSnapshot){
+void cStoreState(CpuState* destination, InterruptFrame* interruptFrame, RegisterSnapshot* registerSnapshot){
     destination->cs = interruptFrame->cs;
     destination->eflags = interruptFrame->eflags;
     destination->eip = interruptFrame->ip;
@@ -64,7 +63,7 @@ extern "C" void cStoreState(CpuState* destination, InterruptFrame* interruptFram
 }
 
 
-extern "C" void cLoadState(CpuState* source, InterruptFrame* interruptFrame, RegisterSnapshot* registerSnapshot){
+void cLoadState(CpuState* source, InterruptFrame* interruptFrame, RegisterSnapshot* registerSnapshot){
     interruptFrame->cs = source->cs;
     interruptFrame->eflags = source->eflags;
     interruptFrame->ip = source->eip;
@@ -82,7 +81,17 @@ extern "C" void cLoadState(CpuState* source, InterruptFrame* interruptFrame, Reg
 }
 
 
-// extern "C" void schedulerTick(InterruptFrame* interruptFrame, RegisterSnapshot* registerSnapshot){
-//     cLoadState(currentState, interruptFrame, registerSnapshot);
+extern "C" void schedulerTick(InterruptFrame* interruptFrame, RegisterSnapshot* registerSnapshot){
 
-// }
+    // if state change needed
+        zeroCpuState(&currentState);
+        cStoreState(&currentState, interruptFrame, registerSnapshot);
+        // save currentState to processes class instance 
+
+        // calculate next task using algorithm
+        // get saved state from class instance
+        // cLoadState(newState, interruptFrame, registerSnapshot);
+    //endif
+
+    Timer::timerPIT++;
+}
