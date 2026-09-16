@@ -21,7 +21,7 @@
 #include <photo.hpp>
 #include <printf.hpp>
 #include <process.hpp>
-// #include <scheduler.hpp>
+#include <scheduler.hpp>
 #include <PROGRAM_PONG.hpp>
 #include <PROGRAM_TUI.hpp>
 #include <string.hpp>
@@ -32,6 +32,7 @@
 void experiments(){
     // asmfunction();
     // createFrame();
+    // simulateTasks();
     // pciPrintAllDevices(Serial, 1);
     // printf("Checking Memory...\n");
     // uint32_t size =  checkMemory(0xB0000, 0x100);
@@ -43,6 +44,9 @@ extern "C" void main() {
     setUiMode(TEXT);
     TuiTextRenderer temp;
     Renderer& renderer = temp;
+    scheduler taskScheduler;
+    schedulerInstance = &taskScheduler;
+
 
     initKernel(renderer);
     experiments();
@@ -61,11 +65,6 @@ extern "C" void main() {
     halt();
 }
 
-extern "C" void trampolineFunction() {
-    while (true) {
-        fprintf(Serial, "Hello World");
-    }
-}
 
 void initKernel(Renderer& renderer) {
     updateStdout(renderer);

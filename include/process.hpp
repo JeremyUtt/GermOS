@@ -29,6 +29,11 @@ struct CpuState {
     int fs;  // Extra segment selector
     int gs;  // Extra segment selector
 };
+static_assert(sizeof(CpuState) == 64, "CpuState layout must remain 64 bytes");
+static_assert(offsetof(CpuState, esp) == 16, "CpuState::esp offset changed");
+static_assert(offsetof(CpuState, eip) == 32, "CpuState::eip offset changed");
+static_assert(offsetof(CpuState, fs) == 56, "CpuState::fs offset changed");
+static_assert(offsetof(CpuState, gs) == 60, "CpuState::gs offset changed");
 
 // the values automatically pushed to the stack when a ISR is called
 struct InterruptFrame {
@@ -36,6 +41,9 @@ struct InterruptFrame {
     uint32_t cs;
     uint32_t eflags;
 };
+static_assert(sizeof(InterruptFrame) == 12, "InterruptFrame layout must remain 12 bytes");
+static_assert(offsetof(InterruptFrame, ip) == 0, "InterruptFrame::ip offset changed");
+static_assert(offsetof(InterruptFrame, eflags) == 8, "CpuState::esp offset changed");
 
 // the values pushed to the stack bt the custom Timer Handler function
 struct RegisterSnapshot {
@@ -48,12 +56,8 @@ struct RegisterSnapshot {
     uint32_t ebp;
     uint32_t esp;
 };
+static_assert(sizeof(RegisterSnapshot) == 32, "RegisterSnapshot layout must remain 32 bytes");
 
-static_assert(sizeof(CpuState) == 64, "CpuState layout must remain 64 bytes");
-static_assert(offsetof(CpuState, esp) == 16, "CpuState::esp offset changed");
-static_assert(offsetof(CpuState, eip) == 32, "CpuState::eip offset changed");
-static_assert(offsetof(CpuState, fs) == 56, "CpuState::fs offset changed");
-static_assert(offsetof(CpuState, gs) == 60, "CpuState::gs offset changed");
 
 // extern "C" void storeState(CpuState* address, uint32_t* interrupt_frame, uint32_t* register_snapshot);
 extern "C" uint8_t createFrame();

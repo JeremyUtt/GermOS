@@ -3,11 +3,11 @@
 #include <utils.hpp>
 
 int fprintf(stream serial, string format) {
-    return printValue(serial, format, NULL);
+    return printValue(serial, format, ZERO);
 }
 
 int printf(string format) {
-    return printValue(Screen, format, NULL);
+    return printValue(Screen, format, ZERO);
 }
 
 Renderer* output;
@@ -51,7 +51,7 @@ int printValue(stream serial, const char* s, int unused) {
 }
 
 // int printValue(stream serial, int i, int base) {
-//     if (base == NULL) {
+//     if (base == ZERO) {
 //         base = 10;
 //     }
 

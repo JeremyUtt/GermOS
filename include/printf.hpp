@@ -3,8 +3,8 @@
 #include <libSerial.hpp>
 #include <string.hpp>
 
-#ifndef NULL
-#define NULL 0
+#ifndef ZERO
+#define ZERO 0
 #endif
 extern Renderer* output;
 
@@ -27,7 +27,7 @@ int printValue(stream serial, const char* s, int unused);
 
 template <typename T>
 int printValue(stream serial, T i, int base) {
-    if (base == NULL) {
+    if (base == ZERO) {
         base = 10;
     }
 
@@ -46,7 +46,7 @@ int fprintf(stream serial, string format, T value, Args... args) {
     for (uint32_t i = 0; i < format.size(); i++) {
         if (format[i] == '%') {
             if (format[i + 1] == '%') {
-                characters += printValue(serial, '%', NULL);
+                characters += printValue(serial, '%', ZERO);
                 i++;  // Skip both '%'
                 break;
             }
@@ -58,10 +58,10 @@ int fprintf(stream serial, string format, T value, Args... args) {
                     characters += printValue(serial, value, 16);
                     break;
                 case 's':
-                    characters += printValue(serial, value, NULL);
+                    characters += printValue(serial, value, ZERO);
                     break;
                 default:
-                    characters += printValue(serial, value, NULL);
+                    characters += printValue(serial, value, ZERO);
                     break;
             }
 
@@ -74,7 +74,7 @@ int fprintf(stream serial, string format, T value, Args... args) {
 
         } else {
             // Just print regular characters
-            characters += printValue(serial, format[i], NULL);
+            characters += printValue(serial, format[i], ZERO);
         }
     }
     return characters;
