@@ -1,10 +1,9 @@
 #pragma once
-#include <stdint.h>
 #include <stddef.h>
+#include <stdint.h>
 
 #include <libVGA.hpp>
 #include <string.hpp>
-
 
 enum ProcessState { Initalized, Running, Queued, Paused, Exited };
 
@@ -31,6 +30,24 @@ struct CpuState {
     int gs;  // Extra segment selector
 };
 
+// the values automatically pushed to the stack when a ISR is called
+struct InterruptFrame {
+    uint32_t ip;
+    uint32_t cs;
+    uint32_t eflags;
+};
+
+// the values pushed to the stack bt the custom Timer Handler function
+struct RegisterSnapshot {
+    uint32_t edi;
+    uint32_t esi;
+    uint32_t edx;
+    uint32_t ecx;
+    uint32_t ebx;
+    uint32_t eax;
+    uint32_t ebp;
+    uint32_t esp;
+};
 
 static_assert(sizeof(CpuState) == 64, "CpuState layout must remain 64 bytes");
 static_assert(offsetof(CpuState, esp) == 16, "CpuState::esp offset changed");
@@ -38,11 +55,9 @@ static_assert(offsetof(CpuState, eip) == 32, "CpuState::eip offset changed");
 static_assert(offsetof(CpuState, fs) == 56, "CpuState::fs offset changed");
 static_assert(offsetof(CpuState, gs) == 60, "CpuState::gs offset changed");
 
-extern "C" void storeState(CpuState* address, uint32_t* interrupt_frame,
-                            uint32_t* register_snapshot);
+extern "C" void storeState(CpuState* address, uint32_t* interrupt_frame, uint32_t* register_snapshot);
 extern "C" uint8_t createFrame();
 extern "C" void asmfunction();
-
 
 class Process {
   private:

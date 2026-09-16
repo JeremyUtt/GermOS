@@ -61,6 +61,8 @@ global asmTimerHandler
 [extern incTimer]
 [extern determineIfSwitchNeeded]
 [extern currentState]
+[extern cStoreState]
+; [extern schedulerTick]
 asmTimerHandler:
     ; Save the interrupted registers before calling any C++ function.
     push esp
@@ -73,6 +75,17 @@ asmTimerHandler:
     push esi
     push edi
 
+    
+    ; ; ESP is still the snapshot base after the C++ call; recompute these
+    ; ; caller-saved pointers instead of trusting ECX/EDX across the call.
+    ; mov edx, esp
+    ; lea ecx, [esp + 32]
+    ; push edx ; pointer to the saved registers on the stack
+    ; push ecx ; pointer to the interrupt frame (IP, cs, eflags) on the stack
+    ; call schedulerTick
+    
+    ; add esp, 12
+    
     call determineIfSwitchNeeded
     test eax, eax
     jz .noSwitch
@@ -84,7 +97,8 @@ asmTimerHandler:
     push edx ; pointer to the saved registers on the stack
     push ecx ; pointer to the interrupt frame (IP, cs, eflags) on the stack
     push dword currentState
-    call storeState
+    call cStoreState
+    
     add esp, 12
 
 .noSwitch:
