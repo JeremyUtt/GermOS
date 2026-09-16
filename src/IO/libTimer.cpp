@@ -8,6 +8,7 @@
 #include <scheduler.hpp>
 namespace Timer {
 int timerPIT = 0;
+uint64_t globalTime = 0;
 
 void setEnabled(bool OnOff) {
     uint8_t currentMask = inb(PIC1_DATA);

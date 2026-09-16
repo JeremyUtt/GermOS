@@ -38,6 +38,7 @@ void experiments(){
     // uint32_t size =  checkMemory(0xB0000, 0x100);
     // printf("Scanned 0x%x bytes", size);
     // sleep(10000);
+    testScheduler();
 }
 
 extern "C" void main() {
