@@ -8,26 +8,26 @@
 enum ProcessState { Initalized, Running, Queued, Paused, Exited };
 
 struct CpuState {
-    int eax;
-    int ebx;
-    int ecx;
-    int edx;
+    uint32_t eax;
+    uint32_t ebx;
+    uint32_t ecx;
+    uint32_t edx;
 
-    int esp;  // Stack Pointer
-    int ebp;  // Stack Base Pointer
+    uint32_t esp;  // Stack Pointer
+    uint32_t ebp;  // Stack Base Pointer
 
-    int esi;  // Source Index register      (??)
-    int edi;  // Destination Index register (??)
+    uint32_t esi;  // Source Index register      (??)
+    uint32_t edi;  // Destination Index register (??)
 
-    int eip;  // Program Counter
-    int eflags;
+    uint32_t eip;  // Program Counter
+    uint32_t eflags;
 
-    int cs;  // Code segment selector
-    int ss;  // Stack segment selector
-    int ds;  // Data segment selector
-    int es;  // Extra segment selector
-    int fs;  // Extra segment selector
-    int gs;  // Extra segment selector
+    uint32_t cs;  // Code segment selector
+    uint32_t ss;  // Stack segment selector
+    uint32_t ds;  // Data segment selector
+    uint32_t es;  // Extra segment selector
+    uint32_t fs;  // Extra segment selector
+    uint32_t gs;  // Extra segment selector
 };
 static_assert(sizeof(CpuState) == 64, "CpuState layout must remain 64 bytes");
 static_assert(offsetof(CpuState, esp) == 16, "CpuState::esp offset changed");

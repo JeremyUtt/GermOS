@@ -21,15 +21,15 @@
 #include <photo.hpp>
 #include <printf.hpp>
 #include <process.hpp>
-#include <scheduler.hpp>
 #include <PROGRAM_PONG.hpp>
 #include <PROGRAM_TUI.hpp>
+#include <scheduler.hpp>
 #include <string.hpp>
 #include <system.hpp>
 #include <tests.hpp>
 #include <utils.hpp>
 
-void experiments(){
+void experiments() {
     // asmfunction();
     // createFrame();
     // simulateTasks();
@@ -39,6 +39,10 @@ void experiments(){
     // printf("Scanned 0x%x bytes", size);
     // sleep(10000);
     testScheduler();
+
+    while (true) {
+        fprintf(Serial, "Kernel Mode\n");
+    }
 }
 
 extern "C" void main() {
@@ -47,7 +51,6 @@ extern "C" void main() {
     Renderer& renderer = temp;
     scheduler taskScheduler;
     schedulerInstance = &taskScheduler;
-
 
     initKernel(renderer);
     experiments();
@@ -65,7 +68,6 @@ extern "C" void main() {
     disableInterrupts();
     halt();
 }
-
 
 void initKernel(Renderer& renderer) {
     updateStdout(renderer);
