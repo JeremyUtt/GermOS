@@ -22,26 +22,9 @@ void zeroCpuState(CpuState* state) {
     state->gs = 0;
 }
 
-// void simulateTasks() {
-//     processTemp newProcess;
-//     newProcess.entryPoint = (uint32_t)task;
-//     newProcess.stackSize = 500;
-//     newProcess.stackStart = (uint8_t*)malloc(500);
-//     newProcess.name = "Temp Process";
-//     newProcess.uiMode = TEXT;
-//     zeroCpuState(&newProcess.state);
-
-//     uint32_t* stackPointer = initializeTaskStack(newProcess.stackStart, newProcess.stackSize, (uint32_t)trampolineFunction);
-
-//     newProcess.state.ebp = (uint32_t)newProcess.stackStart;
-//     newProcess.state.esp = (uint32_t)stackPointer;
-
-//     free(newProcess.stackStart);
-// }
-
 void task() {
     while (true) {
-        fprintf(Serial, "Hello World");
+        fprintf(Serial, "Hello World! ");
     }
 }
 
