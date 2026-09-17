@@ -4,3 +4,4 @@
 #define halt() asm("hlt");
 
 #define disableInterrupts() asm("cli");
+#define enableInterrupts() asm("sti");
